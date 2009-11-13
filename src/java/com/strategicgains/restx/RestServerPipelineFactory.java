@@ -23,7 +23,6 @@ import org.jboss.netty.channel.Channels;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 
-import com.strategicgains.restx.request.HttpRequestHandler;
 
 /**
  * @author Todd Fredrich

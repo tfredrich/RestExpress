@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.request;
+package com.strategicgains.restx;
 
 import java.util.List;
 import java.util.Map;

@@ -30,11 +30,20 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
  */
 public class RestServer
 {
+	private static final int DEFAULT_PORT = 8080;
+
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args)
 	{
+		int port = DEFAULT_PORT;
+
+		if (args.length > 0)
+		{
+			port = Integer.parseInt(args[0]);
+		}
+
 		// Configure the server.
 		ServerBootstrap bootstrap = new ServerBootstrap(
 		    new NioServerSocketChannelFactory(
@@ -45,6 +54,7 @@ public class RestServer
 		bootstrap.setPipelineFactory(new RestServerPipelineFactory());
 
 		// Bind and start to accept incoming connections.
-		bootstrap.bind(new InetSocketAddress(8080));
+		System.out.println("Starting RestX Server on port " + port);
+		bootstrap.bind(new InetSocketAddress(port));
 	}
 }
