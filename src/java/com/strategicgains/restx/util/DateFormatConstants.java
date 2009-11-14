@@ -17,12 +17,16 @@
 
 package com.strategicgains.restx.util;
 
+import java.util.TimeZone;
+
 /**
  * @author toddf
  * @since Nov 13, 2009
  */
 public final class DateFormatConstants
 {
+	public static final TimeZone COMMON_TIME_ZONE = TimeZone.getTimeZone("UTC");
+
 	public static final String DATE_OUTPUT_FORMAT = "yyyy-MM-dd";
 	public static final String[] DATE_INPUT_FORMATS =
 	{
@@ -35,8 +39,8 @@ public final class DateFormatConstants
 	public static final String[] TIMESTAMP_INPUT_FORMATS =
 	{
 		TIMESTAMP_OUTPUT_FORMAT,
-		"yyyy-MM-dd'T'HH:mm:ssZ",
-		"yyyy-MM-dd'T'HH:mmZ",
+		"yyyy-MM-dd'T'HH:mm:ssz",
+		"yyyy-MM-dd'T'HH:mmz",
 		"yyyy-MM-dd"
 	};
 

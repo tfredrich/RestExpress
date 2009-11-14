@@ -36,8 +36,8 @@ import java.util.List;
  */
 public class DateFormatProcessor
 {
-	private String[] inputFormats;
-	private String outputFormat;
+	private DateFormat[] inputFormats;
+	private DateFormat outputFormat;
 	
 	public DateFormatProcessor(List<String> inputFormats, String outputFormat)
 	{
@@ -46,6 +46,7 @@ public class DateFormatProcessor
 
 	public DateFormatProcessor(String[] inputFormats, String outputFormat)
 	{
+		format.setTimezone(COMMON_TIME_ZONE);
 		this.inputFormats = Arrays.copyOf(inputFormats, inputFormats.length);
 		this.outputFormat = outputFormat;
 	}
