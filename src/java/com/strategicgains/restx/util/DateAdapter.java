@@ -17,8 +17,8 @@
 
 package com.strategicgains.restx.util;
 
-import static com.strategicgains.restx.util.DateFormatConstants.DATE_INPUT_FORMATS;
-import static com.strategicgains.restx.util.DateFormatConstants.DATE_OUTPUT_FORMAT;
+import static com.strategicgains.restx.util.DateAdapterConstants.DATE_INPUT_FORMATS;
+import static com.strategicgains.restx.util.DateAdapterConstants.DATE_OUTPUT_FORMAT;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -28,8 +28,8 @@ import java.util.Date;
  * @author toddf
  * @since Nov 13, 2009
  */
-public class DateFormatter
-implements Formatter<Date>
+public class DateAdapter
+implements TextAdapter<Date>
 {
 	// SECTION: INSTANCE VARIABLES
 
@@ -38,12 +38,12 @@ implements Formatter<Date>
 	
 	// SECTION: CONSTRUCTOR
 
-	public DateFormatter()
+	public DateAdapter()
 	{
 		this(DATE_INPUT_FORMATS, DATE_OUTPUT_FORMAT);
 	}
 	
-	protected DateFormatter(String[] inputFormats, String outputFormat)
+	protected DateAdapter(String[] inputFormats, String outputFormat)
 	{
 		this.processor = new DateFormatProcessor(inputFormats, outputFormat);
 	}
@@ -52,15 +52,15 @@ implements Formatter<Date>
 	// SECTION: FORMATTING
 	
 	@Override
-	public Date fromString(String dateString)
+	public Date parse(String dateString)
 	throws ParseException
 	{
-		return processor.fromString(dateString);
+		return processor.parse(dateString);
 	}
 	
 	@Override
-	public String asString(Date date)
+	public String format(Date date)
 	{
-		return processor.asString(date);
+		return processor.format(date);
 	}
 }

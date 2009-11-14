@@ -17,18 +17,18 @@
 
 package com.strategicgains.restx.util;
 
-import static com.strategicgains.restx.util.DateFormatConstants.TIMESTAMP_INPUT_FORMATS;
-import static com.strategicgains.restx.util.DateFormatConstants.TIMESTAMP_OUTPUT_FORMAT;
+import java.text.ParseException;
 
 /**
+ * Defines an interface to convert an object to a text string and back.
+ * 
  * @author toddf
  * @since Nov 13, 2009
  */
-public class TimestampFormatter
-extends DateFormatter
+public interface TextAdapter<T>
 {
-	public TimestampFormatter()
-	{
-		super(TIMESTAMP_INPUT_FORMATS, TIMESTAMP_OUTPUT_FORMAT);
-	}
+	public T parse(String value)
+	throws ParseException;
+	
+	public String format(T value);
 }

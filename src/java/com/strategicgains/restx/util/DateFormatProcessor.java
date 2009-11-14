@@ -27,7 +27,7 @@ import java.util.List;
  * Responsible for using converting java.util.Data instances to and from strings.
  * 
  * <p>The constructor accepts a list of input formats (see SimpleDateFormat) and an output format.
- * the input formats are those date formats, in priority order, that the input accepts as valid.
+ * The input formats are those date formats, in priority order, that the input accepts as valid.
  * The output format is the date format always used for output.  It is good form to have the first
  * input format match the output format.
  * 
@@ -35,6 +35,7 @@ import java.util.List;
  * @since Nov 13, 2009
  */
 public class DateFormatProcessor
+implements TextAdapter<Date>
 {
 	private String[] inputFormats;
 	private String outputFormat;
@@ -57,7 +58,7 @@ public class DateFormatProcessor
 	 * @param dateString a date string in one of the acceptable formats.
 	 * @throws ParseException if the date is not in one of the input formats.
 	 */
-	public Date fromString(String dateString)
+	public Date parse(String dateString)
 	throws ParseException
 	{
 		Date result = null;
@@ -96,7 +97,7 @@ public class DateFormatProcessor
 	 * 
 	 * @param date a java.util.Date
 	 */
-	public String asString(Date date)
+	public String format(Date date)
 	{
 		return new SimpleDateFormat(outputFormat).format(date);
 	}

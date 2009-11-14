@@ -17,7 +17,7 @@
 
 package com.strategicgains.restx.serialization.json;
 
-import com.strategicgains.restx.util.TimestampFormatter;
+import com.strategicgains.restx.util.TimestampAdapter;
 
 /**
  * A GSON serializer for Date instances represented (and to be presented) as a timestamps (dates with time component).
@@ -30,6 +30,6 @@ extends GsonDateSerializer
 {
 	public GsonTimestampSerializer()
 	{
-		super(new TimestampFormatter());
+		super(new TimestampAdapter());
 	}
 }

@@ -17,31 +17,18 @@
 
 package com.strategicgains.restx.util;
 
+import static com.strategicgains.restx.util.DateAdapterConstants.TIMESTAMP_INPUT_FORMATS;
+import static com.strategicgains.restx.util.DateAdapterConstants.TIMESTAMP_OUTPUT_FORMAT;
+
 /**
  * @author toddf
  * @since Nov 13, 2009
  */
-public final class DateFormatConstants
+public class TimestampAdapter
+extends DateAdapter
 {
-	public static final String DATE_OUTPUT_FORMAT = "yyyy-MM-dd";
-	public static final String[] DATE_INPUT_FORMATS =
+	public TimestampAdapter()
 	{
-		DATE_OUTPUT_FORMAT,
-		"yyyy/MM/dd",
-		"MM/dd/yyyy",
-		"yyyy-MM-dd'T'HH:mm:ssz"
-	};
-	public static final String TIMESTAMP_OUTPUT_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSz";
-	public static final String[] TIMESTAMP_INPUT_FORMATS =
-	{
-		TIMESTAMP_OUTPUT_FORMAT,
-		"yyyy-MM-dd'T'HH:mm:ssZ",
-		"yyyy-MM-dd'T'HH:mmZ",
-		"yyyy-MM-dd"
-	};
-
-	private DateFormatConstants()
-    {
-		// prevents instantiation.
-    }
+		super(TIMESTAMP_INPUT_FORMATS, TIMESTAMP_OUTPUT_FORMAT);
+	}
 }
