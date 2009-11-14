@@ -23,7 +23,7 @@ import java.util.TimeZone;
  * @author toddf
  * @since Nov 13, 2009
  */
-public final class DateFormatConstants
+public final class DateAdapterConstants
 {
 	public static final TimeZone COMMON_TIME_ZONE = TimeZone.getTimeZone("UTC");
 
@@ -44,7 +44,7 @@ public final class DateFormatConstants
 		"yyyy-MM-dd"
 	};
 
-	private DateFormatConstants()
+	private DateAdapterConstants()
     {
 		// prevents instantiation.
     }

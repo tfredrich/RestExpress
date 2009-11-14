@@ -21,33 +21,39 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.util.Date;
 
+import com.google.gson.InstanceCreator;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
-import com.strategicgains.restx.util.DateFormatter;
+import com.google.gson.JsonSerializer;
+import com.strategicgains.restx.util.DateAdapter;
 
 /**
  * A GSON serializer for Date instances represented (and to be presented) as a date (without time component).
  * 
- * @author toddf
+ * @author Todd Fredrich
  * @since Nov 13, 2009
+ * @see JsonSerializer
+ * @see JsonDeserializer
+ * @see InstanceCreator
  */
 public class GsonDateSerializer
 implements GsonSerializer<Date>
 {
-	private DateFormatter formatter;
+	private DateAdapter adapter;
 	
 	public GsonDateSerializer()
 	{
-		this(new DateFormatter());
+		this(new DateAdapter());
 	}
 	
-	public GsonDateSerializer(DateFormatter formatter)
+	public GsonDateSerializer(DateAdapter adapter)
 	{
 		super();
-		this.formatter = formatter;
+		this.adapter = adapter;
 	}
 	
     @Override
@@ -56,7 +62,7 @@ implements GsonSerializer<Date>
     {
     	try
         {
-	        return formatter.fromString(json.getAsJsonPrimitive().toString());
+	        return adapter.parse(json.getAsJsonPrimitive().toString());
         }
         catch (ParseException e)
         {
@@ -67,7 +73,7 @@ implements GsonSerializer<Date>
     @Override
     public JsonElement serialize(Date date, Type typeOf, JsonSerializationContext contexst)
     {
-    	return new JsonPrimitive(formatter.asString(date));
+    	return new JsonPrimitive(adapter.format(date));
     }
 
     @Override
