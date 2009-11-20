@@ -17,11 +17,14 @@
 
 package com.strategicgains.restx.serialization;
 
+import com.strategicgains.restx.route.Request;
+
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
 public interface Serializer
 {
-
+	public String serialize(Request request)
+	throws SerializationException;
 }

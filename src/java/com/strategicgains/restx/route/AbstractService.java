@@ -17,9 +17,9 @@
 
 package com.strategicgains.restx.route;
 
-import java.util.Map;
-
+import com.strategicgains.restx.serialization.DeserializationException;
 import com.strategicgains.restx.serialization.Deserializer;
+import com.strategicgains.restx.serialization.SerializationException;
 import com.strategicgains.restx.serialization.Serializer;
 
 /**
@@ -31,31 +31,83 @@ implements Service
 {
 	// SECTION: INSTANCE VARIABLES
 
-	private Map<String, Serializer> serializers;
-	private Map<String, Deserializer> deserializers;
+	private Resolver<Serializer> serializerResolver;
+	private Resolver<Deserializer> deserializerResolver;
+
+	
+	// SECTION: ACCESSORS/MUTATORS
+
+	/**
+     * @return the serializerResolver
+     */
+    public Resolver<Serializer> getSerializerResolver()
+    {
+    	return serializerResolver;
+    }
+
+	/**
+     * @param serializerResolver the serializerResolver to set
+     */
+    public void setSerializerResolver(Resolver<Serializer> serializerResolver)
+    {
+    	this.serializerResolver = serializerResolver;
+    }
+
+	/**
+     * @return the deserializerResolver
+     */
+    public Resolver<Deserializer> getDeserializerResolver()
+    {
+    	return deserializerResolver;
+    }
+
+	/**
+     * @param deserializerResolver the deserializerResolver to set
+     */
+    public void setDeserializerResolver(Resolver<Deserializer> deserializerResolver)
+    {
+    	this.deserializerResolver = deserializerResolver;
+    }
 
 	
 	// SECTION: SERVICE
 
 	@Override
 	public Object deserialize(Request request)
+	throws DeserializationException
 	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+		Deserializer deserializer;
 
-	@Override
-	public Object process(Request request, Object message)
-	throws ServiceException
-	{
-		// TODO Auto-generated method stub
-		return null;
+		try
+        {
+	        deserializer = getDeserializerResolver().resolve(request);
+        }
+        catch (UnsupportedRequestException e)
+        {
+        	throw new DeserializationException(e);
+        }
+        
+		return deserializer.deserialize(request);
 	}
 
 	@Override
 	public Response serialize(Request request, Object object)
+	throws SerializationException
 	{
-		// TODO Auto-generated method stub
+		Serializer serializer;
+
+		try
+        {
+	        serializer = getSerializerResolver().resolve(request);
+        }
+        catch (UnsupportedRequestException e)
+        {
+        	throw new SerializationException(e);
+        }
+        
+		String result = serializer.serialize(request);
+		
+		//TODO: create a Response.
 		return null;
 	}
 }

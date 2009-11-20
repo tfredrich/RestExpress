@@ -17,6 +17,9 @@
 
 package com.strategicgains.restx.route;
 
+import com.strategicgains.restx.serialization.DeserializationException;
+import com.strategicgains.restx.serialization.SerializationException;
+
 
 /**
  * A service is the end-user-provided functionality that RestX invokes.

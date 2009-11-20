@@ -17,14 +17,41 @@
 
 package com.strategicgains.restx.serialization;
 
-import com.strategicgains.restx.route.Request;
-
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Deserializer
+public class DeserializationException
+extends Exception
 {
-	public Object deserialize(Request request)
-	throws DeserializationException;
+    private static final long serialVersionUID = 4563135167976559696L;
+
+	public DeserializationException()
+	{
+	}
+
+	/**
+	 * @param message
+	 */
+	public DeserializationException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public DeserializationException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public DeserializationException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }
