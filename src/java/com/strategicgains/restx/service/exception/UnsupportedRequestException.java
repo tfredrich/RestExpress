@@ -15,16 +15,43 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.serialization;
-
-import com.strategicgains.restx.service.Request;
+package com.strategicgains.restx.service.exception;
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Deserializer
+public class UnsupportedRequestException
+extends Exception
 {
-	public Object deserialize(Request request)
-	throws DeserializationException;
+    private static final long serialVersionUID = 1322585725650252682L;
+
+	public UnsupportedRequestException()
+	{
+	}
+
+	/**
+	 * @param message
+	 */
+	public UnsupportedRequestException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public UnsupportedRequestException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public UnsupportedRequestException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }

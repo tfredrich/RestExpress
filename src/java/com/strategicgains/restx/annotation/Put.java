@@ -15,43 +15,13 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.route;
+package com.strategicgains.restx.annotation;
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public class UnsupportedRequestException
-extends Exception
+public @interface Put
 {
-    private static final long serialVersionUID = 1322585725650252682L;
 
-	public UnsupportedRequestException()
-	{
-	}
-
-	/**
-	 * @param message
-	 */
-	public UnsupportedRequestException(String message)
-	{
-		super(message);
-	}
-
-	/**
-	 * @param cause
-	 */
-	public UnsupportedRequestException(Throwable cause)
-	{
-		super(cause);
-	}
-
-	/**
-	 * @param message
-	 * @param cause
-	 */
-	public UnsupportedRequestException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
 }

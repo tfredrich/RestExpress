@@ -17,7 +17,7 @@
 
 package com.strategicgains.restx.serialization;
 
-import com.strategicgains.restx.route.Request;
+import com.strategicgains.restx.service.Request;
 
 /**
  * @author toddf

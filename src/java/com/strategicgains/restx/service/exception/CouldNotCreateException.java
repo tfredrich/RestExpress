@@ -15,25 +15,26 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.route;
+package com.strategicgains.restx.service.exception;
+
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public class ServiceException
-extends Exception
+public class CouldNotCreateException
+extends ServiceException
 {
-    private static final long serialVersionUID = 1810995969641082808L;
+    private static final long serialVersionUID = 4569770253408111145L;
 
-	public ServiceException()
+	public CouldNotCreateException()
 	{
 	}
 
 	/**
 	 * @param message
 	 */
-	public ServiceException(String message)
+	public CouldNotCreateException(String message)
 	{
 		super(message);
 	}
@@ -41,7 +42,7 @@ extends Exception
 	/**
 	 * @param cause
 	 */
-	public ServiceException(Throwable cause)
+	public CouldNotCreateException(Throwable cause)
 	{
 		super(cause);
 	}
@@ -50,7 +51,7 @@ extends Exception
 	 * @param message
 	 * @param cause
 	 */
-	public ServiceException(String message, Throwable cause)
+	public CouldNotCreateException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}

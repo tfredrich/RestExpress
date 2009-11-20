@@ -24,10 +24,10 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
-import com.strategicgains.restx.route.Request;
-import com.strategicgains.restx.route.Resolver;
-import com.strategicgains.restx.route.Response;
-import com.strategicgains.restx.route.Service;
+import com.strategicgains.restx.service.Request;
+import com.strategicgains.restx.service.Resolver;
+import com.strategicgains.restx.service.Response;
+import com.strategicgains.restx.service.Service;
 
 /**
  * @author toddf

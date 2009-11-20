@@ -15,26 +15,44 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.route;
-
-import com.strategicgains.restx.serialization.DeserializationException;
-import com.strategicgains.restx.serialization.SerializationException;
+package com.strategicgains.restx.service.exception;
 
 
 /**
- * A service is the end-user-provided functionality that RestX invokes.
- * 
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Service
+public class CouldNotUpdateException
+extends ServiceException
 {
-	public Object deserialize(Request request)
-	throws DeserializationException;
+    private static final long serialVersionUID = -1548448965728429198L;
 
-	public Object process(Request request, Object message)
-	throws ServiceException;
+	public CouldNotUpdateException()
+	{
+	}
 
-	public Response serialize(Request request, Object object)
-	throws SerializationException;
+	/**
+	 * @param message
+	 */
+	public CouldNotUpdateException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public CouldNotUpdateException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public CouldNotUpdateException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }

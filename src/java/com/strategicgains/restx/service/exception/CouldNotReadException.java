@@ -15,16 +15,44 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.serialization;
+package com.strategicgains.restx.service.exception;
 
-import com.strategicgains.restx.service.Request;
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Deserializer
+public class CouldNotReadException
+extends ServiceException
 {
-	public Object deserialize(Request request)
-	throws DeserializationException;
+    private static final long serialVersionUID = 237257178886358481L;
+
+	public CouldNotReadException()
+	{
+	}
+
+	/**
+	 * @param message
+	 */
+	public CouldNotReadException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public CouldNotReadException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public CouldNotReadException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }

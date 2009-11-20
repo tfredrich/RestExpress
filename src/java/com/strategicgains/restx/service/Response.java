@@ -15,16 +15,13 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.serialization;
-
-import com.strategicgains.restx.service.Request;
+package com.strategicgains.restx.service;
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Deserializer
+public class Response
 {
-	public Object deserialize(Request request)
-	throws DeserializationException;
+
 }

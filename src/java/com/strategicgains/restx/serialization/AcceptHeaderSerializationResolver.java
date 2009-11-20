@@ -20,9 +20,9 @@ package com.strategicgains.restx.serialization;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.strategicgains.restx.route.Request;
-import com.strategicgains.restx.route.Resolver;
-import com.strategicgains.restx.route.UnsupportedRequestException;
+import com.strategicgains.restx.service.Request;
+import com.strategicgains.restx.service.Resolver;
+import com.strategicgains.restx.service.exception.UnsupportedRequestException;
 
 /**
  * @author toddf

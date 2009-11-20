@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.route;
+package com.strategicgains.restx.service;
+
+import com.strategicgains.restx.service.exception.UnsupportedRequestException;
 
 
 /**

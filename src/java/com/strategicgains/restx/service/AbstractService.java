@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.route;
+package com.strategicgains.restx.service;
 
 import com.strategicgains.restx.serialization.DeserializationException;
 import com.strategicgains.restx.serialization.Deserializer;
 import com.strategicgains.restx.serialization.SerializationException;
 import com.strategicgains.restx.serialization.Serializer;
+import com.strategicgains.restx.service.exception.ServiceException;
+import com.strategicgains.restx.service.exception.UnsupportedRequestException;
 
 /**
  * @author toddf
@@ -88,6 +90,13 @@ implements Service
         }
         
 		return deserializer.deserialize(request);
+	}
+	
+	@Override
+	public Object process(Request request, Object message)
+	throws ServiceException
+	{
+		return null;
 	}
 
 	@Override

@@ -15,13 +15,27 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.route;
+package com.strategicgains.restx.service;
+
+import com.strategicgains.restx.serialization.DeserializationException;
+import com.strategicgains.restx.serialization.SerializationException;
+import com.strategicgains.restx.service.exception.ServiceException;
+
 
 /**
+ * A service is the end-user-provided functionality that RestX invokes.
+ * 
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Request
+public interface Service
 {
+	public Object deserialize(Request request)
+	throws DeserializationException;
 
+	public Object process(Request request, Object message)
+	throws ServiceException;
+
+	public Response serialize(Request request, Object object)
+	throws SerializationException;
 }

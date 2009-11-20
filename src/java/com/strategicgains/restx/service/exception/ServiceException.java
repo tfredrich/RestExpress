@@ -15,25 +15,25 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.route;
+package com.strategicgains.restx.service.exception;
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public class DeserializationException
+public class ServiceException
 extends Exception
 {
-    private static final long serialVersionUID = 4563135167976559696L;
+    private static final long serialVersionUID = 1810995969641082808L;
 
-	public DeserializationException()
+	public ServiceException()
 	{
 	}
 
 	/**
 	 * @param message
 	 */
-	public DeserializationException(String message)
+	public ServiceException(String message)
 	{
 		super(message);
 	}
@@ -41,7 +41,7 @@ extends Exception
 	/**
 	 * @param cause
 	 */
-	public DeserializationException(Throwable cause)
+	public ServiceException(Throwable cause)
 	{
 		super(cause);
 	}
@@ -50,7 +50,7 @@ extends Exception
 	 * @param message
 	 * @param cause
 	 */
-	public DeserializationException(String message, Throwable cause)
+	public ServiceException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}

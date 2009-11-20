@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.route;
+package com.strategicgains.restx.annotation;
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public class Response
+public @interface Post
 {
 
 }
