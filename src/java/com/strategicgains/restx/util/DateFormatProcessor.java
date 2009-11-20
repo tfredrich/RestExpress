@@ -16,10 +16,11 @@
  */
 
 package com.strategicgains.restx.util;
+import static com.strategicgains.restx.util.DateAdapterConstants.COMMON_TIME_ZONE;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -45,11 +46,45 @@ implements TextAdapter<Date>
 		this(inputFormats.toArray(new String[0]), outputFormat);
 	}
 
-	public DateFormatProcessor(String[] inputFormats, String outputFormat)
+	/**
+	 * Utilizes string representations to initialize the internal input and output DateFormats.
+	 * Note that all format strings are converted to DateFormats internally with their timezone set to UTC.
+	 * This means that dates accepted as input will be returned on output as UTC correctly converted.  It works
+	 * well to keep everything internal to the service as UTC, but clients will have to convert to
+	 * the local timezone before presentation to the user, if necessary.
+	 *
+	 * @param inputFormatStrings Array of SimpleDateFormat strings representing date formats accepted as input.
+	 * @param outputFormat SimpleDateFormat string representing the output date format.
+	 */
+	public DateFormatProcessor(String[] inputFormatStrings, String outputFormat)
 	{
-		format.setTimezone(COMMON_TIME_ZONE);
-		this.inputFormats = Arrays.copyOf(inputFormats, inputFormats.length);
-		this.outputFormat = outputFormat;
+		this.outputFormat = new SimpleDateFormat(outputFormat);
+		this.outputFormat.setTimeZone(COMMON_TIME_ZONE);
+		this.inputFormats = new SimpleDateFormat[inputFormatStrings.length];
+		
+		for (int i = 0; i < this.inputFormats.length; ++i)
+		{
+			this.inputFormats[i] = new SimpleDateFormat(inputFormatStrings[i]);
+			this.inputFormats[i].setTimeZone(COMMON_TIME_ZONE);
+		}
+	}
+	
+	/**
+	 * Utilizes DateFormat instances to initialize the internal input and output DateFormats.
+	 * Use this constructor to set the desired internal timezone to something other than UTC.
+	 * 
+	 * @param inputFormats Array of DateFormat instances for accepting input dates.
+	 * @param outputFormat DateFormat for date output.
+	 */
+	public DateFormatProcessor(DateFormat[] inputFormats, DateFormat outputFormat)
+	{
+		this.outputFormat = (DateFormat) outputFormat.clone();
+		this.inputFormats = new DateFormat[inputFormats.length];
+		
+		for (int i = 0; i < this.inputFormats.length; ++i)
+		{
+			this.inputFormats[i] = (DateFormat) inputFormats[i].clone();	
+		}
 	}
 	
 	/**
@@ -65,11 +100,11 @@ implements TextAdapter<Date>
 		Date result = null;
 		ParseException lastException = null;
 		
-		for (String format : inputFormats)
+		for (DateFormat format : inputFormats)
 		{
 			try
 			{
-				result = new SimpleDateFormat(format).parse(dateString);
+				result = ((DateFormat) format.clone()).parse(dateString);	// DateFormat is not thread safe.
 				lastException = null;
 				break;
 			}
@@ -100,6 +135,6 @@ implements TextAdapter<Date>
 	 */
 	public String format(Date date)
 	{
-		return new SimpleDateFormat(outputFormat).format(date);
+		return ((DateFormat) outputFormat.clone()).format(date);		// DateFormat is not thread safe.
 	}
 }

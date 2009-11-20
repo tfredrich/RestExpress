@@ -36,7 +36,7 @@ implements ChannelPipelineFactory
 		// Create a default pipeline implementation.
 		ChannelPipeline pipeline = Channels.pipeline();
 
-		// Uncomment the following line if you want HTTPS
+		// Uncomment the following lines if you want HTTPS
 		// SSLEngine engine = SecureChatSslContextFactory.getServerContext().createSSLEngine();
 		// engine.setUseClientMode(false);
 		// pipeline.addLast("ssl", new SslHandler(engine));
@@ -47,6 +47,14 @@ implements ChannelPipelineFactory
 		// pipeline.addLast("aggregator", new HttpChunkAggregator(1048576));
 		pipeline.addLast("encoder", new HttpResponseEncoder());
 		pipeline.addLast("handler", new HttpRequestHandler());
+		
+		// Determine which service to call via URL & parameters.
+		// Throw exception if no service found/available.
+		// Deserialize/marshal the request contents, if necessary.
+		// Call the service, passing the marshaled object(s).
+		// Serialize/Unmarshal the response, if necessary.
+		// Set resonse and accept headers, if appropriate.
+
 		return pipeline;
 	}
 }

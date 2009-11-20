@@ -20,13 +20,19 @@ package com.strategicgains.restx.util;
 import java.util.TimeZone;
 
 /**
+ * Defines the default formats and constants for Date and Timestamp adapters.
+ * 
  * @author toddf
  * @since Nov 13, 2009
  */
 public final class DateAdapterConstants
 {
+	// All times within RestX are converted to UTC.
 	public static final TimeZone COMMON_TIME_ZONE = TimeZone.getTimeZone("UTC");
 
+
+	// SECTION: Date-related constants.
+	
 	public static final String DATE_OUTPUT_FORMAT = "yyyy-MM-dd";
 	public static final String[] DATE_INPUT_FORMATS =
 	{
@@ -35,6 +41,10 @@ public final class DateAdapterConstants
 		"MM/dd/yyyy",
 		"yyyy-MM-dd'T'HH:mm:ssz"
 	};
+
+	
+	// SECTION: Timestamp-related constants.
+	
 	public static final String TIMESTAMP_OUTPUT_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSz";
 	public static final String[] TIMESTAMP_INPUT_FORMATS =
 	{
@@ -44,6 +54,9 @@ public final class DateAdapterConstants
 		"yyyy-MM-dd"
 	};
 
+	
+	// SECTION: CONSTRUTOR - PRIVATE
+	
 	private DateAdapterConstants()
     {
 		// prevents instantiation.
