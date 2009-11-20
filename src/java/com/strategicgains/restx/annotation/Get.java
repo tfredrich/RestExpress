@@ -17,11 +17,20 @@
 
 package com.strategicgains.restx.annotation;
 
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
+@Target(METHOD)
+@Retention(RUNTIME)
 public @interface Get
 {
-
+	String uri();
 }
