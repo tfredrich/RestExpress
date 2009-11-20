@@ -24,7 +24,9 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
+import com.strategicgains.restx.route.Request;
 import com.strategicgains.restx.route.Resolver;
+import com.strategicgains.restx.route.Response;
 import com.strategicgains.restx.route.Service;
 
 /**
@@ -37,15 +39,15 @@ extends SimpleChannelUpstreamHandler
 {
 	// SECTION: INSTANCE VARIABLES
 
-	private Resolver resolver;
+	private Resolver<Service> serviceResolver;
 
 
 	// SECTION: CONSTRUCTORS
 
-	public DefaultRequestHandler(Resolver resolver)
+	public DefaultRequestHandler(Resolver<Service> serviceResolver)
 	{
 		super();
-		setResolver(resolver);
+		setServiceResolver(serviceResolver);
 	}
 
 	
@@ -54,18 +56,18 @@ extends SimpleChannelUpstreamHandler
 	/**
 	 * @return the resolver
 	 */
-	public Resolver getResolver()
+	public Resolver<Service> getServiceResolver()
 	{
-		return resolver;
+		return serviceResolver;
 	}
 
 	/**
 	 * @param resolver
 	 *            the resolver to set
 	 */
-	public void setResolver(Resolver resolver)
+	public void setServiceResolver(Resolver<Service> resolver)
 	{
-		this.resolver = resolver;
+		this.serviceResolver = resolver;
 	}
 
 
@@ -77,15 +79,18 @@ extends SimpleChannelUpstreamHandler
 	{
 		// Determine which service to call via URL & parameters.
 		// Throw exception if no service found/available.
-		HttpRequest request = (HttpRequest) event.getMessage();
-		Service service = resolver.resolve(request);
+		Request request = createRequest((HttpRequest) event.getMessage());
+		Service service = serviceResolver.resolve(request);
 
 		// Deserialize/marshal the request contents, if necessary.
 		// Call the service, passing the marshaled object(s).
-		service.process(request, service.deserialize(request));
+		Object result = service.process(request, service.deserialize(request));
 
 		// Serialize/Unmarshal the response, if necessary.
+		Response response = service.serialize(request, result);
+
 		// Set resonse and accept headers, if appropriate.
+		writeResponse(request, response);
 	}
 
 	@Override
@@ -95,4 +100,23 @@ extends SimpleChannelUpstreamHandler
 		event.getCause().printStackTrace();
 		event.getChannel().close();
 	}
+
+	/**
+     * @param request
+     * @return
+     */
+    private Request createRequest(HttpRequest request)
+    {
+	    // TODO Auto-generated method stub
+	    return null;
+    }
+
+    /**
+     * @param message
+     * @return
+     */
+    private void writeResponse(Request request, Response response)
+    {
+	    // TODO Auto-generated method stub
+    }
 }

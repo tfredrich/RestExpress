@@ -17,15 +17,11 @@
 
 package com.strategicgains.restx.route;
 
-
 /**
- * A Resolver is responsible for determining which object is appropriate for a given request.
- * 
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Resolver<T>
+public interface Request
 {
-	public T resolve(Request request)
-	throws UnsupportedRequestException;
+
 }

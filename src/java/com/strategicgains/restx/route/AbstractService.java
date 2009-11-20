@@ -17,21 +17,45 @@
 
 package com.strategicgains.restx.route;
 
+import java.util.Map;
+
+import com.strategicgains.restx.serialization.Deserializer;
+import com.strategicgains.restx.serialization.Serializer;
 
 /**
- * A service is the end-user-provided functionality that RestX invokes.
- * 
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Service
+public abstract class AbstractService
+implements Service
 {
+	// SECTION: INSTANCE VARIABLES
+
+	private Map<String, Serializer> serializers;
+	private Map<String, Deserializer> deserializers;
+
+	
+	// SECTION: SERVICE
+
+	@Override
 	public Object deserialize(Request request)
-	throws DeserializationException;
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+	@Override
 	public Object process(Request request, Object message)
-	throws ServiceException;
+	throws ServiceException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+	@Override
 	public Response serialize(Request request, Object object)
-	throws SerializationException;
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

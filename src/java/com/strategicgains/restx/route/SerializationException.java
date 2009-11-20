@@ -17,15 +17,41 @@
 
 package com.strategicgains.restx.route;
 
-
 /**
- * A Resolver is responsible for determining which object is appropriate for a given request.
- * 
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Resolver<T>
+public class SerializationException
+extends Exception
 {
-	public T resolve(Request request)
-	throws UnsupportedRequestException;
+    private static final long serialVersionUID = -5208426797622464550L;
+
+	public SerializationException()
+	{
+	}
+
+	/**
+	 * @param message
+	 */
+	public SerializationException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public SerializationException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public SerializationException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }

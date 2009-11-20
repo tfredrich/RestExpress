@@ -15,17 +15,13 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.route;
-
+package com.strategicgains.restx.serialization;
 
 /**
- * A Resolver is responsible for determining which object is appropriate for a given request.
- * 
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Resolver<T>
+public interface Deserializer
 {
-	public T resolve(Request request)
-	throws UnsupportedRequestException;
+
 }
