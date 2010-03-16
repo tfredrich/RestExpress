@@ -11,3 +11,18 @@ Please visit the Netty web site for more information:
 
 Copyright 2009 Red Hat, Inc.
 ----
+This product includes XStream:
+Please visit the XStream web site at CodeHaus for more information:
+
+  * http://xstream.codehaus.org/
+
+Copyright 2003-2006, Joe Walnes
+Copyright 2006-2007, XStream Committers
+----
+This product includes XPP3:
+Please visit the XPP web site for more information:
+
+  * http://www.extreme.indiana.edu/xgws/xsoap/xpp/
+
+Copyright 2002 Extreme! Lab, Indiana University.
+----
