@@ -28,7 +28,7 @@ import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
  * @author Todd Fredrich
  * @since Nov 13, 2009
  */
-public class RestServerPipelineFactory
+public class DefaultPipelineFactory
 implements ChannelPipelineFactory
 {
 	public ChannelPipeline getPipeline() throws Exception
@@ -46,14 +46,8 @@ implements ChannelPipelineFactory
 		// Uncomment the following line if you don't want to handle HttpChunks.
 		// pipeline.addLast("aggregator", new HttpChunkAggregator(1048576));
 		pipeline.addLast("encoder", new HttpResponseEncoder());
+//		pipeline.addLast("handler", new DefaultRequestHandler());
 		pipeline.addLast("handler", new HttpRequestHandler());
-		
-		// Determine which service to call via URL & parameters.
-		// Throw exception if no service found/available.
-		// Deserialize/marshal the request contents, if necessary.
-		// Call the service, passing the marshaled object(s).
-		// Serialize/Unmarshal the response, if necessary.
-		// Set resonse and accept headers, if appropriate.
 
 		return pipeline;
 	}

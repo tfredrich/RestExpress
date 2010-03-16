@@ -1,5 +1,5 @@
 /*
- * Copyright 2009, Strategic Gains, Inc.
+ * Copyright 2010, Strategic Gains, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,22 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.serialization;
+package com.strategicgains.restx.annotation;
 
-import java.lang.reflect.Type;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * @author toddf
- * @since Nov 20, 2009
+ * @since Mar 16, 2010
  */
-public interface Deserializer
+@Target(METHOD)
+@Retention(RUNTIME)
+public @interface URL
 {
-	public Object deserialize(String string, Type type)
-	throws DeserializationException;
+	String uri();
+	String formats() default "json";
 }

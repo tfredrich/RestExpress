@@ -1,5 +1,5 @@
 /*
- * Copyright 2009, Strategic Gains, Inc.
+ * Copyright 2010, Strategic Gains, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,11 @@
 
 package com.strategicgains.restx.serialization;
 
-import java.lang.reflect.Type;
-
-
 /**
  * @author toddf
- * @since Nov 20, 2009
+ * @since Mar 16, 2010
  */
-public interface Deserializer
+public interface SerializationProcessor
+extends Deserializer, Serializer
 {
-	public Object deserialize(String string, Type type)
-	throws DeserializationException;
 }

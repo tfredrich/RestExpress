@@ -33,9 +33,9 @@ public interface Service
 	public Object deserialize(Request request)
 	throws DeserializationException;
 
-	public Object process(Request request, Object message)
+	public Object process(Request request, Response response, Object message)
 	throws ServiceException;
 
-	public Response serialize(Request request, Object object)
+	public Object serialize(Request request, Response response)
 	throws SerializationException;
 }

@@ -81,13 +81,16 @@ extends SimpleChannelUpstreamHandler
 		// Throw exception if no service found/available.
 		Request request = createRequest((HttpRequest) event.getMessage());
 		Service service = serviceResolver.resolve(request);
+		Response response = createResponse(request);
 
 		// Deserialize/marshal the request contents, if necessary.
 		// Call the service, passing the marshaled object(s).
-		Object result = service.process(request, service.deserialize(request));
+		Object result = service.process(request, response, service.deserialize(request));
+		response.setBody(result);
 
 		// Serialize/Unmarshal the response, if necessary.
-		Response response = service.serialize(request, result);
+		Object serializedResponse = service.serialize(request, response);
+		response.setBody(serializedResponse);
 
 		// Set resonse and accept headers, if appropriate.
 		writeResponse(request, response);
@@ -106,6 +109,16 @@ extends SimpleChannelUpstreamHandler
      * @return
      */
     private Request createRequest(HttpRequest request)
+    {
+	    // TODO Auto-generated method stub
+	    return null;
+    }
+
+	/**
+     * @param request
+     * @return
+     */
+    private Response createResponse(Request request)
     {
 	    // TODO Auto-generated method stub
 	    return null;

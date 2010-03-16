@@ -1,5 +1,5 @@
 /*
- * Copyright 2009, Strategic Gains, Inc.
+ * Copyright 2010, Strategic Gains, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,33 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.serialization;
+package com.strategicgains.restx.serialization.xml;
 
 import java.lang.reflect.Type;
 
+import com.strategicgains.restx.serialization.DeserializationException;
+import com.strategicgains.restx.serialization.SerializationException;
+import com.strategicgains.restx.serialization.SerializationProcessor;
 
 /**
  * @author toddf
- * @since Nov 20, 2009
+ * @since Mar 16, 2010
  */
-public interface Deserializer
+public class DefaultXmlProcessor
+implements SerializationProcessor
 {
+	@Override
 	public Object deserialize(String string, Type type)
-	throws DeserializationException;
+	throws DeserializationException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String serialize(Object object) throws SerializationException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -17,11 +17,61 @@
 
 package com.strategicgains.restx.service;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
 public class Response
 {
+	// SECTION: INSTANCE VARIABLES
 
+	private Object body;
+	private Map<String, Object> headers = new HashMap<String, Object>();
+
+
+	// SECTION: ACCESSORS/MUTATORS
+
+	public Object getBody()
+    {
+    	return body;
+    }
+	
+	public boolean hasBody()
+	{
+		return (getBody() != null);
+	}
+
+	public void setBody(Object body)
+    {
+    	this.body = body;
+    }
+
+	public void clearHeaders()
+	{
+		headers.clear();
+	}
+
+	public Object getHeader(String name)
+	{
+		return headers.get(name);
+	}
+
+	public boolean hasHeaders()
+	{
+		return !headers.isEmpty();
+	}
+
+	public Map<String, Object> getHeaders()
+    {
+    	return Collections.unmodifiableMap(headers);
+    }
+	
+	public void setHeader(String name, Object value)
+    {
+		headers.put(name, value);
+    }
 }

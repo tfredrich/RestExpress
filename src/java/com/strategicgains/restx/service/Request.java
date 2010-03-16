@@ -17,11 +17,87 @@
 
 package com.strategicgains.restx.service;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Request
+public class Request
 {
+	// SECTION: INSTANCE VARIABLES
 
+	private Object body;
+	private Map<String, Object> headers = new HashMap<String, Object>();
+	private Map<String, String> parameters = new HashMap<String, String>();
+
+	
+	// SECTION: ACCESSORS/MUTATORS
+
+	public Object getBody()
+    {
+    	return body;
+    }
+	
+	public boolean hasBody()
+	{
+		return (getBody() != null);
+	}
+
+	public void setBody(Object body)
+    {
+    	this.body = body;
+    }
+
+	public void clearHeaders()
+	{
+		headers.clear();
+	}
+
+	public Object getHeader(String name)
+	{
+		return headers.get(name);
+	}
+
+	public boolean hasHeaders()
+	{
+		return !headers.isEmpty();
+	}
+
+	public Map<String, Object> getHeaders()
+    {
+    	return Collections.unmodifiableMap(headers);
+    }
+	
+	public Object setHeader(String name, Object value)
+    {
+		return headers.put(name, value);
+    }
+	
+	public void clearParameters()
+	{
+		parameters.clear();
+	}
+	
+	public String getParameter(String name)
+	{
+		return parameters.get(name);
+	}
+	
+	public boolean hasParameters()
+	{
+		return !parameters.isEmpty();
+	}
+	
+	public Map<String, String> getParameters()
+	{
+		return Collections.unmodifiableMap(parameters);
+	}
+	
+	public String setParameter(String name, String value)
+	{
+		return parameters.put(name, value);
+	}
 }

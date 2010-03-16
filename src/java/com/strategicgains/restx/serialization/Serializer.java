@@ -17,7 +17,6 @@
 
 package com.strategicgains.restx.serialization;
 
-import com.strategicgains.restx.service.Request;
 
 /**
  * @author toddf
@@ -25,6 +24,6 @@ import com.strategicgains.restx.service.Request;
  */
 public interface Serializer
 {
-	public String serialize(Request request)
+	public String serialize(Object object)
 	throws SerializationException;
 }

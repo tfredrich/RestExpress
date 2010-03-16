@@ -93,14 +93,14 @@ implements Service
 	}
 	
 	@Override
-	public Object process(Request request, Object message)
+	public Object process(Request request, Response response, Object message)
 	throws ServiceException
 	{
 		return null;
 	}
 
 	@Override
-	public Response serialize(Request request, Object object)
+	public Response serialize(Request request, Response response)
 	throws SerializationException
 	{
 		Serializer serializer;
