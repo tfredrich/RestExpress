@@ -41,10 +41,10 @@ implements SerializationProcessor
 		.create();
 
     @Override
-    public Object deserialize(String string, Type type)
+    public Object deserialize(Object object, Type type)
     throws DeserializationException
     {
-    	return GSON.fromJson(string, type);
+    	return GSON.fromJson((String) object, type);
     }
 
     @Override

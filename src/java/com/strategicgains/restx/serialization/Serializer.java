@@ -24,6 +24,6 @@ package com.strategicgains.restx.serialization;
  */
 public interface Serializer
 {
-	public String serialize(Object object)
+	public Object serialize(Object object)
 	throws SerializationException;
 }

@@ -26,6 +26,6 @@ import java.lang.reflect.Type;
  */
 public interface Deserializer
 {
-	public Object deserialize(String string, Type type)
+	public Object deserialize(Object object, Type type)
 	throws DeserializationException;
 }

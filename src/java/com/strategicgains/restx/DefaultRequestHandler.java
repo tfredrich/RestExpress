@@ -85,7 +85,7 @@ extends SimpleChannelUpstreamHandler
 
 		// Deserialize/marshal the request contents, if necessary.
 		// Call the service, passing the marshaled object(s).
-		Object result = service.process(request, response, service.deserialize(request));
+		Object result = service.process(request, response);
 		response.setBody(result);
 
 		// Serialize/Unmarshal the response, if necessary.

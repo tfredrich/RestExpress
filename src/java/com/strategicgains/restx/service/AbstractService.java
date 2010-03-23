@@ -17,6 +17,8 @@
 
 package com.strategicgains.restx.service;
 
+import java.lang.reflect.Type;
+
 import com.strategicgains.restx.serialization.DeserializationException;
 import com.strategicgains.restx.serialization.Deserializer;
 import com.strategicgains.restx.serialization.SerializationException;
@@ -75,7 +77,7 @@ implements Service
 	// SECTION: SERVICE
 
 	@Override
-	public Object deserialize(Request request)
+	public Object deserialize(Request request, Type type)
 	throws DeserializationException
 	{
 		Deserializer deserializer;
@@ -89,11 +91,11 @@ implements Service
         	throw new DeserializationException(e);
         }
         
-		return deserializer.deserialize(request);
+		return deserializer.deserialize(request.getBody(), type);
 	}
 	
 	@Override
-	public Object process(Request request, Response response, Object message)
+	public Object process(Request request, Response response)
 	throws ServiceException
 	{
 		return null;
@@ -114,7 +116,7 @@ implements Service
         	throw new SerializationException(e);
         }
         
-		String result = serializer.serialize(request);
+		Object result = serializer.serialize(request.getBody());
 		
 		//TODO: create a Response.
 		return null;

@@ -31,7 +31,7 @@ public class DefaultXmlProcessor
 implements SerializationProcessor
 {
 	@Override
-	public Object deserialize(String string, Type type)
+	public Object deserialize(Object object, Type type)
 	throws DeserializationException
 	{
 		// TODO Auto-generated method stub

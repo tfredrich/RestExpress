@@ -17,6 +17,7 @@
 
 package com.strategicgains.restx.serialization;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,12 +38,21 @@ implements Resolver<Serializer>
 	public Serializer resolve(Request request)
 	throws UnsupportedRequestException
 	{
-		String acceptHeader = getAcceptHeader(request);
-		Serializer serializer = serializers.get(acceptHeader);
+		Serializer serializer = null;
+
+		for (String acceptHeader : getAcceptHeaders(request))
+		{
+			serializer = serializers.get(acceptHeader);
+			
+			if (serializer != null)
+			{
+				break;
+			}
+		}
 		
 		if (serializer == null)
 		{
-			throw new UnsupportedRequestException("No serializer found for Accept Header: " + acceptHeader);
+			throw new UnsupportedRequestException("No serializer found for Accept Headers");
 		}
 		
 		return serializer;
@@ -52,7 +62,7 @@ implements Resolver<Serializer>
      * @param request
      * @return
      */
-    private String getAcceptHeader(Request request)
+    private List<String> getAcceptHeaders(Request request)
     {
 	    // TODO Auto-generated method stub
 	    return null;

@@ -17,6 +17,8 @@
 
 package com.strategicgains.restx.service;
 
+import java.lang.reflect.Type;
+
 import com.strategicgains.restx.serialization.DeserializationException;
 import com.strategicgains.restx.serialization.SerializationException;
 import com.strategicgains.restx.service.exception.ServiceException;
@@ -30,10 +32,10 @@ import com.strategicgains.restx.service.exception.ServiceException;
  */
 public interface Service
 {
-	public Object deserialize(Request request)
+	public Object deserialize(Request request, Type type)
 	throws DeserializationException;
 
-	public Object process(Request request, Response response, Object message)
+	public Object process(Request request, Response response)
 	throws ServiceException;
 
 	public Object serialize(Request request, Response response)
