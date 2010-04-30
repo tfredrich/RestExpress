@@ -26,19 +26,41 @@ import org.junit.Test;
  */
 public class UrlPatternTest
 {
-	private UrlPattern p = new UrlPattern("/xxx/{a_id}/yyy/{b_id}.{format}");
+	private UrlPattern p = new UrlPattern("/xxx/{a_id}/yyy/{b_id}");
+	private UrlPattern pFormat = new UrlPattern("/xxx/{a_id}/yyy/{b_id}.{format}");
 
 	@Test
-	public void shouldMatchUrl()
+	public void shouldMatchUrlWithFormat()
 	{
-		assertNotNull(p.matches("/xxx/toddf/yyy/joez.json"));
-		assertNotNull(p.matches("/xxx/12345/yyy/67890.json"));
-		assertNotNull(p.matches("/xxx/toddf/yyy/joez.xml"));
-		assertNotNull(p.matches("/xxx/toddf/yyy/joez"));
+		assertNotNull(pFormat.matches("/xxx/toddf/yyy/joez.json"));
+		assertNotNull(pFormat.matches("/xxx/12345/yyy/67890.json"));
+		assertNotNull(pFormat.matches("/xxx/toddf/yyy/joez.xml"));
+		assertNotNull(pFormat.matches("/xxx/toddf/yyy/joez.json?x=y&a=b"));
+		assertNotNull(pFormat.matches("/xxx/toddf/yyy/joez"));
 	}
 
 	@Test
-	public void shouldNotMatchUrl()
+	public void shouldMatchUrlWithoutFormat()
+	{
+		assertNotNull(p.matches("/xxx/toddf/yyy/joez"));
+		assertNotNull(p.matches("/xxx/12345/yyy/67890"));
+		assertNotNull(p.matches("/xxx/toddf/yyy/joez"));
+		assertNotNull(p.matches("/xxx/toddf/yyy/joez?x=y&a=b"));
+	}
+
+	@Test
+	public void shouldNotMatchUrlWithFormat()
+	{
+		assertNull(pFormat.matches("/xxx/toddf/yyy/joez/"));
+		assertNull(pFormat.matches("/xxx/toddf/yyy/joez."));
+		assertNull(pFormat.matches("/aaa/toddf/yyy/joez.json"));
+		assertNull(pFormat.matches("/xxx/toddf/bbb/joez.json"));
+		assertNull(pFormat.matches("/xxx/toddf/yyy/"));
+		assertNull(pFormat.matches("/xxx/toddf/yyy"));
+	}
+
+	@Test
+	public void shouldNotMatchUrlWithoutFormat()
 	{
 		assertNull(p.matches("/xxx/toddf/yyy/joez/"));
 		assertNull(p.matches("/xxx/toddf/yyy/joez."));
@@ -47,13 +69,43 @@ public class UrlPatternTest
 		assertNull(p.matches("/xxx/toddf/yyy/"));
 		assertNull(p.matches("/xxx/toddf/yyy"));
 	}
-	
+
 	@Test
-	public void shouldParseParameters()
+	public void shouldParseParametersWithFormat()
 	{
-		UrlMatch match = p.matches("/xxx/12345/yyy/67890.json");
+		UrlMatch match = pFormat.matches("/xxx/12345/yyy/67890.json");
 		assertNotNull(match);
 		assertEquals("json", match.get("format"));
+		assertEquals("12345", match.get("a_id"));
+		assertEquals("67890", match.get("b_id"));
+	}
+
+	@Test
+	public void shouldParseParametersWithoutFormat()
+	{
+		UrlMatch match = p.matches("/xxx/12345/yyy/67890");
+		assertNotNull(match);
+		assertNull(match.get("format"));
+		assertEquals("12345", match.get("a_id"));
+		assertEquals("67890", match.get("b_id"));
+	}
+
+	@Test
+	public void shouldParseParametersWithQueryStringAndFormat()
+	{
+		UrlMatch match = pFormat.matches("/xxx/12345/yyy/67890.json?x=y&a=b");
+		assertNotNull(match);
+		assertEquals("json", match.get("format"));
+		assertEquals("12345", match.get("a_id"));
+		assertEquals("67890", match.get("b_id"));
+	}
+
+	@Test
+	public void shouldParseParametersWithQueryStringAndWithoutFormat()
+	{
+		UrlMatch match = p.matches("/xxx/12345/yyy/67890?x=y&a=b");
+		assertNotNull(match);
+		assertNull(match.get("format"));
 		assertEquals("12345", match.get("a_id"));
 		assertEquals("67890", match.get("b_id"));
 	}

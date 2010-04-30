@@ -26,20 +26,46 @@ import java.util.regex.Pattern;
  * UrlPattern leverages Regex Pattern to represent a parameterized URL. Parameters within the URL are
  * denoted by curly braces '{}' with the parameter name contained within (e.g. '{userid}').
  * 
+ * <p/>Parameter names must be formed of word characters (e.g. A-Z, a-z, 0-9, '_').
+ * <p/>An optional format parameter following a dot ('.') may be added to the end.
  * @author toddf
  * @since Apr 28, 2010
  */
 public class UrlPattern
 {
-	private static final String URL_PARAM_REGEX = "\\{(.*?)\\}";
-	private static final String URL_MATCH_REGEX = "\\(.+?\\)";
+	// SECTION: CONSTANTS
+
+	// Finds parameters in the URL pattern string.
+	private static final String URL_PARAM_REGEX = "\\{(\\w*?)\\}";
+	
+	// Replaces parameter names in the URL pattern string before compilation to match URLs. 
+	private static final String URL_MATCH_REGEX = "\\(\\\\w+?\\)";
+	
+	// Pattern to match URL pattern parameter names.
 	private static final Pattern URL_PARAM_PATTERN = Pattern.compile(URL_PARAM_REGEX);
 
-	private static final String URL_FORMAT_REGEX = "(?:\\.\\{(.+)\\})$";
-	private static final String URL_FORMAT_MATCH_REGEX = "\\\\.\\(.+?\\)\\$";
+	// Finds the format portion of the URL pattern string.
+	private static final String URL_FORMAT_REGEX = "(?:\\.\\{(\\w+)\\})$";
+	
+	// Replaces the format parameter name in the URL pattern string before compilation to match URLs.
+	private static final String URL_FORMAT_MATCH_REGEX = "(?:\\\\.\\(\\\\w+?\\))?";
+	
+	// Finds the query string in a URL.
+	private static final String URL_QUERY_STRING_REGEX = "(?:\\?.+?)?$";
 
+	/**
+	 * The URL pattern describing the URL layout and any parameters.
+	 */
 	private String urlPattern;
+	
+	/**
+	 * A compiled regex created from the urlPattern, above.
+	 */
 	private Pattern compiledUrl;
+	
+	/**
+	 * An ordered list of parameter names found in the urlPattern, above.
+	 */
 	private List<String> parameterNames = new ArrayList<String>();
 
 	/**
@@ -85,7 +111,7 @@ public class UrlPattern
 		acquireParameterNames();
 		String parsedPattern = getUrlPattern().replaceFirst(URL_FORMAT_REGEX, URL_FORMAT_MATCH_REGEX);
 		parsedPattern = parsedPattern.replaceAll(URL_PARAM_REGEX, URL_MATCH_REGEX);
-		compiledUrl = Pattern.compile(parsedPattern);
+		compiledUrl = Pattern.compile(parsedPattern + URL_QUERY_STRING_REGEX);
 	}
 
 	private void acquireParameterNames()
