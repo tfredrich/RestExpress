@@ -28,6 +28,14 @@ import java.util.regex.Pattern;
  * 
  * <p/>Parameter names must be formed of word characters (e.g. A-Z, a-z, 0-9, '_').
  * <p/>An optional format parameter following a dot ('.') may be added to the end.
+ * 
+ * <p/>URL Pattern examples:
+ * <ul>
+ *   <li>/api/search.{format}</li>
+ *   <li>/api/search/users/{userid}.{format}</li>
+ *   <li>/api/{version}/search/users/{userid}</li>
+ * </ul>
+ * 
  * @author toddf
  * @since Apr 28, 2010
  */
@@ -68,6 +76,9 @@ public class UrlPattern
 	 */
 	private List<String> parameterNames = new ArrayList<String>();
 
+	
+	// SECTION: CONSTRUCTOR
+
 	/**
 	 * @param pattern
 	 */
@@ -77,6 +88,9 @@ public class UrlPattern
 		setUrlPattern(pattern);
 		compile();
 	}
+
+	
+	// SECTION: ACCESSORS/MUTATORS - PRIVATE
 
 	/**
      * @return the pattern
@@ -93,19 +107,49 @@ public class UrlPattern
     {
     	this.urlPattern = pattern;
     }
+    
+    
+    // SECTION: URL MATCHING
 
-	public UrlMatch matches(String url)
+    /**
+     * Test the given URL against the underlying pattern to determine if it matches, returning the
+     * results in a UrlMatch instance.  If the URL matches, parse any applicable parameters from it,
+     * placing those also in the UrlMatch instance accessible by their parameter names.
+     * 
+     * @param url an URL string with or without query string.
+     * @return a UrlMatch instance reflecting the outcome of the comparison.
+     */
+	public UrlMatch match(String url)
 	{
 		Matcher matcher = compiledUrl.matcher(url);
 
 		if (matcher.matches())
 		{
-			return extractParameters(matcher);
+			return new UrlMatch(true, extractParameters(matcher));
 		}
 
-		return null;
+		return new UrlMatch(false, null);
 	}
 	
+	/**
+	 * Test the given URL against the underlying pattern to determine if it matches, returning a boolean
+	 * to reflect the outcome.
+	 * 
+	 * @param url an URL string with or without query string.
+	 * @return true if the given URL matches the underlying pattern.  Otherwise false.
+	 */
+	public boolean matches(String url)
+	{
+		return match(url).matches();
+	}
+	
+	
+	// SECTION: UTILITY - PRIVATE
+	
+	/**
+	 * Processes the incoming URL pattern string to create a java.util.regex Pattern out of it and
+	 * parse out the parameter names, if applicable.
+	 */
 	public void compile()
 	{
 		acquireParameterNames();
@@ -114,6 +158,10 @@ public class UrlPattern
 		compiledUrl = Pattern.compile(parsedPattern + URL_QUERY_STRING_REGEX);
 	}
 
+	/**
+	 * Parses the parameter names from the URL pattern string provided to the constructor, building
+	 * the ordered list, parameterNames.
+	 */
 	private void acquireParameterNames()
     {
 	    Matcher m = URL_PARAM_PATTERN.matcher(getUrlPattern());
@@ -124,7 +172,13 @@ public class UrlPattern
 		}
     }
 
-	private UrlMatch extractParameters(Matcher matcher)
+	/**
+	 * Extracts parameter values from a Matcher instance.
+	 * 
+	 * @param matcher
+	 * @return a Map containing parameter values indexed by their corresponding parameter name.
+	 */
+	private Map<String, String> extractParameters(Matcher matcher)
     {
 	    Map<String, String> values = new HashMap<String, String>();
 	    
@@ -133,6 +187,6 @@ public class UrlPattern
 	    	values.put(parameterNames.get(i), matcher.group(i + 1));
 	    }
 
-	    return new UrlMatch(values);
+	    return values;
     }
 }
