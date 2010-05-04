@@ -15,8 +15,11 @@
 */
 package com.strategicgains.restx.url;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 /**
  * Contains the results of a UrlPattern.match() call, reflecting the match outcome
@@ -30,11 +33,6 @@ import java.util.Map;
 public class UrlMatch
 {
 	/**
-	 * True when the URL matches the pattern.
-	 */
-	private boolean matches;
-	
-	/**
 	 * Parameter values parsed from the URL during the match.
 	 */
 	private Map<String, String>parameters = new HashMap<String, String>();
@@ -42,11 +40,10 @@ public class UrlMatch
 	
 	// SECTION: CONSTRUCTOR
 
-	public UrlMatch(boolean matches, Map<String, String> parameters)
+	public UrlMatch(Map<String, String> parameters)
 	{
 		super();
-		this.matches = matches;
-		
+
 		if (parameters != null)
 		{
 			this.parameters.putAll(parameters);
@@ -66,14 +63,14 @@ public class UrlMatch
 	{
 		return parameters.get(name);
 	}
-
+	
 	/**
-	 * Answer whether the URL matched the pattern.
+	 * Retrieves the parameter entries as a set.
 	 * 
-	 * @return true with the URL matches the pattern.
+	 * @return a Set of Map entries (by String, String).
 	 */
-	public boolean matches()
+	public Set<Entry<String, String>> parameterSet()
 	{
-		return matches;
+		return Collections.unmodifiableSet(parameters.entrySet());
 	}
 }

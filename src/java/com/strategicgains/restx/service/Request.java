@@ -100,4 +100,10 @@ public class Request
 	{
 		return parameters.put(name, value);
 	}
+	
+	public String getUrl()
+	{
+		// TODO: return the request URL.
+		return null;
+	}
 }

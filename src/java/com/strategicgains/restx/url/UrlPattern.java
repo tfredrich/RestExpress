@@ -117,7 +117,7 @@ public class UrlPattern
      * placing those also in the UrlMatch instance accessible by their parameter names.
      * 
      * @param url an URL string with or without query string.
-     * @return a UrlMatch instance reflecting the outcome of the comparison.
+     * @return a UrlMatch instance reflecting the outcome of the comparison, if matched. Otherwise, null.
      */
 	public UrlMatch match(String url)
 	{
@@ -125,10 +125,10 @@ public class UrlPattern
 
 		if (matcher.matches())
 		{
-			return new UrlMatch(true, extractParameters(matcher));
+			return new UrlMatch(extractParameters(matcher));
 		}
 
-		return new UrlMatch(false, null);
+		return null;
 	}
 	
 	/**
@@ -140,7 +140,7 @@ public class UrlPattern
 	 */
 	public boolean matches(String url)
 	{
-		return match(url).matches();
+		return (match(url) != null);
 	}
 	
 	

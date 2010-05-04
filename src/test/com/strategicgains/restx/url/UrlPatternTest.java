@@ -75,7 +75,6 @@ public class UrlPatternTest
 	{
 		UrlMatch match = pFormat.match("/xxx/12345/yyy/67890.json");
 		assertNotNull(match);
-		assertTrue(match.matches());
 		assertEquals("json", match.get("format"));
 		assertEquals("12345", match.get("a_id"));
 		assertEquals("67890", match.get("b_id"));
@@ -86,7 +85,6 @@ public class UrlPatternTest
 	{
 		UrlMatch match = p.match("/xxx/12345/yyy/67890");
 		assertNotNull(match);
-		assertTrue(match.matches());
 		assertNull(match.get("format"));
 		assertEquals("12345", match.get("a_id"));
 		assertEquals("67890", match.get("b_id"));
@@ -97,7 +95,6 @@ public class UrlPatternTest
 	{
 		UrlMatch match = pFormat.match("/xxx/12345/yyy/67890.json?x=y&a=b");
 		assertNotNull(match);
-		assertTrue(match.matches());
 		assertEquals("json", match.get("format"));
 		assertEquals("12345", match.get("a_id"));
 		assertEquals("67890", match.get("b_id"));
@@ -108,7 +105,6 @@ public class UrlPatternTest
 	{
 		UrlMatch match = p.match("/xxx/12345/yyy/67890?x=y&a=b");
 		assertNotNull(match);
-		assertTrue(match.matches());
 		assertNull(match.get("format"));
 		assertEquals("12345", match.get("a_id"));
 		assertEquals("67890", match.get("b_id"));
