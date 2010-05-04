@@ -31,5 +31,6 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 public @interface Put
 {
-	String uri();
+	String uriPattern();
+	String formats() default "json, xml";
 }
