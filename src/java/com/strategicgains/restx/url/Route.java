@@ -17,7 +17,7 @@ package com.strategicgains.restx.url;
 
 import com.strategicgains.restx.service.Request;
 import com.strategicgains.restx.service.Response;
-import com.strategicgains.restx.service.Service;
+import com.strategicgains.restx.service.ServiceController;
 import com.strategicgains.restx.service.exception.ServiceException;
 
 /**
@@ -32,7 +32,7 @@ public class Route
 	// SECTION: INSTANCE VARIABLES
 
 	private UrlPattern urlPattern;
-	private Service service;
+	private ServiceController service;
 
 	// SECTION: CONSTRUCTORS
 
@@ -40,14 +40,14 @@ public class Route
 	 * @param urlPattern
 	 * @param service
 	 */
-	public Route(UrlPattern urlPattern, Service service)
+	public Route(UrlPattern urlPattern, ServiceController service)
 	{
 		super();
 		this.urlPattern = urlPattern;
 		this.service = service;
 	}
 	
-	public Route(String urlPattern, Service service)
+	public Route(String urlPattern, ServiceController service)
 	{
 		this(new UrlPattern(urlPattern), service);
 	}

@@ -30,8 +30,8 @@ import com.strategicgains.restx.service.exception.UnsupportedRequestException;
  * @author toddf
  * @since Nov 20, 2009
  */
-public abstract class AbstractService
-implements Service
+public abstract class AbstractServiceController
+implements ServiceController
 {
 	// SECTION: INSTANCE VARIABLES
 
@@ -121,4 +121,26 @@ implements Service
 		//TODO: create a Response.
 		return null;
 	}
+
+	@Override
+    public Object create(Request request, Response response)
+    {
+	    return null;
+    }
+
+	@Override
+    public void delete(Request request, Response response)
+    {
+    }
+
+	@Override
+    public Object read(Request request, Response response)
+    {
+	    return null;
+    }
+
+	@Override
+    public void update(Request request, Response response)
+    {
+    }
 }

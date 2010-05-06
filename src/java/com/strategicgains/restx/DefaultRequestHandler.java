@@ -27,7 +27,7 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import com.strategicgains.restx.service.Request;
 import com.strategicgains.restx.service.Resolver;
 import com.strategicgains.restx.service.Response;
-import com.strategicgains.restx.service.Service;
+import com.strategicgains.restx.service.ServiceController;
 
 /**
  * @author toddf
@@ -39,12 +39,12 @@ extends SimpleChannelUpstreamHandler
 {
 	// SECTION: INSTANCE VARIABLES
 
-	private Resolver<Service> serviceResolver;
+	private Resolver<ServiceController> serviceResolver;
 
 
 	// SECTION: CONSTRUCTORS
 
-	public DefaultRequestHandler(Resolver<Service> serviceResolver)
+	public DefaultRequestHandler(Resolver<ServiceController> serviceResolver)
 	{
 		super();
 		setServiceResolver(serviceResolver);
@@ -56,7 +56,7 @@ extends SimpleChannelUpstreamHandler
 	/**
 	 * @return the resolver
 	 */
-	public Resolver<Service> getServiceResolver()
+	public Resolver<ServiceController> getServiceResolver()
 	{
 		return serviceResolver;
 	}
@@ -65,7 +65,7 @@ extends SimpleChannelUpstreamHandler
 	 * @param resolver
 	 *            the resolver to set
 	 */
-	public void setServiceResolver(Resolver<Service> resolver)
+	public void setServiceResolver(Resolver<ServiceController> resolver)
 	{
 		this.serviceResolver = resolver;
 	}
@@ -80,7 +80,7 @@ extends SimpleChannelUpstreamHandler
 		// Determine which service to call via URL & parameters.
 		// Throw exception if no service found/available.
 		Request request = createRequest((HttpRequest) event.getMessage());
-		Service service = serviceResolver.resolve(request);
+		ServiceController service = serviceResolver.resolve(request);
 		Response response = createResponse(request);
 
 		// Deserialize/marshal the request contents, if necessary.

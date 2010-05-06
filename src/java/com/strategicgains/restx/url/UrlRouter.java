@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 
 import com.strategicgains.restx.service.Request;
 import com.strategicgains.restx.service.Response;
-import com.strategicgains.restx.service.Service;
+import com.strategicgains.restx.service.ServiceController;
 import com.strategicgains.restx.service.exception.ServiceException;
 import com.strategicgains.restx.service.exception.UnsupportedRequestException;
 
@@ -34,12 +34,12 @@ public class UrlRouter
 {
 	private List<Route> routes = new ArrayList<Route>();
 	
-	public UrlRouter(String urlPattern, Service service)
+	public UrlRouter(String urlPattern, ServiceController service)
 	{
 		this(new UrlPattern(urlPattern), service);
 	}
 	
-	public UrlRouter(UrlPattern urlPattern, Service service)
+	public UrlRouter(UrlPattern urlPattern, ServiceController service)
 	{
 		super();
 		routes.add(new Route(urlPattern, service));

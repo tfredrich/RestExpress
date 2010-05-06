@@ -30,8 +30,15 @@ import com.strategicgains.restx.service.exception.ServiceException;
  * @author toddf
  * @since Nov 20, 2009
  */
-public interface Service
+public interface ServiceController
 {
+	// SECTION: CRUD METHODS
+
+	public Object create(Request request, Response response);
+	public Object read(Request request, Response response);
+	public void update(Request request, Response response);
+	public void delete(Request request, Response response);
+
 	public Object deserialize(Request request, Type type)
 	throws DeserializationException;
 

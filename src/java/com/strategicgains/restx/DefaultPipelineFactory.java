@@ -25,7 +25,7 @@ import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 
 import com.strategicgains.restx.service.Resolver;
-import com.strategicgains.restx.service.Service;
+import com.strategicgains.restx.service.ServiceController;
 
 /**
  * @author Todd Fredrich
@@ -43,7 +43,7 @@ implements ChannelPipelineFactory
 
 	private boolean shouldUseSsl = false;
 	private boolean shouldHandleChunked = false;
-	private Resolver<Service> serviceResolver;
+	private Resolver<ServiceController> serviceResolver;
 
 	
 	// SECTION: CONSTRUCTORS
