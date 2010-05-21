@@ -15,7 +15,6 @@
 */
 package com.strategicgains.restx.service;
 
-import com.strategicgains.restx.exception.ConfigurationException;
 
 /**
  * @author toddf
@@ -23,6 +22,5 @@ import com.strategicgains.restx.exception.ConfigurationException;
  */
 public interface ServiceRoot
 {
-	public void configure()
-	throws ConfigurationException;
+	public void configure();
 }
