@@ -26,7 +26,7 @@ import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import com.strategicgains.restx.annotation.Endpoint;
 import com.strategicgains.restx.annotation.Service;
-import com.strategicgains.restx.service.exception.ConfigurationException;
+import com.strategicgains.restx.exception.ConfigurationException;
 import com.strategicgains.restx.url.Route;
 
 

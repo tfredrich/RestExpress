@@ -15,10 +15,10 @@
  */
 package com.strategicgains.restx.url;
 
+import com.strategicgains.restx.exception.ServiceException;
 import com.strategicgains.restx.service.Request;
 import com.strategicgains.restx.service.Response;
 import com.strategicgains.restx.service.ServiceController;
-import com.strategicgains.restx.service.exception.ServiceException;
 
 /**
  * A Route is an immutable relationship between a URL pattern and a REST

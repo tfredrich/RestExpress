@@ -15,25 +15,26 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.serialization;
+package com.strategicgains.restx.exception;
+
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public class DeserializationException
-extends Exception
+public class CouldNotCreateException
+extends ServiceException
 {
-    private static final long serialVersionUID = 4563135167976559696L;
+    private static final long serialVersionUID = 4569770253408111145L;
 
-	public DeserializationException()
+	public CouldNotCreateException()
 	{
 	}
 
 	/**
 	 * @param message
 	 */
-	public DeserializationException(String message)
+	public CouldNotCreateException(String message)
 	{
 		super(message);
 	}
@@ -41,7 +42,7 @@ extends Exception
 	/**
 	 * @param cause
 	 */
-	public DeserializationException(Throwable cause)
+	public CouldNotCreateException(Throwable cause)
 	{
 		super(cause);
 	}
@@ -50,7 +51,7 @@ extends Exception
 	 * @param message
 	 * @param cause
 	 */
-	public DeserializationException(String message, Throwable cause)
+	public CouldNotCreateException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}

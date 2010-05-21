@@ -15,25 +15,25 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.service.exception;
+package com.strategicgains.restx.exception;
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public class ServiceException
+public class UnsupportedRequestException
 extends Exception
 {
-    private static final long serialVersionUID = 1810995969641082808L;
+    private static final long serialVersionUID = 1322585725650252682L;
 
-	public ServiceException()
+	public UnsupportedRequestException()
 	{
 	}
 
 	/**
 	 * @param message
 	 */
-	public ServiceException(String message)
+	public UnsupportedRequestException(String message)
 	{
 		super(message);
 	}
@@ -41,7 +41,7 @@ extends Exception
 	/**
 	 * @param cause
 	 */
-	public ServiceException(Throwable cause)
+	public UnsupportedRequestException(Throwable cause)
 	{
 		super(cause);
 	}
@@ -50,7 +50,7 @@ extends Exception
 	 * @param message
 	 * @param cause
 	 */
-	public ServiceException(String message, Throwable cause)
+	public UnsupportedRequestException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}

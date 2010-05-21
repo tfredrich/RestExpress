@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.strategicgains.restx.exception.ServiceException;
+import com.strategicgains.restx.exception.UnsupportedRequestException;
 import com.strategicgains.restx.service.Request;
 import com.strategicgains.restx.service.Response;
 import com.strategicgains.restx.service.ServiceController;
-import com.strategicgains.restx.service.exception.ServiceException;
-import com.strategicgains.restx.service.exception.UnsupportedRequestException;
 
 /**
  * @author toddf

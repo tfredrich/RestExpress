@@ -15,7 +15,7 @@
 */
 package com.strategicgains.restx.service;
 
-import com.strategicgains.restx.service.exception.ConfigurationException;
+import com.strategicgains.restx.exception.ConfigurationException;
 
 /**
  * @author toddf

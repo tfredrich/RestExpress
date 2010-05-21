@@ -88,10 +88,6 @@ extends SimpleChannelUpstreamHandler
 		Object result = service.process(request, response);
 		response.setBody(result);
 
-		// Serialize/Unmarshal the response, if necessary.
-		Object serializedResponse = service.serialize(request, response);
-		response.setBody(serializedResponse);
-
 		// Set resonse and accept headers, if appropriate.
 		writeResponse(request, response);
 	}

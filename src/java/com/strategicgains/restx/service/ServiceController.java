@@ -17,11 +17,7 @@
 
 package com.strategicgains.restx.service;
 
-import java.lang.reflect.Type;
 
-import com.strategicgains.restx.serialization.DeserializationException;
-import com.strategicgains.restx.serialization.SerializationException;
-import com.strategicgains.restx.service.exception.ServiceException;
 
 
 /**
@@ -32,19 +28,5 @@ import com.strategicgains.restx.service.exception.ServiceException;
  */
 public interface ServiceController
 {
-	// SECTION: CRUD METHODS
-
-	public Object create(Request request, Response response);
-	public Object read(Request request, Response response);
-	public void update(Request request, Response response);
-	public void delete(Request request, Response response);
-
-	public Object deserialize(Request request, Type type)
-	throws DeserializationException;
-
-	public Object process(Request request, Response response)
-	throws ServiceException;
-
-	public Object serialize(Request request, Response response)
-	throws SerializationException;
+	public Object process(Request request, Response response);
 }

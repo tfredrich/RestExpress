@@ -17,14 +17,6 @@
 
 package com.strategicgains.restx.service;
 
-import java.lang.reflect.Type;
-
-import com.strategicgains.restx.serialization.DeserializationException;
-import com.strategicgains.restx.serialization.Deserializer;
-import com.strategicgains.restx.serialization.SerializationException;
-import com.strategicgains.restx.serialization.Serializer;
-import com.strategicgains.restx.service.exception.ServiceException;
-import com.strategicgains.restx.service.exception.UnsupportedRequestException;
 
 /**
  * @author toddf
@@ -32,115 +24,24 @@ import com.strategicgains.restx.service.exception.UnsupportedRequestException;
  */
 public abstract class AbstractServiceController
 implements ServiceController
-{
-	// SECTION: INSTANCE VARIABLES
-
-	private Resolver<Serializer> serializerResolver;
-	private Resolver<Deserializer> deserializerResolver;
-
-	
-	// SECTION: ACCESSORS/MUTATORS
-
-	/**
-     * @return the serializerResolver
-     */
-    public Resolver<Serializer> getSerializerResolver()
-    {
-    	return serializerResolver;
-    }
-
-	/**
-     * @param serializerResolver the serializerResolver to set
-     */
-    public void setSerializerResolver(Resolver<Serializer> serializerResolver)
-    {
-    	this.serializerResolver = serializerResolver;
-    }
-
-	/**
-     * @return the deserializerResolver
-     */
-    public Resolver<Deserializer> getDeserializerResolver()
-    {
-    	return deserializerResolver;
-    }
-
-	/**
-     * @param deserializerResolver the deserializerResolver to set
-     */
-    public void setDeserializerResolver(Resolver<Deserializer> deserializerResolver)
-    {
-    	this.deserializerResolver = deserializerResolver;
-    }
-
-	
-	// SECTION: SERVICE
+{	
+	// SECTION: SERVICE CONTROLLER
 
 	@Override
-	public Object deserialize(Request request, Type type)
-	throws DeserializationException
-	{
-		Deserializer deserializer;
-
-		try
-        {
-	        deserializer = getDeserializerResolver().resolve(request);
-        }
-        catch (UnsupportedRequestException e)
-        {
-        	throw new DeserializationException(e);
-        }
-        
-		return deserializer.deserialize(request.getBody(), type);
-	}
-	
-	@Override
-	public Object process(Request request, Response response)
-	throws ServiceException
-	{
-		return null;
-	}
-
-	@Override
-	public Response serialize(Request request, Response response)
-	throws SerializationException
-	{
-		Serializer serializer;
-
-		try
-        {
-	        serializer = getSerializerResolver().resolve(request);
-        }
-        catch (UnsupportedRequestException e)
-        {
-        	throw new SerializationException(e);
-        }
-        
-		Object result = serializer.serialize(request.getBody());
-		
-		//TODO: create a Response.
-		return null;
-	}
-
-	@Override
-    public Object create(Request request, Response response)
+    public Object process(Request request, Response response)
     {
+	    // TODO Auto-generated method stub
 	    return null;
     }
 
-	@Override
-    public void delete(Request request, Response response)
-    {
-    }
+	
+	// SECTION: CRUD
 
-	@Override
-    public Object read(Request request, Response response)
-    {
-	    return null;
-    }
+    public abstract Object create(Request request, Response response);
 
-	@Override
-    public void update(Request request, Response response)
-    {
-    }
+    public abstract void delete(Request request, Response response);
+
+    public abstract Object read(Request request, Response response);
+
+    public abstract void update(Request request, Response response);
 }

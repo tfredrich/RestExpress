@@ -15,26 +15,26 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.service.exception;
+package com.strategicgains.restx.exception;
 
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public class CouldNotCreateException
+public class CouldNotDeleteException
 extends ServiceException
 {
-    private static final long serialVersionUID = 4569770253408111145L;
+    private static final long serialVersionUID = -7699851288113531220L;
 
-	public CouldNotCreateException()
+	public CouldNotDeleteException()
 	{
 	}
 
 	/**
 	 * @param message
 	 */
-	public CouldNotCreateException(String message)
+	public CouldNotDeleteException(String message)
 	{
 		super(message);
 	}
@@ -42,7 +42,7 @@ extends ServiceException
 	/**
 	 * @param cause
 	 */
-	public CouldNotCreateException(Throwable cause)
+	public CouldNotDeleteException(Throwable cause)
 	{
 		super(cause);
 	}
@@ -51,7 +51,7 @@ extends ServiceException
 	 * @param message
 	 * @param cause
 	 */
-	public CouldNotCreateException(String message, Throwable cause)
+	public CouldNotDeleteException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}

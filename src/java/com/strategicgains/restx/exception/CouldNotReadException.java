@@ -15,26 +15,26 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.service.exception;
+package com.strategicgains.restx.exception;
 
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
-public class CouldNotUpdateException
+public class CouldNotReadException
 extends ServiceException
 {
-    private static final long serialVersionUID = -1548448965728429198L;
+    private static final long serialVersionUID = 237257178886358481L;
 
-	public CouldNotUpdateException()
+	public CouldNotReadException()
 	{
 	}
 
 	/**
 	 * @param message
 	 */
-	public CouldNotUpdateException(String message)
+	public CouldNotReadException(String message)
 	{
 		super(message);
 	}
@@ -42,7 +42,7 @@ extends ServiceException
 	/**
 	 * @param cause
 	 */
-	public CouldNotUpdateException(Throwable cause)
+	public CouldNotReadException(Throwable cause)
 	{
 		super(cause);
 	}
@@ -51,7 +51,7 @@ extends ServiceException
 	 * @param message
 	 * @param cause
 	 */
-	public CouldNotUpdateException(String message, Throwable cause)
+	public CouldNotReadException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Strategic Gains, Inc.
+ * Copyright 2009, Strategic Gains, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,43 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.serialization.xml;
+package com.strategicgains.restx.exception;
 
 /**
  * @author toddf
- * @since Mar 16, 2010
+ * @since Nov 20, 2009
  */
-public interface XstreamSerializer
+public class ServiceException
+extends RuntimeException
 {
+    private static final long serialVersionUID = 1810995969641082808L;
 
+	public ServiceException()
+	{
+	}
+
+	/**
+	 * @param message
+	 */
+	public ServiceException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public ServiceException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public ServiceException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }
