@@ -13,12 +13,15 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
  */
-package com.strategicgains.restx.url;
+package com.strategicgains.restx.route;
 
+import java.lang.reflect.Method;
+
+import com.strategicgains.restx.Request;
+import com.strategicgains.restx.Response;
 import com.strategicgains.restx.exception.ServiceException;
-import com.strategicgains.restx.service.Request;
-import com.strategicgains.restx.service.Response;
-import com.strategicgains.restx.service.ServiceController;
+import com.strategicgains.restx.url.UrlMatch;
+import com.strategicgains.restx.url.UrlPattern;
 
 /**
  * A Route is an immutable relationship between a URL pattern and a REST
@@ -32,24 +35,26 @@ public class Route
 	// SECTION: INSTANCE VARIABLES
 
 	private UrlPattern urlPattern;
-	private ServiceController service;
+	private Object controller;
+	private Method action;
 
 	// SECTION: CONSTRUCTORS
 
 	/**
 	 * @param urlPattern
-	 * @param service
+	 * @param controller
 	 */
-	public Route(UrlPattern urlPattern, ServiceController service)
+	public Route(UrlPattern urlPattern, Object controller, Method action)
 	{
 		super();
 		this.urlPattern = urlPattern;
-		this.service = service;
+		this.controller = controller;
+		this.action = action;
 	}
 	
-	public Route(String urlPattern, ServiceController service)
+	public Route(String urlPattern, Object controller, Method action)
 	{
-		this(new UrlPattern(urlPattern), service);
+		this(new UrlPattern(urlPattern), controller, action);
 	}
 
 	public UrlMatch match(String url)
@@ -58,8 +63,14 @@ public class Route
 	}
 
 	public Object invoke(Request request, Response response)
-	throws ServiceException
 	{
-		return service.process(request, response);
+		try
+        {
+	        return action.invoke(controller, request, response);
+        }
+        catch (Exception e)
+        {
+        	throw new ServiceException(e);
+        }
 	}
 }

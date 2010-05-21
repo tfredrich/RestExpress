@@ -13,18 +13,16 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-package com.strategicgains.restx.url;
+package com.strategicgains.restx.route;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.strategicgains.restx.Request;
+import com.strategicgains.restx.Response;
 import com.strategicgains.restx.exception.ServiceException;
 import com.strategicgains.restx.exception.UnsupportedRequestException;
-import com.strategicgains.restx.service.Request;
-import com.strategicgains.restx.service.Response;
-import com.strategicgains.restx.service.ServiceController;
+import com.strategicgains.restx.url.UrlMatch;
 
 /**
  * @author toddf
@@ -32,23 +30,18 @@ import com.strategicgains.restx.service.ServiceController;
  */
 public class UrlRouter
 {
-	private List<Route> routes = new ArrayList<Route>();
+	private RouteMapping routes;
 	
-	public UrlRouter(String urlPattern, ServiceController service)
-	{
-		this(new UrlPattern(urlPattern), service);
-	}
-	
-	public UrlRouter(UrlPattern urlPattern, ServiceController service)
+	public UrlRouter(RouteMapping routes)
 	{
 		super();
-		routes.add(new Route(urlPattern, service));
+		this.routes = routes;
 	}
 	
 	public Object handleUrl(Request request, Response response)
 	throws ServiceException
 	{
-		for (Route route : routes)
+		for (Route route : routes.getRoutesFor(request.getMethod()))
 		{
 			UrlMatch match = route.match(request.getUrl());
 
@@ -70,7 +63,7 @@ public class UrlRouter
     {
     	for (Entry<String, String> entry : parameters)
     	{
-    		request.setHeader(entry.getKey(), entry.getValue());
+    		request.addHeader(entry.getKey(), entry.getValue());
     	}
     }
 }

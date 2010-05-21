@@ -24,10 +24,7 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
-import com.strategicgains.restx.service.Request;
-import com.strategicgains.restx.service.Resolver;
-import com.strategicgains.restx.service.Response;
-import com.strategicgains.restx.service.ServiceController;
+import com.strategicgains.restx.route.UrlRouter;
 
 /**
  * @author toddf
@@ -39,35 +36,15 @@ extends SimpleChannelUpstreamHandler
 {
 	// SECTION: INSTANCE VARIABLES
 
-	private Resolver<ServiceController> serviceResolver;
+	private UrlRouter urlRouter;
 
 
 	// SECTION: CONSTRUCTORS
 
-	public DefaultRequestHandler(Resolver<ServiceController> serviceResolver)
+	public DefaultRequestHandler(UrlRouter urlRouter)
 	{
 		super();
-		setServiceResolver(serviceResolver);
-	}
-
-	
-	// SECTION: ACCESSORS/MUTATORS
-
-	/**
-	 * @return the resolver
-	 */
-	public Resolver<ServiceController> getServiceResolver()
-	{
-		return serviceResolver;
-	}
-
-	/**
-	 * @param resolver
-	 *            the resolver to set
-	 */
-	public void setServiceResolver(Resolver<ServiceController> resolver)
-	{
-		this.serviceResolver = resolver;
+		this.urlRouter = urlRouter;
 	}
 
 
@@ -80,16 +57,25 @@ extends SimpleChannelUpstreamHandler
 		// Determine which service to call via URL & parameters.
 		// Throw exception if no service found/available.
 		Request request = createRequest((HttpRequest) event.getMessage());
-		ServiceController service = serviceResolver.resolve(request);
 		Response response = createResponse(request);
 
-		// Deserialize/marshal the request contents, if necessary.
-		// Call the service, passing the marshaled object(s).
-		Object result = service.process(request, response);
-		response.setBody(result);
-
-		// Set resonse and accept headers, if appropriate.
-		writeResponse(request, response);
+		try
+		{
+			// Deserialize/marshal the request contents, if necessary.
+			// Call the service, passing the marshaled object(s).
+			Object result = urlRouter.handleUrl(request, response);
+			response.setBody(result);
+		}
+		catch (Throwable t)
+		{
+			response.setResponseCode(500);
+			response.setResponseMessage(t.getCause().getMessage());
+		}
+		finally
+		{
+			// Set response and accept headers, if appropriate.
+			writeResponse(request, response);
+		}
 	}
 
 	@Override
@@ -106,8 +92,7 @@ extends SimpleChannelUpstreamHandler
      */
     private Request createRequest(HttpRequest request)
     {
-	    // TODO Auto-generated method stub
-	    return null;
+    	return new Request(request);
     }
 
 	/**
@@ -116,8 +101,7 @@ extends SimpleChannelUpstreamHandler
      */
     private Response createResponse(Request request)
     {
-	    // TODO Auto-generated method stub
-	    return null;
+    	return new Response();
     }
 
     /**

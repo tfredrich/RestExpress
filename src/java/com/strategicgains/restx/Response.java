@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.service;
+package com.strategicgains.restx;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,6 +29,8 @@ public class Response
 {
 	// SECTION: INSTANCE VARIABLES
 
+	private int responseCode = 0;
+	private String responseMessage = null;
 	private Object body;
 	private Map<String, Object> headers = new HashMap<String, Object>();
 
@@ -73,5 +75,21 @@ public class Response
 	public void setHeader(String name, Object value)
     {
 		headers.put(name, value);
+    }
+
+	/**
+     * @param i
+     */
+    public void setResponseCode(int value)
+    {
+    	responseCode = value;
+    }
+
+	/**
+     * @param message
+     */
+    public void setResponseMessage(String message)
+    {
+    	this.responseMessage = message;
     }
 }

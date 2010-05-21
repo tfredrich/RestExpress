@@ -24,8 +24,8 @@ import org.jboss.netty.handler.codec.http.HttpChunkAggregator;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 
-import com.strategicgains.restx.service.Resolver;
-import com.strategicgains.restx.service.ServiceController;
+import com.strategicgains.restx.route.RouteMapping;
+import com.strategicgains.restx.route.UrlRouter;
 
 /**
  * @author Todd Fredrich
@@ -43,21 +43,22 @@ implements ChannelPipelineFactory
 
 	private boolean shouldUseSsl = false;
 	private boolean shouldHandleChunked = false;
-	private Resolver<ServiceController> serviceResolver;
+	private UrlRouter urlRouter;
 
 	
 	// SECTION: CONSTRUCTORS
 
-	public DefaultPipelineFactory()
+	public DefaultPipelineFactory(RouteMapping routes)
 	{
-		this(false, false);
+		this(false, false, routes);
 	}
 
-	public DefaultPipelineFactory(boolean useSsl, boolean useChunked)
+	public DefaultPipelineFactory(boolean useSsl, boolean useChunked, RouteMapping routes)
 	{
 		super();
 		this.shouldUseSsl = useSsl;
 		this.shouldHandleChunked = useChunked;
+		this.urlRouter = new UrlRouter(routes);
 	}
 
 	
@@ -84,7 +85,7 @@ implements ChannelPipelineFactory
 		}
 
 		pipeline.addLast("encoder", new HttpResponseEncoder());
-		pipeline.addLast("handler", new DefaultRequestHandler(serviceResolver));
+		pipeline.addLast("handler", new DefaultRequestHandler(urlRouter));
 
 		return pipeline;
 	}

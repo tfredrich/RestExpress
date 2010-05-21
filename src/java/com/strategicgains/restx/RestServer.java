@@ -51,7 +51,7 @@ public class RestServer
 		        Executors.newCachedThreadPool()));
 
 		// Set up the event pipeline factory.
-		bootstrap.setPipelineFactory(new DefaultPipelineFactory());
+		bootstrap.setPipelineFactory(new DefaultPipelineFactory(null));
 
 		// Bind and start to accept incoming connections.
 		System.out.println("Starting RestX Server on port " + port);
