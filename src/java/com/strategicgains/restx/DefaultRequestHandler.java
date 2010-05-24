@@ -16,13 +16,20 @@
  */
 
 package com.strategicgains.restx;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
+import static org.jboss.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
+import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
+import org.jboss.netty.buffer.ChannelBuffers;
+import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipelineCoverage;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpRequest;
+import org.jboss.netty.handler.codec.http.HttpResponse;
 
 import com.strategicgains.restx.route.UrlRouter;
 
@@ -56,7 +63,7 @@ extends SimpleChannelUpstreamHandler
 	{
 		// Determine which service to call via URL & parameters.
 		// Throw exception if no service found/available.
-		Request request = createRequest((HttpRequest) event.getMessage());
+		Request request = createRequest((HttpRequest) event.getMessage(), ctx);
 		Response response = createResponse(request);
 
 		try
@@ -68,13 +75,20 @@ extends SimpleChannelUpstreamHandler
 		}
 		catch (Throwable t)
 		{
-			response.setResponseCode(500);
-			response.setResponseMessage(t.getCause().getMessage());
+			response.setResponseStatus(INTERNAL_SERVER_ERROR);
+			response.setException(t);
 		}
 		finally
 		{
-			// Set response and accept headers, if appropriate.
-			writeResponse(request, response);
+			if (response.hasException())
+			{
+				writeError(ctx, response);
+			}
+			else
+			{
+				// Set response and accept headers, if appropriate.
+				writeResponse(ctx, response);
+			}
 		}
 	}
 
@@ -90,7 +104,7 @@ extends SimpleChannelUpstreamHandler
      * @param request
      * @return
      */
-    private Request createRequest(HttpRequest request)
+    private Request createRequest(HttpRequest request, ChannelHandlerContext context)
     {
     	return new Request(request);
     }
@@ -108,8 +122,43 @@ extends SimpleChannelUpstreamHandler
      * @param message
      * @return
      */
-    private void writeResponse(Request request, Response response)
+    private void writeResponse(ChannelHandlerContext ctx, Response response)
     {
-	    // TODO Auto-generated method stub
+		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getStatus());
+		httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
+		StringBuilder builder = new StringBuilder(response.getBody().toString());
+		builder.append("\r\n");
+
+//		if (keepAlive)
+//      {
+//      	// Add 'Content-Length' header only for a keep-alive connection.
+//      	response.setHeader(CONTENT_LENGTH, response.getContent().readableBytes());
+//      }
+
+		httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), "UTF-8"));
+
+		// Close the connection as soon as the error message is sent.
+		ctx.getChannel().write(httpResponse).addListener(
+		    ChannelFutureListener.CLOSE);
     }
+
+	private void writeError(ChannelHandlerContext ctx, Response response) //ChannelHandlerContext ctx, HttpResponseStatus status)
+	{
+		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getStatus());
+		httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
+		StringBuilder builder = new StringBuilder("Failure: ");
+		builder.append(response.getResponseMessage());
+		builder.append("\r\n");
+
+//		if (keepAlive)
+//        {
+//        	// Add 'Content-Length' header only for a keep-alive connection.
+//        	response.setHeader(CONTENT_LENGTH, response.getContent().readableBytes());
+//        }
+
+		httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), "UTF-8"));
+
+		// Close the connection as soon as the error message is sent.
+		ctx.getChannel().write(httpResponse).addListener(ChannelFutureListener.CLOSE);
+	}
 }

@@ -20,7 +20,6 @@ import java.util.Map.Entry;
 
 import com.strategicgains.restx.Request;
 import com.strategicgains.restx.Response;
-import com.strategicgains.restx.exception.ServiceException;
 import com.strategicgains.restx.exception.UnsupportedRequestException;
 import com.strategicgains.restx.url.UrlMatch;
 
@@ -39,7 +38,6 @@ public class UrlRouter
 	}
 	
 	public Object handleUrl(Request request, Response response)
-	throws ServiceException
 	{
 		for (Route route : routes.getRoutesFor(request.getMethod()))
 		{
@@ -52,7 +50,7 @@ public class UrlRouter
 			}
 		}
 
-		return new UnsupportedRequestException("Uservicable URL: " + request.getUrl());
+		throw new UnsupportedRequestException("Unserviceable URL: " + request.getUrl());
 	}
 
 	/**

@@ -22,7 +22,7 @@ package com.strategicgains.restx.exception;
  * @since Nov 20, 2009
  */
 public class UnsupportedRequestException
-extends Exception
+extends ServiceException
 {
     private static final long serialVersionUID = 1322585725650252682L;
 

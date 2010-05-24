@@ -17,9 +17,13 @@
 
 package com.strategicgains.restx;
 
+import static org.jboss.netty.handler.codec.http.HttpResponseStatus.OK;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 
 /**
  * @author toddf
@@ -29,28 +33,27 @@ public class Response
 {
 	// SECTION: INSTANCE VARIABLES
 
-	private int responseCode = 0;
-	private String responseMessage = null;
+	private HttpResponseStatus responseCode = OK;
+	private Throwable exception = null;
 	private Object body;
 	private Map<String, Object> headers = new HashMap<String, Object>();
-
 
 	// SECTION: ACCESSORS/MUTATORS
 
 	public Object getBody()
-    {
-    	return body;
-    }
-	
+	{
+		return body;
+	}
+
 	public boolean hasBody()
 	{
 		return (getBody() != null);
 	}
 
 	public void setBody(Object body)
-    {
-    	this.body = body;
-    }
+	{
+		this.body = body;
+	}
 
 	public void clearHeaders()
 	{
@@ -68,28 +71,56 @@ public class Response
 	}
 
 	public Map<String, Object> getHeaders()
-    {
-    	return Collections.unmodifiableMap(headers);
-    }
-	
+	{
+		return Collections.unmodifiableMap(headers);
+	}
+
 	public void setHeader(String name, Object value)
-    {
+	{
 		headers.put(name, value);
-    }
+	}
 
-	/**
-     * @param i
-     */
-    public void setResponseCode(int value)
-    {
-    	responseCode = value;
-    }
+	public void setResponseCode(int value)
+	{
+		setResponseStatus(HttpResponseStatus.valueOf(value));
+	}
+	
+	public void setResponseStatus(HttpResponseStatus status)
+	{
+		this.responseCode = status;
+	}
+	
+	public HttpResponseStatus getStatus()
+	{
+		return responseCode;
+	}
+	
+	public Throwable getException()
+	{
+		return exception;
+	}
+	
+	public boolean hasException()
+	{
+		return (getException() != null);
+	}
 
-	/**
-     * @param message
-     */
-    public void setResponseMessage(String message)
-    {
-    	this.responseMessage = message;
-    }
+	public void setException(Throwable t)
+	{
+		this.exception = t;
+	}
+	
+	public String getResponseMessage()
+	{
+		Throwable cause = getException();
+		Throwable current = cause;
+
+		while (current != null)
+		{
+			cause = current;
+			current = current.getCause();
+		}
+
+		return cause.getMessage();
+	}
 }
