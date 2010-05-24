@@ -29,6 +29,9 @@ import com.strategicgains.restx.Response;
 import com.strategicgains.restx.exception.ConfigurationException;
 
 /**
+ * Contains the routes for a given service implementation.  Sub-classes will implement the initialize() method which
+ * calls map() to specify how URL request will be routed to the underlying controllers. 
+ * 
  * @author toddf
  * @since May 21, 2010
  */
@@ -70,11 +73,20 @@ public abstract class RouteMapping
 		routes.put(HttpMethod.GET, getRoutes);
 		routes.put(HttpMethod.POST, postRoutes);
 		routes.put(HttpMethod.PUT, putRoutes);
+		initialize();
 	}
+
+    protected abstract void initialize();
 
 
 	// SECTION: URL MAPPING
 
+    /**
+     * Map a URL pattern to a controller, using the default action names for the four HTTP methods.
+     * 
+     * @param urlPattern a string specifying a URL pattern to match.
+     * @param controller a pojo which contains implementations of create(), read(), update(), delete() methods.
+     */
 	public void map(String urlPattern, Object controller)
 	{
 		map(urlPattern, controller, GET_ACTION_NAME, HttpMethod.GET);
@@ -83,11 +95,27 @@ public abstract class RouteMapping
 		map(urlPattern, controller, DELETE_ACTION_NAME, HttpMethod.DELETE);
 	}
 
+	/**
+	 * Map the URL pattern to a controller for the specified HTTP method.
+	 * 
+	 * @param urlPattern a string specifying a URL pattern to match.
+	 * @param controller a pojo which contains an implementation of create(), read(), update(), or delete()
+	 * corresponding to the given HTTP method.
+	 * @param method the HTTP method (GET, PUT, POST, DELETE) to map to the given URL pattern.
+	 */
 	public void map(String urlPattern, Object controller, HttpMethod method)
 	{
 		map(urlPattern, controller, ACTION_MAPPING.get(method), method);
 	}
 
+	/**
+	 * Map the URL pattern to a controller method for a given HTTP method.
+	 * 
+	 * @param urlPattern a string specifying a URL pattern to match.
+	 * @param controller a pojo which contains an implementation of specified action name.
+	 * @param actionName the name of a method on the supplied controller.
+	 * @param method the HTTP method (GET, PUT, POST, DELETE) to map to the given URL pattern and controller.
+	 */
 	public void map(String urlPattern, Object controller, String actionName, HttpMethod method)
 	{
 		Method action = determineAction(controller, actionName);
@@ -96,7 +124,12 @@ public abstract class RouteMapping
 	
 	
 	// SECTION: UTILITY - PUBLIC
-	
+
+	/**
+	 * Return a list of Route instances for the given HTTP method.  The returned list is immutable.
+	 * 
+	 * @param method the HTTP method (GET, PUT, POST, DELETE) for which to retrieve the routes.
+	 */
 	public List<Route> getRoutesFor(HttpMethod method)
 	{
 		return Collections.unmodifiableList(routes.get(method));
@@ -106,11 +139,15 @@ public abstract class RouteMapping
 	// SECTION: UTILITY - PRIVATE
 
 	/**
-	 * @param controller
-	 * @param actionName
-	 * @return
+	 * Attempts to find the actionName on the controller, assuming a signature of actionName(Request, Response), 
+	 * and returns the action as a Method to be used later when the route is invoked.
+	 * 
+	 * @param controller a pojo that implements a method named by the action, with Request and Response as parameters.
+	 * @param actionName the name of a method on the given controller pojo.
+	 * @return a Method instance referring to the action on the controller.
+	 * @throws ConfigurationException if an error occurs.
 	 */
-	Method determineAction(Object controller, String actionName)
+	private Method determineAction(Object controller, String actionName)
 	{
 		try
 		{
@@ -126,7 +163,7 @@ public abstract class RouteMapping
 	 * @param method
 	 * @param route
 	 */
-	void addRoute(HttpMethod method, Route route)
+	private void addRoute(HttpMethod method, Route route)
 	{
 		routes.get(method).add(route);
 	}
