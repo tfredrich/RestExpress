@@ -16,6 +16,7 @@
  */
 
 package com.strategicgains.restx;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -31,6 +32,7 @@ import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 
+import com.strategicgains.restx.exception.ServiceException;
 import com.strategicgains.restx.route.UrlRouter;
 
 /**
@@ -72,6 +74,11 @@ extends SimpleChannelUpstreamHandler
 			// Call the service, passing the marshaled object(s).
 			Object result = urlRouter.handleUrl(request, response);
 			response.setBody(result);
+		}
+		catch (ServiceException e)
+		{
+			response.setResponseStatus(e.getHttpStatus());
+			response.setException(e);
 		}
 		catch (Throwable t)
 		{
@@ -125,17 +132,25 @@ extends SimpleChannelUpstreamHandler
     private void writeResponse(ChannelHandlerContext ctx, Response response)
     {
 		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getStatus());
-		httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
-		StringBuilder builder = new StringBuilder(response.getBody().toString());
-		builder.append("\r\n");
+		
+		if (response.hasBody())
+		{
+			httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
+			StringBuilder builder = new StringBuilder(response.getBody().toString());
+			builder.append("\r\n");
+
+			httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), "UTF-8"));
+		}
 
 //		if (keepAlive)
-//      {
-//      	// Add 'Content-Length' header only for a keep-alive connection.
-//      	response.setHeader(CONTENT_LENGTH, response.getContent().readableBytes());
-//      }
-
-		httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), "UTF-8"));
+//  	{
+//  		// Add 'Content-Length' header only for a keep-alive connection.
+//  		httpResponse.setHeader(CONTENT_LENGTH, response.getContent().readableBytes());
+//  	}
+//		else
+//		{
+			httpResponse.setHeader(CONNECTION, "close");
+//		}
 
 		// Close the connection as soon as the error message is sent.
 		ctx.getChannel().write(httpResponse).addListener(
@@ -153,8 +168,12 @@ extends SimpleChannelUpstreamHandler
 //		if (keepAlive)
 //        {
 //        	// Add 'Content-Length' header only for a keep-alive connection.
-//        	response.setHeader(CONTENT_LENGTH, response.getContent().readableBytes());
+//        	httpResponse.setHeader(CONTENT_LENGTH, response.getContent().readableBytes());
 //        }
+//		else
+//		{
+			httpResponse.setHeader(CONNECTION, "close");
+//		}
 
 		httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), "UTF-8"));
 

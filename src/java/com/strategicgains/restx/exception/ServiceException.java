@@ -17,6 +17,8 @@
 
 package com.strategicgains.restx.exception;
 
+import org.jboss.netty.handler.codec.http.HttpResponseStatus;
+
 /**
  * @author toddf
  * @since Nov 20, 2009
@@ -25,9 +27,17 @@ public class ServiceException
 extends RuntimeException
 {
     private static final long serialVersionUID = 1810995969641082808L;
+    
+    private HttpResponseStatus httpStatus;
 
 	public ServiceException()
 	{
+		this(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	protected ServiceException(HttpResponseStatus status)
+	{
+		setHttpStatus(status);
 	}
 
 	/**
@@ -35,7 +45,13 @@ extends RuntimeException
 	 */
 	public ServiceException(String message)
 	{
+		this(HttpResponseStatus.INTERNAL_SERVER_ERROR, message);
+	}
+	
+	protected ServiceException(HttpResponseStatus status, String message)
+	{
 		super(message);
+		setHttpStatus(status);
 	}
 
 	/**
@@ -43,7 +59,13 @@ extends RuntimeException
 	 */
 	public ServiceException(Throwable cause)
 	{
+		this(HttpResponseStatus.INTERNAL_SERVER_ERROR, cause);
+	}
+	
+	protected ServiceException(HttpResponseStatus status, Throwable cause)
+	{
 		super(cause);
+		setHttpStatus(status);
 	}
 
 	/**
@@ -52,6 +74,27 @@ extends RuntimeException
 	 */
 	public ServiceException(String message, Throwable cause)
 	{
-		super(message, cause);
+		this(HttpResponseStatus.INTERNAL_SERVER_ERROR, message, cause);
+	}
+
+	/**
+     * @param internalServerError
+     * @param message
+     * @param cause
+     */
+    protected ServiceException(HttpResponseStatus status, String message, Throwable cause)
+    {
+    	super(message, cause);
+    	setHttpStatus(status);
+    }
+
+	public HttpResponseStatus getHttpStatus()
+    {
+    	return httpStatus;
+    }
+	
+	private void setHttpStatus(HttpResponseStatus status)
+	{
+		this.httpStatus = status;
 	}
 }

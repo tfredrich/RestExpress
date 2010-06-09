@@ -37,6 +37,15 @@ public class Response
 	private Throwable exception = null;
 	private Object body;
 	private Map<String, Object> headers = new HashMap<String, Object>();
+	
+	
+	// SECTION: CONSTRUCTORS
+	
+	public Response()
+	{
+		super();
+	}
+
 
 	// SECTION: ACCESSORS/MUTATORS
 

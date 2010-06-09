@@ -17,6 +17,8 @@
 
 package com.strategicgains.restx.exception;
 
+import org.jboss.netty.handler.codec.http.HttpResponseStatus;
+
 /**
  * @author toddf
  * @since Nov 20, 2009
@@ -28,6 +30,7 @@ extends ServiceException
 
 	public UnsupportedRequestException()
 	{
+		super(HttpResponseStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -35,7 +38,7 @@ extends ServiceException
 	 */
 	public UnsupportedRequestException(String message)
 	{
-		super(message);
+		super(HttpResponseStatus.BAD_REQUEST, message);
 	}
 
 	/**
@@ -43,7 +46,7 @@ extends ServiceException
 	 */
 	public UnsupportedRequestException(Throwable cause)
 	{
-		super(cause);
+		super(HttpResponseStatus.BAD_REQUEST, cause);
 	}
 
 	/**
@@ -52,6 +55,6 @@ extends ServiceException
 	 */
 	public UnsupportedRequestException(String message, Throwable cause)
 	{
-		super(message, cause);
+		super(HttpResponseStatus.BAD_REQUEST, message, cause);
 	}
 }
