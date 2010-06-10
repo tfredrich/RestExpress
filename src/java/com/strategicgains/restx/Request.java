@@ -83,4 +83,23 @@ public class Request
 	{
 		return httpRequest.isChunked();
 	}
+	
+	/**
+	 * Checks the value of the given header against the given value.
+	 * Ignores case.  If the header value or given value is null or has a trimmed length
+	 * of zero, returns false.
+	 * 
+	 * @param name the name of a header to check.
+	 * @param value the expected value.
+	 * @return true if the header equals (ignoring case) to the given value.
+	 */
+	public boolean isHeaderEqual(String name, String value)
+	{
+		String header = getHeader(name);
+		
+		if (header == null || header.trim().length() == 0 || value == null || value.trim().length() == 0)
+			return false;
+		
+		return header.trim().equalsIgnoreCase(value.trim());
+	}
 }
