@@ -82,11 +82,13 @@ extends SimpleChannelUpstreamHandler
 		}
 		catch (ServiceException e)
 		{
+			e.printStackTrace();
 			response.setResponseStatus(e.getHttpStatus());
 			response.setException(e);
 		}
 		catch (Throwable t)
 		{
+			t.printStackTrace();
 			response.setResponseStatus(INTERNAL_SERVER_ERROR);
 			response.setException(t);
 		}
