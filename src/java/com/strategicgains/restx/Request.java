@@ -73,4 +73,14 @@ public class Request
 	{
 		return httpRequest.getUri();
 	}
+	
+	public boolean isKeepAlive()
+	{
+		return httpRequest.isKeepAlive();
+	}
+	
+	public boolean isChunked()
+	{
+		return httpRequest.isChunked();
+	}
 }

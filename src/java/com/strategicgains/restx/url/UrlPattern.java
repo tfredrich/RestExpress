@@ -184,7 +184,12 @@ public class UrlPattern
 	    
 	    for (int i = 0; i < matcher.groupCount(); i++)
 	    {
-	    	values.put(parameterNames.get(i), matcher.group(i + 1));
+	    	String value = matcher.group(i + 1);
+	    	
+	    	if (value != null)
+	    	{
+	    		values.put(parameterNames.get(i), value);
+	    	}
 	    }
 
 	    return values;

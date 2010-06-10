@@ -19,9 +19,10 @@ package com.strategicgains.restx;
 
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.OK;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 
@@ -36,15 +37,24 @@ public class Response
 	private HttpResponseStatus responseCode = OK;
 	private Throwable exception = null;
 	private Object body;
-	private Map<String, Object> headers = new HashMap<String, Object>();
+	private Map<String, List<String>> headers = new HashMap<String, List<String>>();
 	
 	
 	// SECTION: CONSTRUCTORS
 	
-	public Response()
+	public Response(Request request)
 	{
 		super();
+		initialize(request);
 	}
+	
+	/**
+     * @param request
+     */
+    private void initialize(Request request)
+    {
+    	// TODO: initilize the response from data in the request.
+    }
 
 
 	// SECTION: ACCESSORS/MUTATORS
@@ -79,14 +89,21 @@ public class Response
 		return !headers.isEmpty();
 	}
 
-	public Map<String, Object> getHeaders()
+	public Set<String> getHeaderNames()
 	{
-		return Collections.unmodifiableMap(headers);
+		return headers.keySet();
+	}
+	
+	public void addHeader(String name, String value)
+	{
+		// TODO Add header
+//		headers.get(name).add(value);
 	}
 
-	public void setHeader(String name, Object value)
+	public void setHeader(String name, String value)
 	{
-		headers.put(name, value);
+		// TODO Set header
+//		headers.put(name, value);
 	}
 
 	public void setResponseCode(int value)

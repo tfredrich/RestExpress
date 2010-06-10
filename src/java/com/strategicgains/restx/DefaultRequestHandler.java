@@ -17,7 +17,7 @@
 
 package com.strategicgains.restx;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -71,9 +71,14 @@ extends SimpleChannelUpstreamHandler
 		try
 		{
 			// Deserialize/marshal the request contents, if necessary.
+			preProcessRequest(request);
+
 			// Call the service, passing the marshaled object(s).
-			Object result = urlRouter.handleUrl(request, response);
-			response.setBody(result);
+			response.setBody(urlRouter.handleUrl(request, response));
+
+			// Process the result to create an appropriately formatted body.
+			// e.g. serialize it.
+			postProcessResponse(request, response);
 		}
 		catch (ServiceException e)
 		{
@@ -89,15 +94,32 @@ extends SimpleChannelUpstreamHandler
 		{
 			if (response.hasException())
 			{
-				writeError(ctx, response);
+				writeError(ctx, request, response);
 			}
 			else
 			{
 				// Set response and accept headers, if appropriate.
-				writeResponse(ctx, response);
+				writeResponse(ctx, request, response);
 			}
 		}
 	}
+
+	/**
+     * @param request
+     */
+    private void preProcessRequest(Request request)
+    {
+	    // Default: do nothing.
+    }
+
+	/**
+     * @param request
+     * @param response
+     */
+    private void postProcessResponse(Request request, Response response)
+    {
+	    // Default: do nothing.
+    }
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent event)
@@ -122,60 +144,70 @@ extends SimpleChannelUpstreamHandler
      */
     private Response createResponse(Request request)
     {
-    	return new Response();
+    	return new Response(request);
     }
 
     /**
      * @param message
      * @return
      */
-    private void writeResponse(ChannelHandlerContext ctx, Response response)
+    private void writeResponse(ChannelHandlerContext ctx, Request request, Response response)
     {
 		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getStatus());
+		addHeaders(response, httpResponse);
 		
 		if (response.hasBody())
 		{
-			httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
+//			httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
 			StringBuilder builder = new StringBuilder(response.getBody().toString());
 			builder.append("\r\n");
 
 			httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), "UTF-8"));
 		}
 
-//		if (keepAlive)
-//  	{
-//  		// Add 'Content-Length' header only for a keep-alive connection.
-//  		httpResponse.setHeader(CONTENT_LENGTH, response.getContent().readableBytes());
-//  	}
-//		else
-//		{
+		if (request.isKeepAlive())
+	  	{
+	  		// Add 'Content-Length' header only for a keep-alive connection.
+	  		httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(httpResponse.getContent().readableBytes()));
+	  	}
+		else
+		{
 			httpResponse.setHeader(CONNECTION, "close");
-//		}
+		}
 
 		// Close the connection as soon as the error message is sent.
 		ctx.getChannel().write(httpResponse).addListener(
 		    ChannelFutureListener.CLOSE);
     }
 
-	private void writeError(ChannelHandlerContext ctx, Response response) //ChannelHandlerContext ctx, HttpResponseStatus status)
+	/**
+     * @param response
+     * @param httpResponse
+     */
+    private void addHeaders(Response response, HttpResponse httpResponse)
+    {
+    	// TODO: template
+    }
+
+
+	private void writeError(ChannelHandlerContext ctx, Request request, Response response)
 	{
 		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getStatus());
-		httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
+//		httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
 		StringBuilder builder = new StringBuilder("Failure: ");
 		builder.append(response.getResponseMessage());
 		builder.append("\r\n");
-
-//		if (keepAlive)
-//        {
-//        	// Add 'Content-Length' header only for a keep-alive connection.
-//        	httpResponse.setHeader(CONTENT_LENGTH, response.getContent().readableBytes());
-//        }
-//		else
-//		{
-			httpResponse.setHeader(CONNECTION, "close");
-//		}
-
 		httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), "UTF-8"));
+
+		if (request.isKeepAlive())
+        {
+        	// Add 'Content-Length' header only for a keep-alive connection.
+        	httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(httpResponse.getContent().readableBytes()));
+        }
+		else
+		{
+			httpResponse.setHeader(CONNECTION, "close");
+		}
 
 		// Close the connection as soon as the error message is sent.
 		ctx.getChannel().write(httpResponse).addListener(ChannelFutureListener.CLOSE);
