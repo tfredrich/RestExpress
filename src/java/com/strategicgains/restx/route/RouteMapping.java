@@ -89,23 +89,25 @@ public abstract class RouteMapping
      */
 	public void map(String urlPattern, Object controller)
 	{
-		map(urlPattern, controller, GET_ACTION_NAME, HttpMethod.GET);
-		map(urlPattern, controller, PUT_ACTION_NAME, HttpMethod.PUT);
-		map(urlPattern, controller, POST_ACTION_NAME, HttpMethod.POST);
-		map(urlPattern, controller, DELETE_ACTION_NAME, HttpMethod.DELETE);
+		map(urlPattern, controller, HttpMethod.GET, HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE);
 	}
 
 	/**
-	 * Map the URL pattern to a controller for the specified HTTP method.
+	 * Map the URL pattern to a controller for the specified HTTP method or list of HTTP methods.
 	 * 
 	 * @param urlPattern a string specifying a URL pattern to match.
 	 * @param controller a pojo which contains an implementation of create(), read(), update(), or delete()
 	 * corresponding to the given HTTP method.
-	 * @param method the HTTP method (GET, PUT, POST, DELETE) to map to the given URL pattern.
+	 * @param method the HTTP methods (GET, PUT, POST, DELETE) to map to the given URL pattern.
 	 */
-	public void map(String urlPattern, Object controller, HttpMethod method)
+	public void map(String urlPattern, Object controller, HttpMethod... methods)
 	{
-		map(urlPattern, controller, ACTION_MAPPING.get(method), method);
+		// TODO: assert that methods is not null.
+
+		for (HttpMethod method : methods)
+		{
+			map(urlPattern, controller, ACTION_MAPPING.get(method), method);
+		}
 	}
 
 	/**
