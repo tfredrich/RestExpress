@@ -35,6 +35,7 @@ public class Request
 	{
 		super();
 		this.httpRequest = request;
+		addQueryStringParametersAsHeaders();
 	}
 	
 	// SECTION: ACCESSORS/MUTATORS
@@ -101,5 +102,34 @@ public class Request
 			return false;
 		
 		return header.trim().equalsIgnoreCase(value.trim());
+	}
+	
+	/**
+	 * Add the query string parameters to the request as headers.
+	 */
+	private void addQueryStringParametersAsHeaders()
+	{
+		String uri = httpRequest.getUri();
+		int x = uri.indexOf('?');
+		String queryString = (x >= 0 ? uri.substring(x + 1) : null);
+		
+		if (queryString != null)
+		{
+			String[] params = queryString.split("&");
+			
+			for (String pair : params)
+			{
+				String[] keyValue = pair.split("=");
+				
+				if (keyValue.length == 1)
+				{
+					httpRequest.addHeader(keyValue[0], "");
+				}
+				else
+				{
+					httpRequest.addHeader(keyValue[0], keyValue[1]);
+				}
+			}
+		}
 	}
 }
