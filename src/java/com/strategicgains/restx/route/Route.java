@@ -15,6 +15,7 @@
  */
 package com.strategicgains.restx.route;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.strategicgains.restx.Request;
@@ -68,6 +69,17 @@ public class Route
         {
 	        return action.invoke(controller, request, response);
         }
+		catch (InvocationTargetException e)
+		{
+			Throwable t = e.getCause();
+
+			if (t instanceof ServiceException)
+			{
+				throw (ServiceException) t;
+			}
+			
+			throw new ServiceException(e);
+		}
         catch (Exception e)
         {
         	throw new ServiceException(e);

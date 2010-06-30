@@ -27,12 +27,13 @@ public class ServiceException
 extends RuntimeException
 {
     private static final long serialVersionUID = 1810995969641082808L;
+    private static final HttpResponseStatus STATUS = HttpResponseStatus.INTERNAL_SERVER_ERROR;
     
     private HttpResponseStatus httpStatus;
 
 	public ServiceException()
 	{
-		this(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+		this(STATUS);
 	}
 	
 	protected ServiceException(HttpResponseStatus status)
@@ -45,7 +46,7 @@ extends RuntimeException
 	 */
 	public ServiceException(String message)
 	{
-		this(HttpResponseStatus.INTERNAL_SERVER_ERROR, message);
+		this(STATUS, message);
 	}
 	
 	protected ServiceException(HttpResponseStatus status, String message)
@@ -59,7 +60,7 @@ extends RuntimeException
 	 */
 	public ServiceException(Throwable cause)
 	{
-		this(HttpResponseStatus.INTERNAL_SERVER_ERROR, cause);
+		this(STATUS, cause);
 	}
 	
 	protected ServiceException(HttpResponseStatus status, Throwable cause)
@@ -74,7 +75,7 @@ extends RuntimeException
 	 */
 	public ServiceException(String message, Throwable cause)
 	{
-		this(HttpResponseStatus.INTERNAL_SERVER_ERROR, message, cause);
+		this(STATUS, message, cause);
 	}
 
 	/**
