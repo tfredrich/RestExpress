@@ -94,17 +94,17 @@ public class Response
 		return headers.keySet();
 	}
 	
-	public void addHeader(String name, String value)
-	{
+//	public void addHeader(String name, String value)
+//	{
 		// TODO Add header
 //		headers.get(name).add(value);
-	}
+//	}
 
-	public void setHeader(String name, String value)
-	{
+//	public void setHeader(String name, String value)
+//	{
 		// TODO Set header
 //		headers.put(name, value);
-	}
+//	}
 
 	public void setResponseCode(int value)
 	{
@@ -114,6 +114,16 @@ public class Response
 	public void setResponseStatus(HttpResponseStatus status)
 	{
 		this.responseCode = status;
+	}
+	
+	public void setResponseCreated()
+	{
+		setResponseStatus(HttpResponseStatus.CREATED);
+	}
+	
+	public void setResponseNoContent()
+	{
+		setResponseStatus(HttpResponseStatus.NO_CONTENT);
 	}
 	
 	public HttpResponseStatus getStatus()

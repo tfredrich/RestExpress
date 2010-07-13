@@ -29,6 +29,10 @@ public class Request
 {
 	// SECTION: INSTANCE VARIABLES
 
+	/**
+     * 
+     */
+    private static final String FORMAT_HEADER_NAME = "format";
 	private HttpRequest httpRequest;
 
 	Request(HttpRequest request)
@@ -83,6 +87,23 @@ public class Request
 	public boolean isChunked()
 	{
 		return httpRequest.isChunked();
+	}
+	
+	public String getFormat()
+	{
+		return getHeader(FORMAT_HEADER_NAME);
+	}
+	
+	/**
+	 * Checks the format request parameter against the given format value.
+	 * Ignores case.
+	 * 
+	 * @param format
+	 * @return true if the given format matches (case insensitive) the request format parameter. Otherwise false.
+	 */
+	public boolean isFormatEqual(String format)
+	{
+		return isHeaderEqual(FORMAT_HEADER_NAME, format);
 	}
 	
 	/**

@@ -168,5 +168,6 @@ public abstract class RouteMapping
 	private void addRoute(HttpMethod method, Route route)
 	{
 		routes.get(method).add(route);
+		// TODO: call log4j for added route, method
 	}
 }

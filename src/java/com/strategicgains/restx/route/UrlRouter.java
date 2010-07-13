@@ -20,7 +20,7 @@ import java.util.Map.Entry;
 
 import com.strategicgains.restx.Request;
 import com.strategicgains.restx.Response;
-import com.strategicgains.restx.exception.UnsupportedRequestException;
+import com.strategicgains.restx.exception.BadRequestException;
 import com.strategicgains.restx.url.UrlMatch;
 
 /**
@@ -50,7 +50,7 @@ public class UrlRouter
 			}
 		}
 
-		throw new UnsupportedRequestException("Unserviceable URL: " + request.getUrl());
+		throw new BadRequestException("Unserviceable URL: " + request.getUrl());
 	}
 
 	/**
