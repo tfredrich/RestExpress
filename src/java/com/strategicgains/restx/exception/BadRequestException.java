@@ -23,12 +23,12 @@ import org.jboss.netty.handler.codec.http.HttpResponseStatus;
  * @author toddf
  * @since Nov 20, 2009
  */
-public class UnsupportedRequestException
+public class BadRequestException
 extends ServiceException
 {
     private static final long serialVersionUID = 1322585725650252682L;
 
-	public UnsupportedRequestException()
+	public BadRequestException()
 	{
 		super(HttpResponseStatus.BAD_REQUEST);
 	}
@@ -36,7 +36,7 @@ extends ServiceException
 	/**
 	 * @param message
 	 */
-	public UnsupportedRequestException(String message)
+	public BadRequestException(String message)
 	{
 		super(HttpResponseStatus.BAD_REQUEST, message);
 	}
@@ -44,7 +44,7 @@ extends ServiceException
 	/**
 	 * @param cause
 	 */
-	public UnsupportedRequestException(Throwable cause)
+	public BadRequestException(Throwable cause)
 	{
 		super(HttpResponseStatus.BAD_REQUEST, cause);
 	}
@@ -53,7 +53,7 @@ extends ServiceException
 	 * @param message
 	 * @param cause
 	 */
-	public UnsupportedRequestException(String message, Throwable cause)
+	public BadRequestException(String message, Throwable cause)
 	{
 		super(HttpResponseStatus.BAD_REQUEST, message, cause);
 	}
