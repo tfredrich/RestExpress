@@ -15,21 +15,15 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx.serialization.json;
-
-import com.strategicgains.util.date.TimestampAdapter;
+package com.strategicgains.restx;
 
 /**
- * A GSON serializer for Date instances represented (and to be presented) as a timestamps (dates with time component).
+ * A Resolver is responsible for determining which object is appropriate for a given request.
  * 
  * @author toddf
- * @since Nov 13, 2009
+ * @since Nov 20, 2009
  */
-public class GsonTimestampSerializer
-extends GsonDateSerializer
+public interface Resolver<T>
 {
-	public GsonTimestampSerializer()
-	{
-		super(new TimestampAdapter());
-	}
+	public T resolve(Request request);
 }

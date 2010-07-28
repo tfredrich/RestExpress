@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.strategicgains.restx.service.Request;
-import com.strategicgains.restx.service.Resolver;
-import com.strategicgains.restx.service.exception.UnsupportedRequestException;
+import com.strategicgains.restx.Request;
+import com.strategicgains.restx.Resolver;
+import com.strategicgains.restx.exception.BadRequestException;
 
 /**
  * @author toddf
@@ -36,7 +36,6 @@ implements Resolver<Serializer>
 
 	@Override
 	public Serializer resolve(Request request)
-	throws UnsupportedRequestException
 	{
 		Serializer serializer = null;
 
@@ -52,7 +51,7 @@ implements Resolver<Serializer>
 		
 		if (serializer == null)
 		{
-			throw new UnsupportedRequestException("No serializer found for Accept Headers");
+			throw new BadRequestException("No serializer found for Accept Headers");
 		}
 		
 		return serializer;

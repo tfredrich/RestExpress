@@ -25,7 +25,7 @@ import com.google.gson.GsonBuilder;
 import com.strategicgains.restx.serialization.DeserializationException;
 import com.strategicgains.restx.serialization.SerializationException;
 import com.strategicgains.restx.serialization.SerializationProcessor;
-import com.strategicgains.restx.util.DateAdapterConstants;
+import com.strategicgains.util.date.DateAdapterConstants;
 
 /**
  * @author toddf
