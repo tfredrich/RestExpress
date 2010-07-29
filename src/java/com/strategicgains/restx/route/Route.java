@@ -38,6 +38,7 @@ public class Route
 	private UrlPattern urlPattern;
 	private Object controller;
 	private Method action;
+	private boolean shouldPerformSerialization = true;
 
 	// SECTION: CONSTRUCTORS
 
@@ -45,17 +46,28 @@ public class Route
 	 * @param urlPattern
 	 * @param controller
 	 */
-	public Route(UrlPattern urlPattern, Object controller, Method action)
+	public Route(UrlPattern urlPattern, Object controller, Method action, boolean shouldPerformSerialization)
 	{
 		super();
 		this.urlPattern = urlPattern;
 		this.controller = controller;
 		this.action = action;
+		this.shouldPerformSerialization = shouldPerformSerialization;
 	}
-	
+
 	public Route(String urlPattern, Object controller, Method action)
 	{
-		this(new UrlPattern(urlPattern), controller, action);
+		this(new UrlPattern(urlPattern), controller, action, true);
+	}
+
+	public Route(String urlPattern, Object controller, Method action, boolean shouldPerformSerialization)
+	{
+		this(new UrlPattern(urlPattern), controller, action, shouldPerformSerialization);
+	}
+	
+	public boolean shouldPerformSerialization()
+	{
+		return shouldPerformSerialization;
 	}
 
 	public UrlMatch match(String url)

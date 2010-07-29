@@ -34,7 +34,6 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
 
 import com.strategicgains.restx.exception.ServiceException;
 import com.strategicgains.restx.route.UrlRouter;
-import com.strategicgains.restx.serialization.SerializationProcessor;
 
 /**
  * @author toddf
@@ -47,16 +46,14 @@ extends SimpleChannelUpstreamHandler
 	// SECTION: INSTANCE VARIABLES
 
 	private UrlRouter urlRouter;
-	private Resolver<SerializationProcessor> serializationResolver;
 
 
 	// SECTION: CONSTRUCTORS
 
-	public DefaultRequestHandler(UrlRouter urlRouter, Resolver<SerializationProcessor> serializationResolver)
+	public DefaultRequestHandler(UrlRouter urlRouter)
 	{
 		super();
 		this.urlRouter = urlRouter;
-		this.serializationResolver = serializationResolver;
 	}
 
 

@@ -22,8 +22,6 @@ import java.util.concurrent.Executors;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
-import com.strategicgains.restx.serialization.DefaultSerializationResolver;
-
 /**
  * The main entry-point into RestX.
  * 
@@ -53,7 +51,7 @@ public class RestServer
 		        Executors.newCachedThreadPool()));
 
 		// Set up the event pipeline factory.
-		bootstrap.setPipelineFactory(new DefaultPipelineFactory(null, new DefaultSerializationResolver()));
+		bootstrap.setPipelineFactory(new DefaultPipelineFactory(null));
 
 		// Bind and start to accept incoming connections.
 		System.out.println("Starting RestX Server on port " + port);
