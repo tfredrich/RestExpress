@@ -17,9 +17,14 @@
 
 package com.strategicgains.restx.serialization.xml;
 
-import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBufferInputStream;
 
 import com.strategicgains.restx.serialization.SerializationProcessor;
+import com.thoughtworks.xstream.XStream;
 
 /**
  * @author toddf
@@ -28,17 +33,53 @@ import com.strategicgains.restx.serialization.SerializationProcessor;
 public class DefaultXmlProcessor
 implements SerializationProcessor
 {
-	@Override
-	public Object deserialize(String object, Type type)
+	private XStream xstream;
+	private Map<Class<?>, String> aliases = new HashMap<Class<?>, String>();
+	
+	public DefaultXmlProcessor()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		super();
+		xstream = new XStream();
+		
+		// TODO: Add the ability to do this in sub-projects.
+//		xstream.aliasType("bucket", Bucket.class);
+//		xstream.alias("owner", Owner.class);
+//		xstream.alias("link", Link.class);
 	}
 
 	@Override
 	public String serialize(Object object)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return xstream.toXML(object);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T deserialize(String xml, Class<T> type)
+	{
+		addAliasIfNecessary(type);
+		return (T) xstream.fromXML(xml);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T deserialize(ChannelBuffer xml, Class<T> type)
+	{
+		return (T) xstream.fromXML(new ChannelBufferInputStream(xml));
+	}
+	
+	private void addAliasIfNecessary(Class<?> type)
+	{
+		if (!aliases.containsKey(type))
+		{
+			String name = type.getSimpleName().trim();
+			
+			if ("[]".equals(name) || "".equals(name))
+			{
+				return;
+			}
+			
+			xstream.alias(name, type);
+		}
 	}
 }
