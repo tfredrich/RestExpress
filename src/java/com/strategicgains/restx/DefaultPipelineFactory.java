@@ -26,6 +26,7 @@ import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 
 import com.strategicgains.restx.route.RouteMapping;
 import com.strategicgains.restx.route.UrlRouter;
+import com.strategicgains.restx.serialization.SerializationProcessor;
 
 /**
  * @author Todd Fredrich
@@ -44,6 +45,7 @@ implements ChannelPipelineFactory
 	private boolean shouldUseSsl = false;
 	private boolean shouldHandleChunked = false;
 	private UrlRouter urlRouter;
+	private Resolver<SerializationProcessor> serializationResolver;
 
 	
 	// SECTION: CONSTRUCTORS

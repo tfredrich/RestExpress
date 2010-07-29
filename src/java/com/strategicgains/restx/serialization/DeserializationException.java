@@ -22,7 +22,7 @@ package com.strategicgains.restx.serialization;
  * @since Nov 20, 2009
  */
 public class DeserializationException
-extends Exception
+extends RuntimeException
 {
     private static final long serialVersionUID = 4563135167976559696L;
 

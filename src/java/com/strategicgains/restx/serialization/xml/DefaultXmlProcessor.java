@@ -19,8 +19,6 @@ package com.strategicgains.restx.serialization.xml;
 
 import java.lang.reflect.Type;
 
-import com.strategicgains.restx.serialization.DeserializationException;
-import com.strategicgains.restx.serialization.SerializationException;
 import com.strategicgains.restx.serialization.SerializationProcessor;
 
 /**
@@ -31,15 +29,14 @@ public class DefaultXmlProcessor
 implements SerializationProcessor
 {
 	@Override
-	public Object deserialize(Object object, Type type)
-	throws DeserializationException
+	public Object deserialize(String object, Type type)
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String serialize(Object object) throws SerializationException
+	public String serialize(Object object)
 	{
 		// TODO Auto-generated method stub
 		return null;

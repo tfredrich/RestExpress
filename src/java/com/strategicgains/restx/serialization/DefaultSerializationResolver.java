@@ -29,7 +29,7 @@ import com.strategicgains.restx.exception.BadRequestException;
  * @author toddf
  * @since Nov 20, 2009
  */
-public class AcceptHeaderSerializationResolver
+public class DefaultSerializationResolver
 implements Resolver<Serializer>
 {
 	private Map<String, Serializer> serializers = new ConcurrentHashMap<String, Serializer>();

@@ -26,6 +26,6 @@ import java.lang.reflect.Type;
  */
 public interface Deserializer
 {
-	public Object deserialize(Object object, Type type)
-	throws DeserializationException;
+	public Object deserialize(String string, Type type);
+//	public Object deserialize(ChannelBuffer buffer, Type type);
 }

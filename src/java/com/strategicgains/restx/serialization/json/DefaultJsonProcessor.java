@@ -22,8 +22,6 @@ import java.util.Date;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.strategicgains.restx.serialization.DeserializationException;
-import com.strategicgains.restx.serialization.SerializationException;
 import com.strategicgains.restx.serialization.SerializationProcessor;
 import com.strategicgains.util.date.DateAdapterConstants;
 
@@ -41,14 +39,13 @@ implements SerializationProcessor
 		.create();
 
     @Override
-    public Object deserialize(Object object, Type type)
-    throws DeserializationException
+    public Object deserialize(String object, Type type)
     {
     	return GSON.fromJson((String) object, type);
     }
 
     @Override
-    public String serialize(Object object) throws SerializationException
+    public String serialize(Object object)
     {
     	return GSON.toJson(object);
     }
