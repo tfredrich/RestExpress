@@ -33,7 +33,9 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 
 import com.strategicgains.restx.exception.ServiceException;
+import com.strategicgains.restx.route.RoutingResult;
 import com.strategicgains.restx.route.UrlRouter;
+import com.strategicgains.restx.serialization.SerializationProcessor;
 
 /**
  * @author toddf
@@ -46,14 +48,16 @@ extends SimpleChannelUpstreamHandler
 	// SECTION: INSTANCE VARIABLES
 
 	private UrlRouter urlRouter;
+	private Resolver<SerializationProcessor> serializationResolver;
 
 
 	// SECTION: CONSTRUCTORS
 
-	public DefaultRequestHandler(UrlRouter urlRouter)
+	public DefaultRequestHandler(UrlRouter urlRouter, Resolver<SerializationProcessor> serializationResolver)
 	{
 		super();
 		this.urlRouter = urlRouter;
+		this.serializationResolver = serializationResolver;
 	}
 
 
@@ -63,21 +67,24 @@ extends SimpleChannelUpstreamHandler
 	public void messageReceived(ChannelHandlerContext ctx, MessageEvent event)
 	throws Exception
 	{
-		// Determine which service to call via URL & parameters.
-		// Throw exception if no service found/available.
 		Request request = createRequest((HttpRequest) event.getMessage(), ctx);
 		Response response = createResponse(request);
 
 		try
 		{
-			// Deserialize/marshal the request contents, if necessary.
 			preProcessRequest(request);
+			RoutingResult result = urlRouter.handleUrl(request, response);
+			
+			if (result.shouldSerializeResponse())
+			{
+				SerializationProcessor p = serializationResolver.resolve(request);
+				response.setBody(p.serialize(result.getObject()));
+			}
+			else
+			{
+				response.setBody(result.getObject());
+			}
 
-			// Call the service, passing the marshaled object(s).
-			response.setBody(urlRouter.handleUrl(request, response));
-
-			// Process the result to create an appropriately formatted body.
-			// e.g. serialize it.
 			postProcessResponse(request, response);
 		}
 		catch (ServiceException e)
@@ -137,7 +144,7 @@ extends SimpleChannelUpstreamHandler
      */
     private Request createRequest(HttpRequest request, ChannelHandlerContext context)
     {
-    	return new Request(request);
+    	return new Request(request, serializationResolver);
     }
 
 	/**

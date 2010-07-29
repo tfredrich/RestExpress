@@ -37,7 +37,7 @@ public class UrlRouter
 		this.routes = routes;
 	}
 	
-	public Object handleUrl(Request request, Response response)
+	public RoutingResult handleUrl(Request request, Response response)
 	{
 		for (Route route : routes.getRoutesFor(request.getMethod()))
 		{
@@ -46,7 +46,7 @@ public class UrlRouter
 			if (match != null)
 			{
 				addParameterHeaders(match.parameterSet(), request);
-				return route.invoke(request, response);
+				return new RoutingResult(route, route.invoke(request, response));
 			}
 		}
 

@@ -21,24 +21,32 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
+import com.strategicgains.restx.serialization.SerializationProcessor;
+
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
 public class Request
 {
+	// SECTION: CONSTANTS
+
+	private static final String FORMAT_HEADER_NAME = "format";
+
+
 	// SECTION: INSTANCE VARIABLES
 
-	/**
-     * 
-     */
-    private static final String FORMAT_HEADER_NAME = "format";
 	private HttpRequest httpRequest;
+	private Resolver<SerializationProcessor> serializationResolver;
 
-	Request(HttpRequest request)
+	
+	// SECTION: CONSTRUCTOR
+
+	Request(HttpRequest request, Resolver<SerializationProcessor> serializationResolver)
 	{
 		super();
 		this.httpRequest = request;
+		this.serializationResolver = serializationResolver;
 		addQueryStringParametersAsHeaders();
 	}
 	
@@ -53,6 +61,12 @@ public class Request
     {
 		return httpRequest.getContent();
     }
+	
+	public <T> T getBodyAs(Class<T> type)
+	{
+		SerializationProcessor processor = serializationResolver.resolve(this);
+		return processor.deserialize(getBody(), type);
+	}
 
 	public void setBody(ChannelBuffer body)
     {

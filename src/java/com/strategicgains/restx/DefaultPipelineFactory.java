@@ -26,6 +26,7 @@ import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 
 import com.strategicgains.restx.route.RouteMapping;
 import com.strategicgains.restx.route.UrlRouter;
+import com.strategicgains.restx.serialization.SerializationProcessor;
 
 /**
  * @author Todd Fredrich
@@ -44,21 +45,24 @@ implements ChannelPipelineFactory
 	private boolean shouldUseSsl = false;
 	private boolean shouldHandleChunked = false;
 	private UrlRouter urlRouter;
+	Resolver<SerializationProcessor> serializationResolver;
 
 	
 	// SECTION: CONSTRUCTORS
 
-	public DefaultPipelineFactory(RouteMapping routes)
+	public DefaultPipelineFactory(RouteMapping routes, Resolver<SerializationProcessor> serializationResolver)
 	{
-		this(false, false, routes);
+		this(false, false, routes, serializationResolver);
 	}
 
-	public DefaultPipelineFactory(boolean useSsl, boolean useChunked, RouteMapping routes)
+	public DefaultPipelineFactory(boolean useSsl, boolean useChunked, RouteMapping routes,
+		Resolver<SerializationProcessor> serializationResolver)
 	{
 		super();
 		this.shouldUseSsl = useSsl;
 		this.shouldHandleChunked = useChunked;
 		this.urlRouter = new UrlRouter(routes);
+		this.serializationResolver = serializationResolver;
 	}
 
 	
@@ -85,7 +89,7 @@ implements ChannelPipelineFactory
 		}
 
 		pipeline.addLast("encoder", new HttpResponseEncoder());
-		pipeline.addLast("handler", new DefaultRequestHandler(urlRouter));
+		pipeline.addLast("handler", new DefaultRequestHandler(urlRouter, serializationResolver));
 
 		return pipeline;
 	}
