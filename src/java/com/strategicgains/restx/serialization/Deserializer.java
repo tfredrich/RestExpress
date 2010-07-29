@@ -17,7 +17,8 @@
 
 package com.strategicgains.restx.serialization;
 
-import java.lang.reflect.Type;
+import org.jboss.netty.buffer.ChannelBuffer;
+
 
 
 /**
@@ -26,6 +27,6 @@ import java.lang.reflect.Type;
  */
 public interface Deserializer
 {
-	public Object deserialize(String string, Type type);
-//	public Object deserialize(ChannelBuffer buffer, Type type);
+	public <T> T deserialize(String string, Class<T> type);
+	public <T> T deserialize(ChannelBuffer buffer, Class<T> type);
 }

@@ -17,8 +17,11 @@
 
 package com.strategicgains.restx.serialization.json;
 
-import java.lang.reflect.Type;
+import java.io.InputStreamReader;
 import java.util.Date;
+
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBufferInputStream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,6 +35,7 @@ import com.strategicgains.util.date.DateAdapterConstants;
 public class DefaultJsonProcessor
 implements SerializationProcessor
 {
+	// TODO: Provide a way to allow this configuration in sub-projects.
 	private static final Gson GSON = new GsonBuilder()
 		.disableHtmlEscaping()
 		.registerTypeAdapter(Date.class, new GsonTimestampSerializer())
@@ -39,9 +43,15 @@ implements SerializationProcessor
 		.create();
 
     @Override
-    public Object deserialize(String object, Type type)
+    public <T> T deserialize(String string, Class<T> type)
     {
-    	return GSON.fromJson((String) object, type);
+    	return GSON.fromJson((String) string, type);
+    }
+
+    @Override
+    public <T> T deserialize(ChannelBuffer buffer, Class<T> type)
+    {
+    	return GSON.fromJson(new InputStreamReader(new ChannelBufferInputStream(buffer)), type);
     }
 
     @Override
