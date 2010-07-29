@@ -35,16 +35,19 @@ implements SerializationProcessor
 {
 	private XStream xstream;
 	private Map<Class<?>, String> aliases = new HashMap<Class<?>, String>();
+	private boolean shouldAutoAlias = true;
 	
 	public DefaultXmlProcessor()
 	{
 		super();
 		xstream = new XStream();
-		
-		// TODO: Add the ability to do this in sub-projects.
-//		xstream.aliasType("bucket", Bucket.class);
-//		xstream.alias("owner", Owner.class);
-//		xstream.alias("link", Link.class);
+	}
+	
+	public DefaultXmlProcessor(XStream xstream)
+	{
+		super();
+		this.xstream = xstream;
+		shouldAutoAlias = false;
 	}
 
 	@Override
@@ -57,7 +60,11 @@ implements SerializationProcessor
 	@SuppressWarnings("unchecked")
 	public <T> T deserialize(String xml, Class<T> type)
 	{
-		addAliasIfNecessary(type);
+		if (shouldAutoAlias)
+		{
+			addAliasIfNecessary(type);
+		}
+
 		return (T) xstream.fromXML(xml);
 	}
 

@@ -35,28 +35,39 @@ import com.strategicgains.util.date.DateAdapterConstants;
 public class DefaultJsonProcessor
 implements SerializationProcessor
 {
-	// TODO: Provide a way to allow this configuration in sub-projects.
-	private static final Gson GSON = new GsonBuilder()
-		.disableHtmlEscaping()
-		.registerTypeAdapter(Date.class, new GsonTimestampSerializer())
-		.setDateFormat(DateAdapterConstants.TIMESTAMP_OUTPUT_FORMAT)
-		.create();
+	private Gson gson;
+	
+	public DefaultJsonProcessor()
+	{
+		super();
+		gson = new GsonBuilder()
+			.disableHtmlEscaping()
+			.registerTypeAdapter(Date.class, new GsonTimestampSerializer())
+			.setDateFormat(DateAdapterConstants.TIMESTAMP_OUTPUT_FORMAT)
+			.create();
+	}
+	
+	public DefaultJsonProcessor(Gson gson)
+	{
+		super();
+		this.gson = gson;
+	}
 
     @Override
     public <T> T deserialize(String string, Class<T> type)
     {
-    	return GSON.fromJson((String) string, type);
+    	return gson.fromJson((String) string, type);
     }
 
     @Override
     public <T> T deserialize(ChannelBuffer buffer, Class<T> type)
     {
-    	return GSON.fromJson(new InputStreamReader(new ChannelBufferInputStream(buffer)), type);
+    	return gson.fromJson(new InputStreamReader(new ChannelBufferInputStream(buffer)), type);
     }
 
     @Override
     public String serialize(Object object)
     {
-    	return GSON.toJson(object);
+    	return gson.toJson(object);
     }
 }

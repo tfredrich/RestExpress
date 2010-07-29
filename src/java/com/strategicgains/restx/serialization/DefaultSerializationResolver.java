@@ -17,44 +17,107 @@
 
 package com.strategicgains.restx.serialization;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.strategicgains.restx.Request;
 import com.strategicgains.restx.Resolver;
 import com.strategicgains.restx.exception.BadRequestException;
+import com.strategicgains.restx.serialization.json.DefaultJsonProcessor;
+import com.strategicgains.restx.serialization.xml.DefaultXmlProcessor;
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
 public class DefaultSerializationResolver
-implements Resolver<Serializer>
+implements Resolver<SerializationProcessor>
 {
-	private Map<String, Serializer> serializers = new ConcurrentHashMap<String, Serializer>();
+	private Map<String, SerializationProcessor> processors = new HashMap<String, SerializationProcessor>();
+	private String defaultFormat;
+	
+	public DefaultSerializationResolver()
+	{
+		super();
+		processors.put("json", new DefaultJsonProcessor());
+		processors.put("xml", new DefaultXmlProcessor());
+		defaultFormat = "json";
+	}
+	
+	public DefaultSerializationResolver(Map<String, SerializationProcessor> processors, String defaultFormat)
+	{
+		super();
+		this.processors.putAll(processors);
+		this.defaultFormat = defaultFormat;
+	}
 
 	@Override
-	public Serializer resolve(Request request)
+	public SerializationProcessor resolve(Request request)
 	{
-		Serializer serializer = null;
+		SerializationProcessor processor = null;
 
-		for (String acceptHeader : getAcceptHeaders(request))
+		processor = resolveViaRequestFormat(request);
+		
+		if (processor != null)
 		{
-			serializer = serializers.get(acceptHeader);
+			return processor;
+		}
+
+		processor = resolveViaAcceptHeaders(request);
+		
+		if (processor != null)
+		{
+			return processor;
+		}
+		
+		processor = resolveViaDefaultFormat();
+		
+		if (processor == null)
+		{
+			throw new BadRequestException("No serialization processor found for Accept Headers");
+		}
+		
+		return processor;
+	}
+
+	private SerializationProcessor resolveViaRequestFormat(Request request)
+	{
+		return resolveViaSpecifiedFormat(request.getFormat());
+	}
+	
+	private SerializationProcessor resolveViaAcceptHeaders(Request request)
+	{
+		List<String> acceptHeaders = getAcceptHeaders(request);
+		SerializationProcessor processor = null;
+
+		for (String acceptHeader : acceptHeaders)
+		{
+			processor = processors.get(acceptHeader);
 			
-			if (serializer != null)
+			if (processor != null)
 			{
 				break;
 			}
 		}
 		
-		if (serializer == null)
+		return processor;
+	}
+	
+	private SerializationProcessor resolveViaDefaultFormat()
+	{
+		return resolveViaSpecifiedFormat(defaultFormat);
+	}
+	
+	private SerializationProcessor resolveViaSpecifiedFormat(String format)
+	{
+		if (format == null || format.trim().isEmpty())
 		{
-			throw new BadRequestException("No serializer found for Accept Headers");
+			return null;
 		}
 		
-		return serializer;
+		return processors.get(format);
 	}
 
 	/**
@@ -64,6 +127,6 @@ implements Resolver<Serializer>
     private List<String> getAcceptHeaders(Request request)
     {
 	    // TODO Auto-generated method stub
-	    return null;
+    	return Collections.emptyList();
     }
 }

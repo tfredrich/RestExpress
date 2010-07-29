@@ -50,17 +50,18 @@ implements ChannelPipelineFactory
 	
 	// SECTION: CONSTRUCTORS
 
-	public DefaultPipelineFactory(RouteMapping routes)
+	public DefaultPipelineFactory(RouteMapping routes, Resolver<SerializationProcessor> resolver)
 	{
-		this(false, false, routes);
+		this(false, false, routes, resolver);
 	}
 
-	public DefaultPipelineFactory(boolean useSsl, boolean useChunked, RouteMapping routes)
+	public DefaultPipelineFactory(boolean useSsl, boolean useChunked, RouteMapping routes, Resolver<SerializationProcessor> resolver)
 	{
 		super();
 		this.shouldUseSsl = useSsl;
 		this.shouldHandleChunked = useChunked;
 		this.urlRouter = new UrlRouter(routes);
+		this.serializationResolver = resolver;
 	}
 
 	
@@ -87,7 +88,7 @@ implements ChannelPipelineFactory
 		}
 
 		pipeline.addLast("encoder", new HttpResponseEncoder());
-		pipeline.addLast("handler", new DefaultRequestHandler(urlRouter));
+		pipeline.addLast("handler", new DefaultRequestHandler(urlRouter, serializationResolver));
 
 		return pipeline;
 	}
