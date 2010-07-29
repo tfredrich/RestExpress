@@ -15,7 +15,6 @@
  */
 package com.strategicgains.restx.route;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,10 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
-
-import com.strategicgains.restx.Request;
-import com.strategicgains.restx.Response;
-import com.strategicgains.restx.exception.ConfigurationException;
 
 /**
  * Contains the routes for a given service implementation.  Sub-classes will implement the initialize() method which
@@ -37,23 +32,6 @@ import com.strategicgains.restx.exception.ConfigurationException;
  */
 public abstract class RouteMapping
 {
-	// SECTION: CONSTANTS
-
-	static final String DELETE_ACTION_NAME = "delete";
-	static final String GET_ACTION_NAME = "read";
-	static final String POST_ACTION_NAME = "create";
-	static final String PUT_ACTION_NAME = "update";
-	static final Map<HttpMethod, String> ACTION_MAPPING = new HashMap<HttpMethod, String>();
-
-	static
-	{
-		ACTION_MAPPING.put(HttpMethod.DELETE, DELETE_ACTION_NAME);
-		ACTION_MAPPING.put(HttpMethod.GET, GET_ACTION_NAME);
-		ACTION_MAPPING.put(HttpMethod.POST, POST_ACTION_NAME);
-		ACTION_MAPPING.put(HttpMethod.PUT, PUT_ACTION_NAME);
-	}
-
-
 	// SECTION: INSTANCE VARIABLES
 
 	Map<HttpMethod, List<Route>> routes;
@@ -61,6 +39,8 @@ public abstract class RouteMapping
 	private List<Route> getRoutes = new ArrayList<Route>();
 	private List<Route> postRoutes = new ArrayList<Route>();
 	private List<Route> putRoutes = new ArrayList<Route>();
+	
+	private List<RouteBuilder> routeBuilders = new ArrayList<RouteBuilder>();
 
 
 	// SECTION: CONSTRUCTOR
@@ -74,54 +54,40 @@ public abstract class RouteMapping
 		routes.put(HttpMethod.POST, postRoutes);
 		routes.put(HttpMethod.PUT, putRoutes);
 		initialize();
+		buildRoutes();
 	}
 
     protected abstract void initialize();
+    
+    private void buildRoutes()
+    {
+    	for (RouteBuilder builder : routeBuilders)
+    	{
+    		for (Route route : builder.createRoutes())
+    		{
+    			addRoute(route);
+    		}
+    	}
+    	
+    	// Garbage collect the builders and blow chow if buildRoutes() gets called a second time.
+    	routeBuilders.clear();
+    	routeBuilders = null;
+    }
 
 
 	// SECTION: URL MAPPING
-
+	
     /**
-     * Map a URL pattern to a controller, using the default action names for the four HTTP methods.
+     * Map a URL pattern to a controller.
      * 
      * @param urlPattern a string specifying a URL pattern to match.
      * @param controller a pojo which contains implementations of create(), read(), update(), delete() methods.
      */
-	public void map(String urlPattern, Object controller)
+	public RouteBuilder uri(String uri, Object controller)
 	{
-		map(urlPattern, controller, HttpMethod.GET, HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE);
-	}
-
-	/**
-	 * Map the URL pattern to a controller for the specified HTTP method or list of HTTP methods.
-	 * 
-	 * @param urlPattern a string specifying a URL pattern to match.
-	 * @param controller a pojo which contains an implementation of create(), read(), update(), or delete()
-	 * corresponding to the given HTTP method.
-	 * @param method the HTTP methods (GET, PUT, POST, DELETE) to map to the given URL pattern.
-	 */
-	public void map(String urlPattern, Object controller, HttpMethod... methods)
-	{
-		// TODO: assert that methods is not null.
-
-		for (HttpMethod method : methods)
-		{
-			map(urlPattern, controller, ACTION_MAPPING.get(method), method);
-		}
-	}
-
-	/**
-	 * Map the URL pattern to a controller method for a given HTTP method.
-	 * 
-	 * @param urlPattern a string specifying a URL pattern to match.
-	 * @param controller a pojo which contains an implementation of specified action name.
-	 * @param actionName the name of a method on the supplied controller.
-	 * @param method the HTTP method (GET, PUT, POST, DELETE) to map to the given URL pattern and controller.
-	 */
-	public void map(String urlPattern, Object controller, String actionName, HttpMethod method)
-	{
-		Method action = determineAction(controller, actionName);
-		addRoute(method, new Route(urlPattern, controller, action));
+		RouteBuilder builder = new RouteBuilder(uri, controller);
+		routeBuilders.add(builder);
+		return builder;
 	}
 	
 	
@@ -141,33 +107,12 @@ public abstract class RouteMapping
 	// SECTION: UTILITY - PRIVATE
 
 	/**
-	 * Attempts to find the actionName on the controller, assuming a signature of actionName(Request, Response), 
-	 * and returns the action as a Method to be used later when the route is invoked.
-	 * 
-	 * @param controller a pojo that implements a method named by the action, with Request and Response as parameters.
-	 * @param actionName the name of a method on the given controller pojo.
-	 * @return a Method instance referring to the action on the controller.
-	 * @throws ConfigurationException if an error occurs.
-	 */
-	private Method determineAction(Object controller, String actionName)
-	{
-		try
-		{
-			return controller.getClass().getMethod(actionName, Request.class, Response.class);
-		}
-		catch (Exception e)
-		{
-			throw new ConfigurationException(e);
-		}
-	}
-
-	/**
 	 * @param method
 	 * @param route
 	 */
-	private void addRoute(HttpMethod method, Route route)
+	private void addRoute(Route route)
 	{
-		routes.get(method).add(route);
+		routes.get(route.getMethod()).add(route);
 		// TODO: call log4j for added route, method
 	}
 }

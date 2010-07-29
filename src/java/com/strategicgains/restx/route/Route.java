@@ -18,6 +18,8 @@ package com.strategicgains.restx.route;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.jboss.netty.handler.codec.http.HttpMethod;
+
 import com.strategicgains.restx.Request;
 import com.strategicgains.restx.Response;
 import com.strategicgains.restx.exception.ServiceException;
@@ -38,7 +40,8 @@ public class Route
 	private UrlPattern urlPattern;
 	private Object controller;
 	private Method action;
-	private boolean shouldPerformSerialization = true;
+	private HttpMethod method;
+	private boolean shouldSerializeResponse = true;
 
 	// SECTION: CONSTRUCTORS
 
@@ -46,28 +49,29 @@ public class Route
 	 * @param urlPattern
 	 * @param controller
 	 */
-	public Route(UrlPattern urlPattern, Object controller, Method action, boolean shouldPerformSerialization)
+	public Route(UrlPattern urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse)
 	{
 		super();
 		this.urlPattern = urlPattern;
 		this.controller = controller;
 		this.action = action;
-		this.shouldPerformSerialization = shouldPerformSerialization;
+		this.method = method;
+		this.shouldSerializeResponse = shouldSerializeResponse;
 	}
 
-	public Route(String urlPattern, Object controller, Method action)
+	public Route(String urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse)
 	{
-		this(new UrlPattern(urlPattern), controller, action, true);
-	}
-
-	public Route(String urlPattern, Object controller, Method action, boolean shouldPerformSerialization)
-	{
-		this(new UrlPattern(urlPattern), controller, action, shouldPerformSerialization);
+		this(new UrlPattern(urlPattern), controller, action, method, shouldSerializeResponse);
 	}
 	
-	public boolean shouldPerformSerialization()
+	public HttpMethod getMethod()
 	{
-		return shouldPerformSerialization;
+		return method;
+	}
+	
+	public boolean shouldSerializeResponse()
+	{
+		return shouldSerializeResponse;
 	}
 
 	public UrlMatch match(String url)
