@@ -109,4 +109,11 @@ public class UrlPatternTest
 		assertEquals("12345", match.get("a_id"));
 		assertEquals("67890", match.get("b_id"));
 	}
+	
+	@Test
+	public void shouldReturnBaseUriAsNormalizedUrlPattern()
+	{
+		assertEquals("/xxx/{a_id}/yyy/{b_id}", new UrlPattern("/xxx/{a_id}/yyy/{b_id}").getNormalizedUrlPattern());
+		assertEquals("/xxx/{a_id}/yyy/{b_id}", new UrlPattern("/xxx/{a_id}/yyy/{b_id}.{format}").getNormalizedUrlPattern());
+	}
 }
