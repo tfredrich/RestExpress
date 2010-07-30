@@ -33,8 +33,8 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 
 import com.strategicgains.restx.exception.ServiceException;
-import com.strategicgains.restx.route.RoutingResult;
-import com.strategicgains.restx.route.UrlRouter;
+import com.strategicgains.restx.route.Action;
+import com.strategicgains.restx.route.RouteResolver;
 import com.strategicgains.restx.serialization.SerializationProcessor;
 
 /**
@@ -47,16 +47,16 @@ extends SimpleChannelUpstreamHandler
 {
 	// SECTION: INSTANCE VARIABLES
 
-	private UrlRouter urlRouter;
+	private RouteResolver routeResolver;
 	private Resolver<SerializationProcessor> serializationResolver;
 
 
 	// SECTION: CONSTRUCTORS
 
-	public DefaultRequestHandler(UrlRouter urlRouter, Resolver<SerializationProcessor> serializationResolver)
+	public DefaultRequestHandler(RouteResolver routeResolver, Resolver<SerializationProcessor> serializationResolver)
 	{
 		super();
-		this.urlRouter = urlRouter;
+		this.routeResolver = routeResolver;
 		this.serializationResolver = serializationResolver;
 	}
 
@@ -73,16 +73,17 @@ extends SimpleChannelUpstreamHandler
 		try
 		{
 			preProcessRequest(request);
-			RoutingResult result = urlRouter.handleUrl(request, response);
+			Action action = routeResolver.resolve(request);
+			Object result = action.invoke(request, response);
 			
-			if (result.shouldSerializeResponse())
+			if (action.shouldSerializeResponse())
 			{
 				SerializationProcessor p = serializationResolver.resolve(request);
-				response.setBody(p.serialize(result.getObject()));
+				response.setBody(p.serialize(result));
 			}
 			else
 			{
-				response.setBody(result.getObject());
+				response.setBody(result);
 			}
 
 			postProcessResponse(request, response);
@@ -144,7 +145,7 @@ extends SimpleChannelUpstreamHandler
      */
     private Request createRequest(HttpRequest request, ChannelHandlerContext context)
     {
-    	return new Request(request, serializationResolver, urlRouter);
+    	return new Request(request, serializationResolver, routeResolver);
     }
 
 	/**

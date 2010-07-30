@@ -22,7 +22,7 @@ import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
 import com.strategicgains.restx.route.Route;
-import com.strategicgains.restx.route.UrlRouter;
+import com.strategicgains.restx.route.RouteResolver;
 import com.strategicgains.restx.serialization.SerializationProcessor;
 
 /**
@@ -40,12 +40,12 @@ public class Request
 
 	private HttpRequest httpRequest;
 	private Resolver<SerializationProcessor> serializationResolver;
-	private UrlRouter urlRouter;
+	private RouteResolver urlRouter;
 
 	
 	// SECTION: CONSTRUCTOR
 
-	Request(HttpRequest request, Resolver<SerializationProcessor> serializationResolver, UrlRouter routes)
+	Request(HttpRequest request, Resolver<SerializationProcessor> serializationResolver, RouteResolver routes)
 	{
 		super();
 		this.httpRequest = request;

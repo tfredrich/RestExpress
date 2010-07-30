@@ -15,11 +15,8 @@
 */
 package com.strategicgains.restx.route;
 
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.strategicgains.restx.Request;
-import com.strategicgains.restx.Response;
+import com.strategicgains.restx.Resolver;
 import com.strategicgains.restx.exception.BadRequestException;
 import com.strategicgains.restx.url.UrlMatch;
 
@@ -27,11 +24,12 @@ import com.strategicgains.restx.url.UrlMatch;
  * @author toddf
  * @since May 4, 2010
  */
-public class UrlRouter
+public class RouteResolver
+implements Resolver<Action>
 {
 	private RouteMapping routes;
 	
-	public UrlRouter(RouteMapping routes)
+	public RouteResolver(RouteMapping routes)
 	{
 		super();
 		this.routes = routes;
@@ -42,7 +40,8 @@ public class UrlRouter
 		return routes.getNamedRoute(name);
 	}
 	
-	public RoutingResult handleUrl(Request request, Response response)
+	@Override
+	public Action resolve(Request request)
 	{
 		for (Route route : routes.getRoutesFor(request.getMethod()))
 		{
@@ -50,23 +49,10 @@ public class UrlRouter
 
 			if (match != null)
 			{
-				addParameterHeaders(match.parameterSet(), request);
-				return new RoutingResult(route, route.invoke(request, response));
+				return new Action(route, match);
 			}
 		}
 
-		throw new BadRequestException("Unserviceable URL: " + request.getUrl());
+		throw new BadRequestException("Unresolvable URL: " + request.getUrl());
 	}
-
-	/**
-     * @param parameters a Set of Entry<String, String> name/value pairs of parameters parsed from the URL.
-     * @param request the Request instance in which to set parameter headers.
-     */
-    private void addParameterHeaders(Set<Entry<String, String>> parameters, Request request)
-    {
-    	for (Entry<String, String> entry : parameters)
-    	{
-    		request.addHeader(entry.getKey(), entry.getValue());
-    	}
-    }
 }
