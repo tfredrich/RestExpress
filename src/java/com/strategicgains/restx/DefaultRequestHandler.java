@@ -144,7 +144,7 @@ extends SimpleChannelUpstreamHandler
      */
     private Request createRequest(HttpRequest request, ChannelHandlerContext context)
     {
-    	return new Request(request, serializationResolver);
+    	return new Request(request, serializationResolver, urlRouter);
     }
 
 	/**

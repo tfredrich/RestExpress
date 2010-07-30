@@ -17,9 +17,12 @@ package com.strategicgains.restx.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.strategicgains.restx.domain.Link;
+import com.strategicgains.restx.exception.ServiceException;
 
 /**
  * Non-instantiable class with foreign methods to create and manipulate Link instances.
@@ -42,15 +45,35 @@ public abstract class LinkUtils
 	 * @param urlPath
 	 * @return
 	 */
-	public static List<Link> asLinks(Collection<String> ids, String urlPath)
+	public static List<Link> asLinks(Collection<String> ids, String paramName, String urlPath, String... nameValuePairs)
 	{
+		MapStringFormat formatter = new MapStringFormat();
+		Map<String, String> parameters = toMap(nameValuePairs);
 		List<Link> results = new ArrayList<Link>();
 		
 		for (String id : ids)
 		{
-			results.add(new Link(id, urlPath + id));
+			parameters.put(paramName, id);
+			results.add(new Link(id, formatter.format(urlPath, parameters)));
 		}
 		
 		return results;
+	}
+
+	private static Map<String, String> toMap(String... nameValuePairs)
+	{
+		if ((nameValuePairs.length % 2) != 0)
+		{
+			throw new ServiceException("Name/value pairs unbalanced: " + nameValuePairs.toString());
+		}
+
+		Map<String, String> result = new HashMap<String, String>();
+
+		for (int i = 0; i < nameValuePairs.length; i += 2)
+		{
+			result.put(nameValuePairs[i], nameValuePairs[i + 1]);
+		}
+
+		return result;
 	}
 }

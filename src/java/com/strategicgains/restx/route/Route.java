@@ -42,6 +42,7 @@ public class Route
 	private Method action;
 	private HttpMethod method;
 	private boolean shouldSerializeResponse = true;
+	private String name;
 
 	// SECTION: CONSTRUCTORS
 
@@ -49,7 +50,7 @@ public class Route
 	 * @param urlPattern
 	 * @param controller
 	 */
-	public Route(UrlPattern urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse)
+	public Route(UrlPattern urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse, String name)
 	{
 		super();
 		this.urlPattern = urlPattern;
@@ -57,16 +58,27 @@ public class Route
 		this.action = action;
 		this.method = method;
 		this.shouldSerializeResponse = shouldSerializeResponse;
+		this.name = name;
 	}
 
-	public Route(String urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse)
+	public Route(String urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse, String name)
 	{
-		this(new UrlPattern(urlPattern), controller, action, method, shouldSerializeResponse);
+		this(new UrlPattern(urlPattern), controller, action, method, shouldSerializeResponse, name);
 	}
 	
 	public HttpMethod getMethod()
 	{
 		return method;
+	}
+	
+	public String getName()
+	{
+		return name;
+	}
+	
+	public String getUrlPattern()
+	{
+		return urlPattern.getNormalizedUrlPattern();
 	}
 	
 	public boolean shouldSerializeResponse()

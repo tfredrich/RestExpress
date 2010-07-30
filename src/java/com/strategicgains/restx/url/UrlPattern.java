@@ -99,6 +99,11 @@ public class UrlPattern
     {
     	return urlPattern;
     }
+    
+    public String getNormalizedUrlPattern()
+    {
+    	return getUrlPattern().replaceFirst(URL_FORMAT_REGEX, "");
+    }
 
 	/**
      * @param pattern the pattern to set

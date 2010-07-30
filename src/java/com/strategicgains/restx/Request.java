@@ -21,6 +21,8 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
+import com.strategicgains.restx.route.Route;
+import com.strategicgains.restx.route.UrlRouter;
 import com.strategicgains.restx.serialization.SerializationProcessor;
 
 /**
@@ -38,15 +40,17 @@ public class Request
 
 	private HttpRequest httpRequest;
 	private Resolver<SerializationProcessor> serializationResolver;
+	private UrlRouter urlRouter;
 
 	
 	// SECTION: CONSTRUCTOR
 
-	Request(HttpRequest request, Resolver<SerializationProcessor> serializationResolver)
+	Request(HttpRequest request, Resolver<SerializationProcessor> serializationResolver, UrlRouter routes)
 	{
 		super();
 		this.httpRequest = request;
 		this.serializationResolver = serializationResolver;
+		this.urlRouter = routes;
 		addQueryStringParametersAsHeaders();
 	}
 	
@@ -93,6 +97,18 @@ public class Request
 		return httpRequest.getUri();
 	}
 	
+	public String getNamedUrl(String resourceName)
+	{
+		Route route = urlRouter.getNamedRoute(resourceName);
+		
+		if (route != null)
+		{
+			return route.getUrlPattern();
+		}
+		
+		return null;
+	}
+
 	public boolean isKeepAlive()
 	{
 		return httpRequest.isKeepAlive();

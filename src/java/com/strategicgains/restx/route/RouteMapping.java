@@ -34,12 +34,13 @@ public abstract class RouteMapping
 {
 	// SECTION: INSTANCE VARIABLES
 
-	Map<HttpMethod, List<Route>> routes;
+	private Map<HttpMethod, List<Route>> routes;
 	private List<Route> deleteRoutes = new ArrayList<Route>();
 	private List<Route> getRoutes = new ArrayList<Route>();
 	private List<Route> postRoutes = new ArrayList<Route>();
 	private List<Route> putRoutes = new ArrayList<Route>();
-	
+
+	private Map<String, Route> routesByName = new HashMap<String, Route>();
 	private List<RouteBuilder> routeBuilders = new ArrayList<RouteBuilder>();
 
 
@@ -102,6 +103,11 @@ public abstract class RouteMapping
 	{
 		return Collections.unmodifiableList(routes.get(method));
 	}
+	
+	public Route getNamedRoute(String name)
+	{
+		return routesByName.get(name);
+	}
 
 
 	// SECTION: UTILITY - PRIVATE
@@ -113,6 +119,7 @@ public abstract class RouteMapping
 	private void addRoute(Route route)
 	{
 		routes.get(route.getMethod()).add(route);
+		routesByName.put(route.getName(), route);
 		// TODO: call log4j for added route, method
 	}
 }

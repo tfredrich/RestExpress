@@ -52,6 +52,7 @@ public class RouteBuilder
 	private Map<HttpMethod, String> actionNames = new HashMap<HttpMethod, String>();
 	private Object controller;
 	private boolean shouldSerializeResponse = true;
+	private String name;
 	
 	public RouteBuilder(String uri, Object controller)
 	{
@@ -94,9 +95,15 @@ public class RouteBuilder
 		return this;
 	}
 
-	public RouteBuilder serializeResults()
+	public RouteBuilder performSerialization()
 	{
 		this.shouldSerializeResponse = true;
+		return this;
+	}
+	
+	public RouteBuilder name(String name)
+	{
+		this.name = name;
 		return this;
 	}
 	
@@ -119,7 +126,7 @@ public class RouteBuilder
 			}
 			
 			Method action = determineActionMethod(controller, actionName);
-			routes.add(new Route(uri, controller, action, method, shouldSerializeResponse));
+			routes.add(new Route(uri, controller, action, method, shouldSerializeResponse, name));
 		}
 		
 		return routes;

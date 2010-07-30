@@ -37,6 +37,11 @@ public class UrlRouter
 		this.routes = routes;
 	}
 	
+	public Route getNamedRoute(String name)
+	{
+		return routes.getNamedRoute(name);
+	}
+	
 	public RoutingResult handleUrl(Request request, Response response)
 	{
 		for (Route route : routes.getRoutesFor(request.getMethod()))
