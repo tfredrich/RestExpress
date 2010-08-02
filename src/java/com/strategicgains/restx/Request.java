@@ -18,6 +18,7 @@
 package com.strategicgains.restx;
 
 import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
@@ -111,7 +112,7 @@ public class Request
 
 	public boolean isKeepAlive()
 	{
-		return httpRequest.isKeepAlive();
+		return HttpHeaders.isKeepAlive(httpRequest);
 	}
 	
 	public boolean isChunked()

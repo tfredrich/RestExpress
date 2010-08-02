@@ -14,17 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.strategicgains.restx;
+
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
+import java.nio.charset.Charset;
+
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.ChannelFutureListener;
+import org.jboss.netty.channel.ChannelHandler.Sharable;
 import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipelineCoverage;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
@@ -41,7 +43,7 @@ import com.strategicgains.restx.serialization.SerializationProcessor;
  * @author toddf
  * @since Nov 13, 2009
  */
-@ChannelPipelineCoverage("all")
+@Sharable
 public class DefaultRequestHandler
 extends SimpleChannelUpstreamHandler
 {
@@ -172,7 +174,7 @@ extends SimpleChannelUpstreamHandler
 			StringBuilder builder = new StringBuilder(response.getBody().toString());
 			builder.append("\r\n");
 
-			httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), "UTF-8"));
+			httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), Charset.forName("UTF-8")));
 		}
 
 		if (request.isKeepAlive())
@@ -207,7 +209,7 @@ extends SimpleChannelUpstreamHandler
 		StringBuilder builder = new StringBuilder("Failure: ");
 		builder.append(response.getResponseMessage());
 		builder.append("\r\n");
-		httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), "UTF-8"));
+		httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), Charset.forName("UTF-8")));
 
 		if (request.isKeepAlive())
         {
