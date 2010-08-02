@@ -28,6 +28,9 @@ import com.strategicgains.restx.exception.BadRequestException;
 import com.strategicgains.restx.serialization.json.DefaultJsonProcessor;
 import com.strategicgains.restx.serialization.xml.DefaultXmlProcessor;
 
+import static com.strategicgains.restx.RestX.JSON_FORMAT;
+import static com.strategicgains.restx.RestX.XML_FORMAT;
+
 /**
  * @author toddf
  * @since Nov 20, 2009
@@ -41,9 +44,9 @@ implements Resolver<SerializationProcessor>
 	public DefaultSerializationResolver()
 	{
 		super();
-		processors.put("json", new DefaultJsonProcessor());
-		processors.put("xml", new DefaultXmlProcessor());
-		defaultFormat = "json";
+		processors.put(JSON_FORMAT, new DefaultJsonProcessor());
+		processors.put(XML_FORMAT, new DefaultXmlProcessor());
+		defaultFormat = JSON_FORMAT;
 	}
 	
 	public DefaultSerializationResolver(Map<String, SerializationProcessor> processors, String defaultFormat)
