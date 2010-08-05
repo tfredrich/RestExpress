@@ -18,6 +18,7 @@ package com.strategicgains.restx;
 
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -82,9 +83,11 @@ extends SimpleChannelUpstreamHandler
 			{
 				SerializationProcessor p = serializationResolver.resolve(request);
 				response.setBody(p.serialize(result));
+				response.addHeader(CONTENT_TYPE, p.getResultingContentType());
 			}
 			else
 			{
+				response.addHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
 				response.setBody(result);
 			}
 
@@ -170,7 +173,7 @@ extends SimpleChannelUpstreamHandler
 		
 		if (response.hasBody())
 		{
-//			httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
+			httpResponse.setHeader(CONTENT_TYPE, response.getHeader(CONTENT_TYPE) + "; charset=UTF-8");
 			StringBuilder builder = new StringBuilder(response.getBody().toString());
 			builder.append("\r\n");
 
@@ -205,7 +208,7 @@ extends SimpleChannelUpstreamHandler
 	private void writeError(ChannelHandlerContext ctx, Request request, Response response)
 	{
 		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getStatus());
-//		httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
+		httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
 		StringBuilder builder = new StringBuilder("Failure: ");
 		builder.append(response.getResponseMessage());
 		builder.append("\r\n");

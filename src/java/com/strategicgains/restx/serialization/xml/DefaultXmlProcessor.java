@@ -74,7 +74,13 @@ implements SerializationProcessor
 	{
 		return (T) xstream.fromXML(new ChannelBufferInputStream(xml));
 	}
-	
+
+	@Override
+	public String getResultingContentType()
+	{
+		return "application/xml";
+	}
+
 	private void addAliasIfNecessary(Class<?> type)
 	{
 		if (!aliases.containsKey(type))

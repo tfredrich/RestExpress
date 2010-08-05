@@ -17,6 +17,10 @@
 
 package com.strategicgains.restx;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpMethod;
@@ -34,6 +38,7 @@ public class Request
 {
 	// SECTION: CONSTANTS
 
+	private static final String METHOD_QUERY_PARAMETER = "_method";
 	private static final String FORMAT_HEADER_NAME = "format";
 
 
@@ -42,6 +47,7 @@ public class Request
 	private HttpRequest httpRequest;
 	private Resolver<SerializationProcessor> serializationResolver;
 	private RouteResolver urlRouter;
+	private HttpMethod realMethod;
 
 	
 	// SECTION: CONSTRUCTOR
@@ -50,16 +56,33 @@ public class Request
 	{
 		super();
 		this.httpRequest = request;
+		this.realMethod = request.getMethod();
 		this.serializationResolver = serializationResolver;
 		this.urlRouter = routes;
-		addQueryStringParametersAsHeaders();
+		handleMethodTunneling(addQueryStringParametersAsHeaders());
 	}
 	
 	// SECTION: ACCESSORS/MUTATORS
 	
+	/**
+	 * Return the HTTP method of the request.
+	 * 
+	 * @return HttpMethod of the request.
+	 */
 	public HttpMethod getMethod()
 	{
 		return httpRequest.getMethod();
+	}
+	
+	/**
+	 * Return the requested HTTP method of the request, whether via the request's HTTP method
+	 * or via a query parameter (e.g. "_Method=").
+	 * 
+	 * @return the requested HttpMethod.
+	 */
+	public HttpMethod getRealMethod()
+	{
+		return realMethod;
 	}
 
 	public ChannelBuffer getBody()
@@ -159,8 +182,9 @@ public class Request
 	/**
 	 * Add the query string parameters to the request as headers.
 	 */
-	private void addQueryStringParametersAsHeaders()
+	private Map<String, String> addQueryStringParametersAsHeaders()
 	{
+		Map<String, String> parameters = new HashMap<String, String>();
 		String uri = httpRequest.getUri();
 		int x = uri.indexOf('?');
 		String queryString = (x >= 0 ? uri.substring(x + 1) : null);
@@ -176,11 +200,37 @@ public class Request
 				if (keyValue.length == 1)
 				{
 					httpRequest.addHeader(keyValue[0], "");
+					parameters.put(keyValue[0], "");
 				}
 				else
 				{
 					httpRequest.addHeader(keyValue[0], keyValue[1]);
+					parameters.put(keyValue[0], keyValue[1]);
 				}
+			}
+		}
+		
+		return parameters;
+	}
+	
+	/**
+	 * If the request HTTP method is post, allow a query string parameter to determine
+	 * the request HTTP method of the post (e.g. _method=DELETE or _method=PUT).  This
+	 * supports DELETE and PUT from the browser.
+	 * 
+	 * @param parameters
+	 */
+	private void handleMethodTunneling(Map<String, String> parameters)
+	{
+		if (! HttpMethod.POST.equals(getMethod()))
+			return;
+
+		for (Entry<String, String> entry : parameters.entrySet())
+		{
+			if (METHOD_QUERY_PARAMETER.equalsIgnoreCase(entry.getKey()))
+			{
+				realMethod = HttpMethod.valueOf(entry.getValue().toUpperCase());
+				break;
 			}
 		}
 	}

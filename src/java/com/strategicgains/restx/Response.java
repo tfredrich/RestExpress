@@ -18,6 +18,7 @@ package com.strategicgains.restx;
 
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.OK;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +79,19 @@ public class Response
 		headers.clear();
 	}
 
-	public Object getHeader(String name)
+	public String getHeader(String name)
+	{
+		List<String> list = headers.get(name);
+
+		if (list != null && !list.isEmpty())
+		{
+			return list.get(0);
+		}
+		
+		return null;
+	}
+
+	public List<String> getHeaders(String name)
 	{
 		return headers.get(name);
 	}
@@ -92,18 +105,19 @@ public class Response
 	{
 		return headers.keySet();
 	}
-	
-//	public void addHeader(String name, String value)
-//	{
-		// TODO Add header
-//		headers.get(name).add(value);
-//	}
 
-//	public void setHeader(String name, String value)
-//	{
-		// TODO Set header
-//		headers.put(name, value);
-//	}
+	public void addHeader(String name, String value)
+	{
+		List<String> list = headers.get(name);
+		
+		if (list == null)
+		{
+			list = new ArrayList<String>();
+			headers.put(name, list);
+		}
+		
+		list.add(value);
+	}
 
 	public void setResponseCode(int value)
 	{

@@ -43,7 +43,7 @@ implements Resolver<Action>
 	@Override
 	public Action resolve(Request request)
 	{
-		for (Route route : routes.getRoutesFor(request.getMethod()))
+		for (Route route : routes.getRoutesFor(request.getRealMethod()))
 		{
 			UrlMatch match = route.match(request.getUrl());
 

@@ -70,4 +70,10 @@ implements SerializationProcessor
     {
     	return gson.toJson(object);
     }
+
+	@Override
+	public String getResultingContentType()
+	{
+		return "application/json";
+	}
 }
