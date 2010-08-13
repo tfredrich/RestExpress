@@ -90,6 +90,7 @@ implements ChannelPipelineFactory
 
 		pipeline.addLast("encoder", new HttpResponseEncoder());
 //		pipeline.addLast("deflater", new HttpContentCompressor());
+//		pipeline.addLast("inflater", new HttpContentDecompressor());
 		pipeline.addLast("handler", new DefaultRequestHandler(routeResolver, serializationResolver));
 
 		return pipeline;

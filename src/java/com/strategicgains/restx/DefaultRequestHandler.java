@@ -48,6 +48,11 @@ import com.strategicgains.restx.serialization.SerializationProcessor;
 public class DefaultRequestHandler
 extends SimpleChannelUpstreamHandler
 {
+	// SECTION: CONSTANTS
+
+	private static final String JSONP_CALLBACK = "jsonp";
+
+	
 	// SECTION: INSTANCE VARIABLES
 
 	private RouteResolver routeResolver;
@@ -82,7 +87,7 @@ extends SimpleChannelUpstreamHandler
 			if (action.shouldSerializeResponse())
 			{
 				SerializationProcessor p = serializationResolver.resolve(request);
-				response.setBody(p.serialize(result));
+				response.setBody(serializeResult(result, p, request));
 				response.addHeader(CONTENT_TYPE, p.getResultingContentType());
 			}
 			else
@@ -117,6 +122,32 @@ extends SimpleChannelUpstreamHandler
 				writeResponse(ctx, request, response);
 			}
 		}
+	}
+
+	/**
+	 * Handles the JSONP case, wrapping the serialized JSON string in the callback function, if applicable.
+	 * If there is a JSONP header value and the serialization processor returns application/json, then
+	 * the serialization results are wrapped in the JSONP method call.
+	 * 
+	 * @param result
+	 * @param procesor
+	 * @param request
+	 * @return
+	 */
+	private Object serializeResult(Object result, SerializationProcessor processor, Request request)
+	{
+		String serialized = processor.serialize(result);
+		String callback = request.getHeader(JSONP_CALLBACK);
+		
+		if (callback != null 
+			&& processor.getResultingContentType().toLowerCase().contains("json"))
+		{
+        	StringBuilder sb = new StringBuilder();
+        	sb.append(callback).append("(").append(serialized).append(")");
+        	return sb.toString();			
+		}
+		
+		return serialized;
 	}
 
 	/**
