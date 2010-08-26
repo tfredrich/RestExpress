@@ -26,6 +26,7 @@ import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
+import com.strategicgains.restx.exception.BadRequestException;
 import com.strategicgains.restx.route.Route;
 import com.strategicgains.restx.route.RouteResolver;
 import com.strategicgains.restx.serialization.SerializationProcessor;
@@ -93,7 +94,15 @@ public class Request
 	public <T> T getBodyAs(Class<T> type)
 	{
 		SerializationProcessor processor = serializationResolver.resolve(this);
-		return processor.deserialize(getBody(), type);
+		
+		try
+		{
+			return processor.deserialize(getBody(), type);
+		}
+		catch(Exception e)
+		{
+			throw new BadRequestException(e);
+		}
 	}
 
 	public void setBody(ChannelBuffer body)

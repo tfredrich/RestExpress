@@ -17,16 +17,13 @@
 
 package com.strategicgains.restx;
 
+import org.jboss.netty.channel.ChannelHandler;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.handler.codec.http.HttpChunkAggregator;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
-
-import com.strategicgains.restx.route.RouteMapping;
-import com.strategicgains.restx.route.RouteResolver;
-import com.strategicgains.restx.serialization.SerializationProcessor;
 
 /**
  * @author Todd Fredrich
@@ -44,25 +41,29 @@ implements ChannelPipelineFactory
 
 	private boolean shouldUseSsl = false;
 	private boolean shouldHandleChunked = false;
-	private RouteResolver routeResolver;
-	Resolver<SerializationProcessor> serializationResolver;
+	private ChannelHandler defaultRequestHandler;
 
 	
 	// SECTION: CONSTRUCTORS
 
-	public DefaultPipelineFactory(RouteMapping routes, Resolver<SerializationProcessor> serializationResolver)
+	public DefaultPipelineFactory()
 	{
-		this(false, false, routes, serializationResolver);
+		this(false, false);
 	}
 
-	public DefaultPipelineFactory(boolean useSsl, boolean useChunked, RouteMapping routes,
-		Resolver<SerializationProcessor> serializationResolver)
+	public DefaultPipelineFactory(boolean useSsl, boolean useChunked)
 	{
 		super();
 		this.shouldUseSsl = useSsl;
 		this.shouldHandleChunked = useChunked;
-		this.routeResolver = new RouteResolver(routes);
-		this.serializationResolver = serializationResolver;
+	}
+	
+	
+	// SECTION: MUTATORS
+	
+	public void setDefaultRequestHandler(ChannelHandler handler)
+	{
+		this.defaultRequestHandler = handler;
 	}
 
 	
@@ -91,7 +92,7 @@ implements ChannelPipelineFactory
 		pipeline.addLast("encoder", new HttpResponseEncoder());
 //		pipeline.addLast("deflater", new HttpContentCompressor());
 //		pipeline.addLast("inflater", new HttpContentDecompressor());
-		pipeline.addLast("handler", new DefaultRequestHandler(routeResolver, serializationResolver));
+		pipeline.addLast("handler", defaultRequestHandler);
 
 		return pipeline;
 	}

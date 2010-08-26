@@ -37,6 +37,9 @@ public class UrlPatternTest
 		assertTrue(pFormat.matches("/xxx/toddf/yyy/joez.xml"));
 		assertTrue(pFormat.matches("/xxx/toddf/yyy/joez.json?x=y&a=b"));
 		assertTrue(pFormat.matches("/xxx/toddf/yyy/joez"));
+		assertTrue(pFormat.matches("/xxx/v1.0.1/yyy/yada"));
+		assertTrue(pFormat.matches("/xxx/v1.0.1/yyy/yada.json"));
+		assertTrue(pFormat.matches("/xxx/v1.0.1/yyy/yada.json?x=y&a=b"));
 	}
 
 	@Test
@@ -107,6 +110,16 @@ public class UrlPatternTest
 		assertNotNull(match);
 		assertNull(match.get("format"));
 		assertEquals("12345", match.get("a_id"));
+		assertEquals("67890", match.get("b_id"));
+	}
+
+	@Test
+	public void shouldParseParametersWithPeriods()
+	{
+		UrlMatch match = p.match("/xxx/1.0/yyy/67890?x=y&a=b");
+		assertNotNull(match);
+		assertNull(match.get("format"));
+		assertEquals("1.0", match.get("a_id"));
 		assertEquals("67890", match.get("b_id"));
 	}
 	

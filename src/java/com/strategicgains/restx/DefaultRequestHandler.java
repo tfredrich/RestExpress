@@ -16,26 +16,20 @@
  */
 package com.strategicgains.restx;
 
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
-import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
-import java.nio.charset.Charset;
-
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandler.Sharable;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
-import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.codec.http.HttpResponse;
 
 import com.strategicgains.restx.exception.ServiceException;
+import com.strategicgains.restx.response.DefaultHttpResponseWriter;
+import com.strategicgains.restx.response.ErrorHttpResponseWriter;
+import com.strategicgains.restx.response.HttpResponseWriter;
 import com.strategicgains.restx.route.Action;
 import com.strategicgains.restx.route.RouteResolver;
 import com.strategicgains.restx.serialization.SerializationProcessor;
@@ -57,15 +51,48 @@ extends SimpleChannelUpstreamHandler
 
 	private RouteResolver routeResolver;
 	private Resolver<SerializationProcessor> serializationResolver;
+	private HttpResponseWriter responseWriter;
+	private HttpResponseWriter errorResponseWriter;
 
 
 	// SECTION: CONSTRUCTORS
 
 	public DefaultRequestHandler(RouteResolver routeResolver, Resolver<SerializationProcessor> serializationResolver)
 	{
+		this(routeResolver, serializationResolver, new DefaultHttpResponseWriter(), new ErrorHttpResponseWriter());
+	}
+
+	public DefaultRequestHandler(RouteResolver routeResolver, Resolver<SerializationProcessor> serializationResolver,
+		HttpResponseWriter responseWriter, HttpResponseWriter errorResponseWriter)
+	{
 		super();
 		this.routeResolver = routeResolver;
 		this.serializationResolver = serializationResolver;
+		setResponseWriter(responseWriter);
+		setErrorResponseWriter(errorResponseWriter);
+	}
+
+
+	// SECTION: MUTATORS
+	
+	public HttpResponseWriter getResponseWriter()
+	{
+		return this.responseWriter;
+	}
+	
+	public HttpResponseWriter getErrorResponseWriter()
+	{
+		return this.errorResponseWriter;
+	}
+
+	public void setResponseWriter(HttpResponseWriter writer)
+	{
+		this.responseWriter = writer;
+	}
+	
+	public void setErrorResponseWriter(HttpResponseWriter writer)
+	{
+		this.errorResponseWriter = writer;
 	}
 
 
@@ -153,7 +180,7 @@ extends SimpleChannelUpstreamHandler
 	/**
      * @param request
      */
-    private void preProcessRequest(Request request)
+    protected void preProcessRequest(Request request)
     {
 	    // Default: do nothing.
     }
@@ -162,7 +189,7 @@ extends SimpleChannelUpstreamHandler
      * @param request
      * @param response
      */
-    private void postProcessResponse(Request request, Response response)
+    protected void postProcessResponse(Request request, Response response)
     {
 	    // Default: do nothing.
     }
@@ -199,63 +226,11 @@ extends SimpleChannelUpstreamHandler
      */
     private void writeResponse(ChannelHandlerContext ctx, Request request, Response response)
     {
-		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getStatus());
-		addHeaders(response, httpResponse);
-		
-		if (response.hasBody())
-		{
-			httpResponse.setHeader(CONTENT_TYPE, response.getHeader(CONTENT_TYPE) + "; charset=UTF-8");
-			StringBuilder builder = new StringBuilder(response.getBody().toString());
-			builder.append("\r\n");
-
-			httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), Charset.forName("UTF-8")));
-		}
-
-		if (request.isKeepAlive())
-	  	{
-	  		// Add 'Content-Length' header only for a keep-alive connection.
-	  		httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(httpResponse.getContent().readableBytes()));
-	  	}
-		else
-		{
-			httpResponse.setHeader(CONNECTION, "close");
-		}
-
-		// Close the connection as soon as the error message is sent.
-		ctx.getChannel().write(httpResponse).addListener(
-		    ChannelFutureListener.CLOSE);
+    	getResponseWriter().write(ctx, request, response);
     }
-
-	/**
-     * @param response
-     * @param httpResponse
-     */
-    private void addHeaders(Response response, HttpResponse httpResponse)
-    {
-    	// TODO: template
-    }
-
 
 	private void writeError(ChannelHandlerContext ctx, Request request, Response response)
 	{
-		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getStatus());
-		httpResponse.setHeader(CONTENT_TYPE, "text/plain; charset=UTF-8");
-		StringBuilder builder = new StringBuilder("Failure: ");
-		builder.append(response.getResponseMessage());
-		builder.append("\r\n");
-		httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), Charset.forName("UTF-8")));
-
-		if (request.isKeepAlive())
-        {
-        	// Add 'Content-Length' header only for a keep-alive connection.
-        	httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(httpResponse.getContent().readableBytes()));
-        }
-		else
-		{
-			httpResponse.setHeader(CONNECTION, "close");
-		}
-
-		// Close the connection as soon as the error message is sent.
-		ctx.getChannel().write(httpResponse).addListener(ChannelFutureListener.CLOSE);
+		getErrorResponseWriter().write(ctx, request, response);
 	}
 }
