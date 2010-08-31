@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.strategicgains.restx.Request;
-import com.strategicgains.restx.Resolver;
 import com.strategicgains.restx.exception.BadRequestException;
 import com.strategicgains.restx.serialization.json.DefaultJsonProcessor;
 import com.strategicgains.restx.serialization.xml.DefaultXmlProcessor;
+import com.strategicgains.restx.util.Resolver;
 
 import static com.strategicgains.restx.RestX.JSON_FORMAT;
 import static com.strategicgains.restx.RestX.XML_FORMAT;

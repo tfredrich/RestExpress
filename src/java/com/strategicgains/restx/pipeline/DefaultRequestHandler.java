@@ -14,10 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.strategicgains.restx;
+package com.strategicgains.restx.pipeline;
 
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.netty.channel.ChannelHandler.Sharable;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -26,6 +29,8 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
+import com.strategicgains.restx.Request;
+import com.strategicgains.restx.Response;
 import com.strategicgains.restx.exception.ServiceException;
 import com.strategicgains.restx.response.DefaultHttpResponseWriter;
 import com.strategicgains.restx.response.ErrorHttpResponseWriter;
@@ -33,6 +38,7 @@ import com.strategicgains.restx.response.HttpResponseWriter;
 import com.strategicgains.restx.route.Action;
 import com.strategicgains.restx.route.RouteResolver;
 import com.strategicgains.restx.serialization.SerializationProcessor;
+import com.strategicgains.restx.util.Resolver;
 
 /**
  * @author toddf
@@ -41,6 +47,7 @@ import com.strategicgains.restx.serialization.SerializationProcessor;
 @Sharable
 public class DefaultRequestHandler
 extends SimpleChannelUpstreamHandler
+implements PreprocessorAware, PostprocessorAware
 {
 	// SECTION: CONSTANTS
 
@@ -53,6 +60,8 @@ extends SimpleChannelUpstreamHandler
 	private Resolver<SerializationProcessor> serializationResolver;
 	private HttpResponseWriter responseWriter;
 	private HttpResponseWriter errorResponseWriter;
+	private List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
+	private List<Postprocessor> postprocessors = new ArrayList<Postprocessor>();
 
 
 	// SECTION: CONSTRUCTORS
@@ -107,7 +116,7 @@ extends SimpleChannelUpstreamHandler
 
 		try
 		{
-			preProcessRequest(request);
+			invokePreprocessors(request);
 			Action action = routeResolver.resolve(request);
 			Object result = action.invoke(request, response);
 			
@@ -123,7 +132,7 @@ extends SimpleChannelUpstreamHandler
 				response.setBody(result);
 			}
 
-			postProcessResponse(request, response);
+			invokePostprocessors(request, response);
 		}
 		catch (ServiceException e)
 		{
@@ -176,22 +185,46 @@ extends SimpleChannelUpstreamHandler
 		
 		return serialized;
 	}
+	
+	public void addPreprocessor(Preprocessor handler)
+	{
+		if (!preprocessors.contains(handler))
+		{
+			preprocessors.add(handler);
+		}
+	}
+
+	public void addPostprocessor(Postprocessor handler)
+	{
+		if (!postprocessors.contains(handler))
+		{
+			postprocessors.add(handler);
+		}
+	}
 
 	/**
      * @param request
      */
-    protected void preProcessRequest(Request request)
+	@Override
+    public void invokePreprocessors(Request request)
     {
-	    // Default: do nothing.
+		for (Preprocessor handler : preprocessors)
+		{
+			handler.process(request);
+		}
     }
 
 	/**
      * @param request
      * @param response
      */
-    protected void postProcessResponse(Request request, Response response)
+	@Override
+    public void invokePostprocessors(Request request, Response response)
     {
-	    // Default: do nothing.
+		for (Postprocessor handler : postprocessors)
+		{
+			handler.process(request, response);
+		}
     }
 
 	@Override

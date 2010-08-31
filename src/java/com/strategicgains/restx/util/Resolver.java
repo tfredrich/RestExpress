@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package com.strategicgains.restx;
+package com.strategicgains.restx.util;
+
+import com.strategicgains.restx.Request;
 
 /**
  * A Resolver is responsible for determining which object is appropriate for a given request.

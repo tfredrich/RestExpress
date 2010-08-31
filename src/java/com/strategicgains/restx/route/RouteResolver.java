@@ -16,9 +16,9 @@
 package com.strategicgains.restx.route;
 
 import com.strategicgains.restx.Request;
-import com.strategicgains.restx.Resolver;
 import com.strategicgains.restx.exception.BadRequestException;
 import com.strategicgains.restx.url.UrlMatch;
+import com.strategicgains.restx.util.Resolver;
 
 /**
  * @author toddf

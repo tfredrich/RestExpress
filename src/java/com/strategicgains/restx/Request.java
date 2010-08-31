@@ -30,6 +30,7 @@ import com.strategicgains.restx.exception.BadRequestException;
 import com.strategicgains.restx.route.Route;
 import com.strategicgains.restx.route.RouteResolver;
 import com.strategicgains.restx.serialization.SerializationProcessor;
+import com.strategicgains.restx.util.Resolver;
 
 /**
  * @author toddf
@@ -53,7 +54,7 @@ public class Request
 	
 	// SECTION: CONSTRUCTOR
 
-	Request(HttpRequest request, Resolver<SerializationProcessor> serializationResolver, RouteResolver routes)
+	public Request(HttpRequest request, Resolver<SerializationProcessor> serializationResolver, RouteResolver routes)
 	{
 		super();
 		this.httpRequest = request;
