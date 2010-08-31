@@ -1,0 +1,10 @@
+RestX is a thin wrapper on the JBOSS Netty HTTP stack to provide a simple and easy way to create RESTful services
+in Java.
+
+See: examples/kickstart directory for usage.
+
+Release 0.3
+* Added support for "method tunneling" in POST via query string parameter (e.g. _method=PUT or _method=DELETE)
+* Added JSONP support. Use jsonp=<method_name> in query string.
+* Utilized Builder pattern in DefaultPipelineFactory, which is now PipelineBuilder.
+* Externalized DefaultRequestHandler in PipelineBuilder and now supports pre/post processors (with associated interfaces).

@@ -1,7 +1,4 @@
-/*
- *  Copyright 2010, Pearson eCollege.
- */
-package com.ecollege.storage.bigmap;
+package com.strategicgains.kickstart;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
@@ -24,9 +21,7 @@ extends RouteMapping
 			.method(HttpMethod.POST);
 
 		uri("/kickstart/{orderId}.{format}", new KickStartService())
-			.method(HttpMethod.GET)
-			.method(HttpMethod.PUT)
-			.method(HttpMethod.DELETE)
+			.method(HttpMethod.GET, HttpMethod.PUT, HttpMethod.DELETE)
 			.name("KickstartServiceUri");
 	}
 }

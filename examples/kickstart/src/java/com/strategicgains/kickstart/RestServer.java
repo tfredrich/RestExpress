@@ -1,38 +1,37 @@
-/*
- * Copyright 2009, Strategic Gains, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- *
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.strategicgains.restx;
+package com.strategicgains.kickstart;
+
+import static com.strategicgains.restx.RestX.JSON_FORMAT;
+import static com.strategicgains.restx.RestX.XML_FORMAT;
 
 import java.net.InetSocketAddress;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
+import com.strategicgains.restx.domain.Link;
+import com.strategicgains.restx.pipeline.DefaultRequestHandler;
+import com.strategicgains.restx.pipeline.PipelineBuilder;
+import com.strategicgains.restx.route.RouteResolver;
 import com.strategicgains.restx.serialization.DefaultSerializationResolver;
+import com.strategicgains.restx.serialization.SerializationProcessor;
+import com.strategicgains.restx.serialization.json.DefaultJsonProcessor;
+import com.strategicgains.restx.serialization.xml.DefaultXmlProcessor;
+import com.strategicgains.restx.util.Resolver;
+import com.thoughtworks.xstream.XStream;
 
 /**
- * The main entry-point into RestX.
+ * The main entry-point into RestX for the example services.
  * 
  * @author toddf
- * @since Nov 13, 2009
+ * @since Aug 31, 2009
  */
-public class RestServer
+public class RemarksMain
 {
-	private static final int DEFAULT_PORT = 8080;
+	private static final int DEFAULT_PORT = 3330;
 
 	/**
 	 * @param args
@@ -53,11 +52,37 @@ public class RestServer
 		        Executors.newCachedThreadPool()));
 
 		// Set up the event pipeline factory.
-		bootstrap.setPipelineFactory(new DefaultPipelineFactory(null /* RouteMapping instance here */,
-			new DefaultSerializationResolver()));
+	    DefaultRequestHandler requestHandler = new DefaultRequestHandler(
+	    	new RouteResolver(new Routes()),
+	    	createSerializationResolver());
+	    // Add pre/post processors to the request handler here...
+//	    requestHandler.addPreprocessor(handler);
+//	    requestHandler.addPostprocessor(handler);
+
+	    PipelineBuilder pf = new PipelineBuilder()
+			.setRequestHandler(requestHandler);
+		bootstrap.setPipelineFactory(pf);
 
 		// Bind and start to accept incoming connections.
-		System.out.println("Starting RestX Server on port " + port);
+		System.out.println("Starting RestX Example Server on port " + port);
 		bootstrap.bind(new InetSocketAddress(port));
+	}
+
+	private static Resolver<SerializationProcessor> createSerializationResolver()
+	{
+		Map<String, SerializationProcessor> serializationProcessors = new HashMap<String, SerializationProcessor>();
+		serializationProcessors.put(JSON_FORMAT, new DefaultJsonProcessor());
+
+		serializationProcessors.put(XML_FORMAT, new DefaultXmlProcessor(
+		    createXStream()));
+		return new DefaultSerializationResolver(serializationProcessors, JSON_FORMAT);
+	}
+
+	private static XStream createXStream()
+	{
+		XStream xstream = new XStream();
+		xstream.alias("link", Link.class);
+		xstream.alias("list", Collections.EMPTY_LIST.getClass());
+		return xstream;
 	}
 }
