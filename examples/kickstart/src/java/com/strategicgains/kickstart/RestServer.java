@@ -29,7 +29,7 @@ import com.thoughtworks.xstream.XStream;
  * @author toddf
  * @since Aug 31, 2009
  */
-public class RemarksMain
+public class RestServer
 {
 	private static final int DEFAULT_PORT = 3330;
 

@@ -1,8 +1,33 @@
-RestX is a thin wrapper on the JBOSS Netty HTTP stack to provide a simple and easy way to create RESTful services
-in Java.
+RestX is a thin wrapper on the JBOSS Netty HTTP stack to provide a simple and easy way to create
+RESTful services in Java.
 
-See: examples/kickstart directory for usage.
+Born to be simple, only three things are required to wire up a service:
+1) The main class which looks just like the JBOSS Netty examples.
+2) A RouteMapping extender (much like routes.rb in a Rails app), which contains DSL for the
+   supported URLs and HTTP methods of the service(s).
+3) Service implementation(s), which is/are a simple POJO--no interface or super class implementation.
 
+See: examples/kickstart directory to get started (there is a README there).
+
+===================================================================================================
+A quick tutorial:
+
+* HTTP Methods, if not changed in the DSL, map to the following:
+1) GET --> read(Request, Response)
+2) PUT --> update(Request, Response)
+3) POST --> create(Request, Response)
+4) DELETE --> delete(Request, Response)
+
+You can choose to return objects from the methods, if desired, which will be returned to the client as
+body of the response.  The object will be marshaled into JSON or XML, depending on the default or based on the
+format on the request.
+
+If you choose to not return a value from the method (void methods), then call response.setResponseNoContent()
+before returning to set the response HTTP status code to 204 (no content).
+
+On successful creation, call response.setResponseCreated() to set the returning HTTP status code to 201.
+
+===================================================================================================
 Release 0.3
 * Added support for "method tunneling" in POST via query string parameter (e.g. _method=PUT or _method=DELETE)
 * Added JSONP support. Use jsonp=<method_name> in query string.
