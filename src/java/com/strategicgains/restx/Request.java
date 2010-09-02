@@ -92,8 +92,18 @@ public class Request
 		return httpRequest.getContent();
     }
 	
+	/**
+	 * Attempts to deserialize the request body into an instance of the given type.  If no serialization
+	 * resolver is present in the request, null is returned.
+	 * 
+	 * @param type the resulting type
+	 * @return an instance of the requested type, or null (if no serialization resolver in request).
+	 * @throws BadRequestException if the deserialization fails.
+	 */
 	public <T> T getBodyAs(Class<T> type)
 	{
+		if (serializationResolver == null) return null;
+
 		SerializationProcessor processor = serializationResolver.resolve(this);
 		
 		try

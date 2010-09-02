@@ -120,7 +120,7 @@ implements PreprocessorAware, PostprocessorAware
 			Action action = routeResolver.resolve(request);
 			Object result = action.invoke(request, response);
 			
-			if (action.shouldSerializeResponse())
+			if (action.shouldSerializeResponse() && hasSerializationResolver())
 			{
 				SerializationProcessor p = serializationResolver.resolve(request);
 				response.setBody(serializeResult(result, p, request));
@@ -158,6 +158,11 @@ implements PreprocessorAware, PostprocessorAware
 				writeResponse(ctx, request, response);
 			}
 		}
+	}
+	
+	private boolean hasSerializationResolver()
+	{
+		return (serializationResolver != null);
 	}
 
 	/**
