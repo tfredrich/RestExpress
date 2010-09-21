@@ -14,6 +14,8 @@ import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 
 /**
+ * Provides a tiny DSL to define the pipeline features.
+ * 
  * @author toddf
  * @since Aug 27, 2010
  */

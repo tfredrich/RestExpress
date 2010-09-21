@@ -7,6 +7,7 @@ import com.strategicgains.restx.Request;
 import com.strategicgains.restx.Response;
 
 /**
+ * Defines the interface for request handlers that 
  * @author toddf
  * @since Aug 31, 2010
  */
