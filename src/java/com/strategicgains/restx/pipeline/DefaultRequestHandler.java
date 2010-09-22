@@ -116,8 +116,10 @@ implements PreprocessorAware, PostprocessorAware
 
 		try
 		{
-			invokePreprocessors(request);
 			Action action = routeResolver.resolve(request);
+			action.applyParameterHeaders(request);
+			request.setResolvedRoute(action.getRoute());
+			invokePreprocessors(request);
 			Object result = action.invoke(request, response);
 			
 			if (action.shouldSerializeResponse() && hasSerializationResolver())
@@ -217,6 +219,8 @@ implements PreprocessorAware, PostprocessorAware
 		{
 			handler.process(request);
 		}
+
+		request.getBody().resetReaderIndex();
     }
 
 	/**

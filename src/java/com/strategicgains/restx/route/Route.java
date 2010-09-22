@@ -66,6 +66,16 @@ public class Route
 		this(new UrlPattern(urlPattern), controller, action, method, shouldSerializeResponse, name);
 	}
 	
+	public Method getAction()
+	{
+		return action;
+	}
+	
+	public Object getController()
+	{
+		return controller;
+	}
+	
 	public HttpMethod getMethod()
 	{
 		return method;

@@ -37,7 +37,7 @@ public class Action
 		this.match = match;
 	}
 
-	private Route getRoute()
+	public Route getRoute()
 	{
 		return route;
 	}
@@ -61,7 +61,7 @@ public class Action
 	 */
     public Object invoke(Request request, Response response)
     {
-		applyParameterHeaders(request);
+//		applyParameterHeaders(request);
     	return getRoute().invoke(request, response);
     }
 
@@ -71,7 +71,7 @@ public class Action
      * @param parameters a Set of Entry<String, String> name/value pairs of parameters parsed from the URL.
      * @param request the Request instance in which to set parameter headers.
      */
-    private void applyParameterHeaders(Request request)
+    public void applyParameterHeaders(Request request)
     {
     	if (match == null) return;
 

@@ -50,6 +50,7 @@ public class Request
 	private Resolver<SerializationProcessor> serializationResolver;
 	private RouteResolver urlRouter;
 	private HttpMethod realMethod;
+	private Route resolvedRoute;
 
 	
 	// SECTION: CONSTRUCTOR
@@ -85,6 +86,26 @@ public class Request
 	public HttpMethod getRealMethod()
 	{
 		return realMethod;
+	}
+
+	public boolean isMethodGet()
+	{
+		return getRealMethod().equals(HttpMethod.GET);
+	}
+
+	public boolean isMethodDelete()
+	{
+		return getRealMethod().equals(HttpMethod.DELETE);
+	}
+
+	public boolean isMethodPost()
+	{
+		return getRealMethod().equals(HttpMethod.POST);
+	}
+
+	public boolean isMethodPut()
+	{
+		return getRealMethod().equals(HttpMethod.PUT);
 	}
 
 	public ChannelBuffer getBody()
@@ -135,6 +156,16 @@ public class Request
     {
 		httpRequest.addHeader(name, value);
     }
+	
+	public Route getResolvedRoute()
+	{
+		return resolvedRoute;
+	}
+	
+	public void setResolvedRoute(Route route)
+	{
+		this.resolvedRoute = route;
+	}
 	
 	public String getUrl()
 	{
