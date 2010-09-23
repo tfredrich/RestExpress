@@ -17,6 +17,8 @@
 
 package com.strategicgains.restx;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -236,7 +238,7 @@ public class Request
 	private Map<String, String> addQueryStringParametersAsHeaders()
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
-		String uri = httpRequest.getUri();
+		String uri = getUri(httpRequest);
 		int x = uri.indexOf('?');
 		String queryString = (x >= 0 ? uri.substring(x + 1) : null);
 		
@@ -263,7 +265,20 @@ public class Request
 		
 		return parameters;
 	}
-	
+
+	private String getUri(HttpRequest request)
+	{
+        try
+        {
+	        return URLDecoder.decode(request.getUri(), RestX.ENCODING);
+        }
+        catch (UnsupportedEncodingException e)
+        {
+        	// UGH!
+        }
+        
+        return "";
+	}
 	/**
 	 * If the request HTTP method is post, allow a query string parameter to determine
 	 * the request HTTP method of the post (e.g. _method=DELETE or _method=PUT).  This
