@@ -27,6 +27,17 @@ before returning to set the response HTTP status code to 204 (no content).
 
 On successful creation, call response.setResponseCreated() to set the returning HTTP status code to 201.
 
+Change History:
+===================================================================================================
+Release 0.4
+* Fixed error in "Connection: keep-alive" processing during normal and error response writing.
+* Can now create route mappings for OPTIONS and HEAD http methods.
+* Added decoding to URL when Request is constructed.
+* Improved pre-processor implementation, including access to resolved route in request.
+* Better null handling here and there to avoid NullPointerException, including serialization resolver.
+* Improved UT coverage.
+* KickStart application builds and is a more accurate template.
+
 ===================================================================================================
 Release 0.3
 * Added support for "method tunneling" in POST via query string parameter (e.g. _method=PUT or _method=DELETE)
