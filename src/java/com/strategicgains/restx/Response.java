@@ -106,6 +106,12 @@ public class Response
 		return headers.keySet();
 	}
 
+	/**
+	 * Add a header value to the response.
+	 * 
+	 * @param name
+	 * @param value
+	 */
 	public void addHeader(String name, String value)
 	{
 		List<String> list = headers.get(name);
@@ -119,36 +125,67 @@ public class Response
 		list.add(value);
 	}
 
+	/**
+	 * Set the HTTP response status code.
+	 * 
+	 * @param value
+	 */
 	public void setResponseCode(int value)
 	{
 		setResponseStatus(HttpResponseStatus.valueOf(value));
 	}
 	
+	/**
+	 * Set the HTTP response status.
+	 * 
+	 * @param status
+	 */
 	public void setResponseStatus(HttpResponseStatus status)
 	{
 		this.responseCode = status;
 	}
 	
+	/**
+	 * Sets the HTTP response status code to 201 - created.
+	 */
 	public void setResponseCreated()
 	{
 		setResponseStatus(HttpResponseStatus.CREATED);
 	}
 	
+	/**
+	 * Sets the HTTP response status code to 204 - no content.
+	 */
 	public void setResponseNoContent()
 	{
 		setResponseStatus(HttpResponseStatus.NO_CONTENT);
 	}
 	
+	/**
+	 * Get the HTTP Response Status.
+	 * 
+	 * @return
+	 */
 	public HttpResponseStatus getStatus()
 	{
 		return responseCode;
 	}
 	
+	/**
+	 * Retrieve the exception, if any, that occurred during the request handling cycle.
+	 * 
+	 * @return
+	 */
 	public Throwable getException()
 	{
 		return exception;
 	}
 	
+	/**
+	 * Return whether an exception occurred during the request handling cycle.
+	 * 
+	 * @return
+	 */
 	public boolean hasException()
 	{
 		return (getException() != null);

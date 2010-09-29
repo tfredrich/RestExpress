@@ -1,12 +1,11 @@
-/**
- * 
- */
 package com.strategicgains.restx.route;
 
 import static org.jboss.netty.handler.codec.http.HttpMethod.DELETE;
 import static org.jboss.netty.handler.codec.http.HttpMethod.GET;
 import static org.jboss.netty.handler.codec.http.HttpMethod.POST;
 import static org.jboss.netty.handler.codec.http.HttpMethod.PUT;
+import static org.jboss.netty.handler.codec.http.HttpMethod.HEAD;
+import static org.jboss.netty.handler.codec.http.HttpMethod.OPTIONS;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -22,8 +21,11 @@ import com.strategicgains.restx.Response;
 import com.strategicgains.restx.exception.ConfigurationException;
 
 /**
+ * Builds a route for a single URI.  If a URI is given with no methods or actions, the builder
+ * creates routes for the GET, POST, PUT, and DELETE HTTP methods for the given URI.
+ * 
  * @author toddf
- *
+ * @since 2010
  */
 public class RouteBuilder
 {
@@ -33,15 +35,19 @@ public class RouteBuilder
 	static final String GET_ACTION_NAME = "read";
 	static final String POST_ACTION_NAME = "create";
 	static final String PUT_ACTION_NAME = "update";
-	static final List<HttpMethod> ALL_HTTP_METHODS = Arrays.asList(new HttpMethod[] {GET, POST, PUT, DELETE});
+	static final String HEAD_ACTION_NAME = "headers";
+	static final String OPTION_ACTION_NAME = "options";
+	static final List<HttpMethod> DEFAULT_HTTP_METHODS = Arrays.asList(new HttpMethod[] {GET, POST, PUT, DELETE});
 	static final Map<HttpMethod, String> ACTION_MAPPING = new HashMap<HttpMethod, String>();
 
 	static
 	{
-		ACTION_MAPPING.put(HttpMethod.DELETE, DELETE_ACTION_NAME);
-		ACTION_MAPPING.put(HttpMethod.GET, GET_ACTION_NAME);
-		ACTION_MAPPING.put(HttpMethod.POST, POST_ACTION_NAME);
-		ACTION_MAPPING.put(HttpMethod.PUT, PUT_ACTION_NAME);
+		ACTION_MAPPING.put(DELETE, DELETE_ACTION_NAME);
+		ACTION_MAPPING.put(GET, GET_ACTION_NAME);
+		ACTION_MAPPING.put(POST, POST_ACTION_NAME);
+		ACTION_MAPPING.put(PUT, PUT_ACTION_NAME);
+		ACTION_MAPPING.put(HEAD, HEAD_ACTION_NAME);
+		ACTION_MAPPING.put(OPTIONS, OPTION_ACTION_NAME);
 	}
 
 	
@@ -106,12 +112,12 @@ public class RouteBuilder
 		this.name = name;
 		return this;
 	}
-	
+
 	public List<Route> createRoutes()
 	{
 		if (methods.isEmpty())
 		{
-			methods = ALL_HTTP_METHODS;
+			methods = DEFAULT_HTTP_METHODS;
 		}
 
 		List<Route> routes = new ArrayList<Route>();

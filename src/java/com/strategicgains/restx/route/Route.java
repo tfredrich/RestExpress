@@ -86,6 +86,11 @@ public class Route
 		return name;
 	}
 	
+	public boolean hasName()
+	{
+		return (getName() != null && !getName().trim().isEmpty());
+	}
+	
 	public String getUrlPattern()
 	{
 		return urlPattern.getNormalizedUrlPattern();

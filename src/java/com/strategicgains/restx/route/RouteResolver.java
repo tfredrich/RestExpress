@@ -15,6 +15,8 @@
 */
 package com.strategicgains.restx.route;
 
+import org.jboss.netty.handler.codec.http.HttpMethod;
+
 import com.strategicgains.restx.Request;
 import com.strategicgains.restx.exception.BadRequestException;
 import com.strategicgains.restx.url.UrlMatch;
@@ -35,9 +37,9 @@ implements Resolver<Action>
 		this.routes = routes;
 	}
 	
-	public Route getNamedRoute(String name)
+	public Route getNamedRoute(String name, HttpMethod method)
 	{
-		return routes.getNamedRoute(name);
+		return routes.getNamedRoute(name, method);
 	}
 	
 	@Override

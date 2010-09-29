@@ -39,8 +39,10 @@ public abstract class RouteMapping
 	private List<Route> getRoutes = new ArrayList<Route>();
 	private List<Route> postRoutes = new ArrayList<Route>();
 	private List<Route> putRoutes = new ArrayList<Route>();
+	private List<Route> optionRoutes = new ArrayList<Route>();
+	private List<Route> headRoutes = new ArrayList<Route>();
 
-	private Map<String, Route> routesByName = new HashMap<String, Route>();
+	private Map<String, Map<HttpMethod, Route>> routesByName = new HashMap<String, Map<HttpMethod,Route>>();
 	private List<RouteBuilder> routeBuilders = new ArrayList<RouteBuilder>();
 
 
@@ -54,6 +56,8 @@ public abstract class RouteMapping
 		routes.put(HttpMethod.GET, getRoutes);
 		routes.put(HttpMethod.POST, postRoutes);
 		routes.put(HttpMethod.PUT, putRoutes);
+		routes.put(HttpMethod.HEAD, headRoutes);
+		routes.put(HttpMethod.OPTIONS, optionRoutes);
 		initialize();
 		buildRoutes();
 	}
@@ -101,12 +105,33 @@ public abstract class RouteMapping
 	 */
 	public List<Route> getRoutesFor(HttpMethod method)
 	{
-		return Collections.unmodifiableList(routes.get(method));
+		List<Route> routesFor = routes.get(method);
+		
+		if (routesFor == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		return Collections.unmodifiableList(routesFor);
 	}
 	
-	public Route getNamedRoute(String name)
+	/**
+	 * Return a Route by the name and HttpMethod provided in DSL.
+	 * Returns null if no route found.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public Route getNamedRoute(String name, HttpMethod method)
 	{
-		return routesByName.get(name);
+		Map<HttpMethod, Route> routesByMethod = routesByName.get(name);
+		
+		if (routesByMethod == null)
+		{
+			return null;
+		}
+		
+		return routesByMethod.get(method);
 	}
 
 
@@ -119,7 +144,25 @@ public abstract class RouteMapping
 	private void addRoute(Route route)
 	{
 		routes.get(route.getMethod()).add(route);
-		routesByName.put(route.getName(), route);
+		
+		if (route.hasName())
+		{
+			addNamedRoute(route);
+		}
+
 		// TODO: call log4j for added route, method
+	}
+	
+	private void addNamedRoute(Route route)
+	{
+		Map<HttpMethod, Route> routesByMethod = routesByName.get(route.getName());
+		
+		if (routesByMethod == null)
+		{
+			routesByMethod = new HashMap<HttpMethod, Route>();
+			routesByName.put(route.getName(), routesByMethod);
+		}
+		
+		routesByMethod.put(route.getMethod(), route);
 	}
 }

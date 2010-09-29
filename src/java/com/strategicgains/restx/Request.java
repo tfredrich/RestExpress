@@ -176,7 +176,7 @@ public class Request
 	
 	public String getNamedUrl(String resourceName)
 	{
-		Route route = urlRouter.getNamedRoute(resourceName);
+		Route route = urlRouter.getNamedRoute(resourceName, getMethod());
 		
 		if (route != null)
 		{
