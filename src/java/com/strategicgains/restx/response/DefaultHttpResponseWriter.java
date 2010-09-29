@@ -45,15 +45,15 @@ implements HttpResponseWriter
 	  	{
 	  		// Add 'Content-Length' header only for a keep-alive connection.
 	  		httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(httpResponse.getContent().readableBytes()));
+	  		ctx.getChannel().write(httpResponse);
 	  	}
 		else
 		{
 			httpResponse.setHeader(CONNECTION, "close");
-		}
 
-		// Close the connection as soon as the error message is sent.
-		ctx.getChannel().write(httpResponse).addListener(
-		    ChannelFutureListener.CLOSE);
+			// Close the connection as soon as the message is sent.
+			ctx.getChannel().write(httpResponse).addListener(ChannelFutureListener.CLOSE);
+		}
 	}
 
 	/**
