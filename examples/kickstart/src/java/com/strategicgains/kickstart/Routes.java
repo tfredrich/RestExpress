@@ -13,7 +13,7 @@ public class Routes
 extends RouteMapping
 {
 	@Override
-	protected void initialize()
+	protected void defineRoutes()
 	{
 		KickStartService service = new KickStartService();
 		
@@ -25,7 +25,7 @@ extends RouteMapping
 		// Maps /kickstart uri with required orderId and optional format identifier
 		// to the KickStartService.  Accepts only GET, PUT, DELETE HTTP methods.
 		// Names this route to allow returning links from read resources in
-		// KickStartService methods via call to 
+		// KickStartService methods via call to LinkUtils.asLinks().
 		uri("/kickstart/{orderId}.{format}", service)
 			.method(HttpMethod.GET, HttpMethod.PUT, HttpMethod.DELETE)
 			.name("KickstartOrderUri");

@@ -58,14 +58,20 @@ public abstract class RouteMapping
 		routes.put(HttpMethod.PUT, putRoutes);
 		routes.put(HttpMethod.HEAD, headRoutes);
 		routes.put(HttpMethod.OPTIONS, optionRoutes);
-		initialize();
-		buildRoutes();
+
+//		Subclasses must call super.buildRoutes();
 	}
 
-    protected abstract void initialize();
+    protected abstract void defineRoutes();
     
-    private void buildRoutes()
+    /**
+     * Subclasses must call super.buildRoutes() in their constructor after
+     * resources are assigned or constructed.
+     */
+    protected void buildRoutes()
     {
+    	defineRoutes();
+    	
     	for (RouteBuilder builder : routeBuilders)
     	{
     		for (Route route : builder.createRoutes())

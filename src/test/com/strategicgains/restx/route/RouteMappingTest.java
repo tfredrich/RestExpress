@@ -144,7 +144,7 @@ public class RouteMappingTest
 		private InnerService service;
 
         @Override
-        protected void initialize()
+        protected void defineRoutes()
         {
         	service = new InnerService();
 
