@@ -7,10 +7,8 @@ import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 import com.strategicgains.restx.domain.Link;
 import com.strategicgains.restx.pipeline.DefaultRequestHandler;
@@ -20,6 +18,7 @@ import com.strategicgains.restx.serialization.DefaultSerializationResolver;
 import com.strategicgains.restx.serialization.SerializationProcessor;
 import com.strategicgains.restx.serialization.json.DefaultJsonProcessor;
 import com.strategicgains.restx.serialization.xml.DefaultXmlProcessor;
+import com.strategicgains.restx.util.Bootstraps;
 import com.strategicgains.restx.util.Resolver;
 import com.thoughtworks.xstream.XStream;
 
@@ -46,10 +45,7 @@ public class RestServer
 		}
 
 		// Configure the server.
-		ServerBootstrap bootstrap = new ServerBootstrap(
-		    new NioServerSocketChannelFactory(
-		    	Executors.newCachedThreadPool(),
-		        Executors.newCachedThreadPool()));
+		ServerBootstrap bootstrap = Bootstraps.createServerNioBootstrap();
 
 		// Set up the event pipeline factory.
 	    DefaultRequestHandler requestHandler = new DefaultRequestHandler(
