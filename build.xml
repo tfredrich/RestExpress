@@ -60,6 +60,7 @@
 				<pathelement location="${dir.src.java}"/>
 			</src>
 		</javac>
+    	
 		<javac destdir="${dir.compile.test}"
 			failonerror="yes"
 			fork="yes"
