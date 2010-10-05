@@ -34,7 +34,7 @@ implements Resolver<Action>
 	public RouteResolver(RouteMapping routes)
 	{
 		super();
-		this.routes = routes;
+		this.routes = routes.initialize();
 	}
 	
 	public Route getNamedRoute(String name, HttpMethod method)

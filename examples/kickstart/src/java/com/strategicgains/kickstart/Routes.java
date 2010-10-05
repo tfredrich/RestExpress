@@ -14,9 +14,11 @@ extends RouteMapping
 {
 	private KickStartService service;
 	
-	protected void initialize()
+	@Override
+	public RouteMapping initialize()
 	{
 		service = new KickStartService();
+		return super.initialize();
 	}
 	
 	@Override

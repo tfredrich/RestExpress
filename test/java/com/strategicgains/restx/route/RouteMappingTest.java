@@ -1,6 +1,10 @@
 package com.strategicgains.restx.route;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -18,12 +22,19 @@ import com.strategicgains.restx.Response;
 public class RouteMappingTest
 {
     private static final String RAH_ROUTE_NAME = "POST_ONLY";
-	private static Routes routes;
+	private static RouteMapping routes;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
 	{
 		routes = new Routes();
+		routes.initialize();
+	}
+	
+	@Test (expected=NullPointerException.class)
+	public void shouldThrowNullPointerExceptionOnDoubleInitialization()
+	{
+		routes.initialize();
 	}
 
 	@Test
