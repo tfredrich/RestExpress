@@ -60,6 +60,13 @@ public class RouteBuilder
 	private boolean shouldSerializeResponse = true;
 	private String name;
 	
+	/**
+	 * Create a RouteBuilder instance for the given URI pattern. URIs that match the pattern
+	 * will map to methods on the POJO controller.
+	 * 
+	 * @param uri a URI pattern
+	 * @param controller the POJO service controller.
+	 */
 	public RouteBuilder(String uri, Object controller)
 	{
 		super();
@@ -67,6 +74,13 @@ public class RouteBuilder
 		this.controller = controller;
 	}
 	
+	/**
+	 * Map a service method name (action) to a particular HTTP method (e.g. GET, POST, PUT, DELETE, HEAD, OPTIONS)
+	 * 
+	 * @param action the name of a method within the service POJO.
+	 * @param method the HTTP method that should invoke the service method.
+	 * @return the RouteBuilder instance.
+	 */
 	public RouteBuilder action(String action, HttpMethod method)
 	{
 		if (!actionNames.containsKey(method))
@@ -82,6 +96,13 @@ public class RouteBuilder
 		return this;
 	}
 	
+	/**
+	 * Defines HTTP methods that the route will support (e.g. GET, PUT, POST, DELETE, OPTIONS, HEAD).
+	 * This utilizes the default HTTP method to service action mapping (e.g. GET maps to read(), PUT to update(), etc.).
+	 * 
+	 * @param methods the HTTP methods supported by the route.
+	 * @return the RouteBuilder instance.
+	 */
 	public RouteBuilder method(HttpMethod... methods)
 	{
 		for (HttpMethod method : methods)
@@ -95,25 +116,50 @@ public class RouteBuilder
 		return this;
 	}
 
+	/**
+	 * Turns off serialization of the response--returns the response body as pain text.
+	 * 
+	 * @return the RouteBuilder instance.
+	 */
 	public RouteBuilder noSerialization()
 	{
 		this.shouldSerializeResponse = false;
 		return this;
 	}
 
+	/**
+	 * Turns on response serialization (the default) so the response body will be serialized
+	 * (e.g. into JSON or XML).
+	 * 
+	 * @return the RouteBuilder instance.
+	 */
 	public RouteBuilder performSerialization()
 	{
 		this.shouldSerializeResponse = true;
 		return this;
 	}
 	
+	/**
+	 * Give the route a known name to facilitate retrieving the route by name.  This facilitates
+	 * using the route URI pattern to create Link instances via LinkUtils.asLinks().
+	 * 
+	 * The name must be unique for each URI pattern.
+	 * 
+	 * @param name the given name of the route for later retrieval.
+	 * @return the RouteBuilder instance.
+	 */
 	public RouteBuilder name(String name)
 	{
 		this.name = name;
 		return this;
 	}
 
-	public List<Route> createRoutes()
+	/**
+	 * Build the Route instances.  The last step in the Builder process.
+	 * 
+	 * @return a List of Route instances.
+	 */
+	public List<Route> build()
 	{
 		if (methods.isEmpty())
 		{
@@ -121,6 +167,12 @@ public class RouteBuilder
 		}
 
 		List<Route> routes = new ArrayList<Route>();
+		String pattern = uri;
+
+		if (pattern != null && !pattern.startsWith("/"))
+		{
+			pattern = "/" + pattern;
+		}
 		
 		for (HttpMethod method : methods)
 		{
@@ -132,7 +184,7 @@ public class RouteBuilder
 			}
 			
 			Method action = determineActionMethod(controller, actionName);
-			routes.add(new Route(uri, controller, action, method, shouldSerializeResponse, name));
+			routes.add(new Route(pattern, controller, action, method, shouldSerializeResponse, name));
 		}
 		
 		return routes;

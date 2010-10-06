@@ -5,7 +5,6 @@ package com.strategicgains.restx.response;
 
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 import java.nio.charset.Charset;
@@ -18,6 +17,7 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
 
 import com.strategicgains.restx.Request;
 import com.strategicgains.restx.Response;
+import com.strategicgains.restx.RestX;
 
 /**
  * @author toddf
@@ -34,11 +34,10 @@ implements HttpResponseWriter
 		
 		if (response.hasBody())
 		{
-			httpResponse.setHeader(CONTENT_TYPE, response.getHeader(CONTENT_TYPE) + "; charset=UTF-8");
 			StringBuilder builder = new StringBuilder(response.getBody().toString());
 			builder.append("\r\n");
 
-			httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), Charset.forName("UTF-8")));
+			httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), Charset.forName(RestX.ENCODING)));
 		}
 
 		if (request.isKeepAlive())
@@ -62,6 +61,12 @@ implements HttpResponseWriter
      */
     private void addHeaders(Response response, HttpResponse httpResponse)
     {
-    	// TODO: template
+    	for (String name : response.getHeaderNames())
+    	{
+    		for (String value : response.getHeaders(name))
+    		{
+    			httpResponse.addHeader(name, value);
+    		}
+    	}
     }
 }

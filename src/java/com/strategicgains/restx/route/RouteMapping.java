@@ -58,17 +58,18 @@ public abstract class RouteMapping
 		routes.put(HttpMethod.PUT, putRoutes);
 		routes.put(HttpMethod.HEAD, headRoutes);
 		routes.put(HttpMethod.OPTIONS, optionRoutes);
-		initialize();
-		buildRoutes();
 	}
-
-    protected abstract void initialize();
     
-    private void buildRoutes()
+    /**
+     * Initialize MUST be called to invoke the RouteBuilder instances before the routes will be activated.
+     */
+    public RouteMapping initialize()
     {
+    	defineRoutes();
+    	
     	for (RouteBuilder builder : routeBuilders)
     	{
-    		for (Route route : builder.createRoutes())
+    		for (Route route : builder.build())
     		{
     			addRoute(route);
     		}
@@ -77,7 +78,10 @@ public abstract class RouteMapping
     	// Garbage collect the builders and blow chow if buildRoutes() gets called a second time.
     	routeBuilders.clear();
     	routeBuilders = null;
+    	return this;
     }
+
+    protected abstract void defineRoutes();
 
 
 	// SECTION: URL MAPPING

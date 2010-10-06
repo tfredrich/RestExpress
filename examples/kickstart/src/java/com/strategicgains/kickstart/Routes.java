@@ -12,11 +12,18 @@ import com.strategicgains.restx.route.RouteMapping;
 public class Routes
 extends RouteMapping
 {
+	private KickStartService service;
+	
 	@Override
-	protected void initialize()
+	public RouteMapping initialize()
 	{
-		KickStartService service = new KickStartService();
-		
+		service = new KickStartService();
+		return super.initialize();
+	}
+	
+	@Override
+	protected void defineRoutes()
+	{
 		// Maps /kickstart uri with optional format ('json' or 'xml'), accepting
 		// POST HTTP method only.  Calls KickStartService.create(Request, Reply).
 		uri("/kickstart.{format}", service)
@@ -25,7 +32,7 @@ extends RouteMapping
 		// Maps /kickstart uri with required orderId and optional format identifier
 		// to the KickStartService.  Accepts only GET, PUT, DELETE HTTP methods.
 		// Names this route to allow returning links from read resources in
-		// KickStartService methods via call to 
+		// KickStartService methods via call to LinkUtils.asLinks().
 		uri("/kickstart/{orderId}.{format}", service)
 			.method(HttpMethod.GET, HttpMethod.PUT, HttpMethod.DELETE)
 			.name("KickstartOrderUri");
