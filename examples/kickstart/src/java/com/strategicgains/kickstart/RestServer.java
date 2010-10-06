@@ -1,6 +1,7 @@
 package com.strategicgains.kickstart;
 
 import static com.strategicgains.restx.RestX.JSON_FORMAT;
+import static com.strategicgains.restx.RestX.TXT_FORMAT;
 import static com.strategicgains.restx.RestX.XML_FORMAT;
 
 import java.net.InetSocketAddress;
@@ -17,6 +18,7 @@ import com.strategicgains.restx.route.RouteResolver;
 import com.strategicgains.restx.serialization.DefaultSerializationResolver;
 import com.strategicgains.restx.serialization.SerializationProcessor;
 import com.strategicgains.restx.serialization.json.DefaultJsonProcessor;
+import com.strategicgains.restx.serialization.text.DefaultTxtProcessor;
 import com.strategicgains.restx.serialization.xml.DefaultXmlProcessor;
 import com.strategicgains.restx.util.Bootstraps;
 import com.strategicgains.restx.util.Resolver;
@@ -68,9 +70,9 @@ public class RestServer
 	{
 		Map<String, SerializationProcessor> serializationProcessors = new HashMap<String, SerializationProcessor>();
 		serializationProcessors.put(JSON_FORMAT, new DefaultJsonProcessor());
+		serializationProcessors.put(TXT_FORMAT, new DefaultTxtProcessor());
+		serializationProcessors.put(XML_FORMAT, new DefaultXmlProcessor(createXStream()));
 
-		serializationProcessors.put(XML_FORMAT, new DefaultXmlProcessor(
-		    createXStream()));
 		return new DefaultSerializationResolver(serializationProcessors, JSON_FORMAT);
 	}
 

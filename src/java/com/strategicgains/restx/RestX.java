@@ -23,6 +23,7 @@ package com.strategicgains.restx;
 public class RestX
 {
 	public static final String JSON_FORMAT = "json";
+	public static final String TXT_FORMAT = "txt";
 	public static final String XML_FORMAT = "xml";
 	public static final String ENCODING = "UTF-8";
 	
