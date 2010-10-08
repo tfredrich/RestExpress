@@ -13,16 +13,27 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-package com.strategicgains.restexpress.util;
+package com.strategicgains.restexpress.domain.validation;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
+ * Annotations for domain property validations.
+ * 
  * @author toddf
- * @since July 29, 2010
+ * @since Oct 7, 2010
  */
-public interface Validatable
+@Target(FIELD)
+@Retention(RUNTIME)
+public @interface Validate
 {
-	/**
-	 * Must throw ValidationException(errors) when validation fails.
-	 */
-	public void validate();
+	String name() default "";
+	boolean required() default false;
+	int maxLength() default -1;
+	int lessThan() default Integer.MIN_VALUE;
+	int greaterThan() default Integer.MAX_VALUE;
 }
