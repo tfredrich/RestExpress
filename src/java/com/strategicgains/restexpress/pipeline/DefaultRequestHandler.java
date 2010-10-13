@@ -31,6 +31,7 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
+import com.strategicgains.restexpress.exception.ExceptionMapping;
 import com.strategicgains.restexpress.exception.ServiceException;
 import com.strategicgains.restexpress.response.DefaultHttpResponseWriter;
 import com.strategicgains.restexpress.response.ErrorHttpResponseWriter;
@@ -62,6 +63,7 @@ implements PreprocessorAware, PostprocessorAware
 	private HttpResponseWriter errorResponseWriter;
 	private List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
 	private List<Postprocessor> postprocessors = new ArrayList<Postprocessor>();
+	private ExceptionMapping exceptionMap = new ExceptionMapping();
 
 
 	// SECTION: CONSTRUCTORS
@@ -84,6 +86,12 @@ implements PreprocessorAware, PostprocessorAware
 
 	// SECTION: MUTATORS
 	
+	public <T extends Exception, U extends ServiceException> DefaultRequestHandler mapException(Class<T> from, Class<U> to)
+	{
+		exceptionMap.map(from, to);
+		return this;
+	}
+
 	public HttpResponseWriter getResponseWriter()
 	{
 		return this.responseWriter;
@@ -142,11 +150,21 @@ implements PreprocessorAware, PostprocessorAware
 			response.setResponseStatus(e.getHttpStatus());
 			response.setException(e);
 		}
-		catch (Throwable t)
+		catch (Exception e)
 		{
-			t.printStackTrace();
-			response.setResponseStatus(INTERNAL_SERVER_ERROR);
-			response.setException(t);
+			e.printStackTrace();
+			ServiceException se = exceptionMap.getExceptionFor(e);
+			
+			if (se != null)
+			{
+				response.setResponseStatus(se.getHttpStatus());
+				response.setException(se);
+			}
+			else
+			{
+				response.setResponseStatus(INTERNAL_SERVER_ERROR);
+				response.setException(e);
+			}
 		}
 		finally
 		{

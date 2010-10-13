@@ -114,14 +114,7 @@ public class Route
         }
 		catch (InvocationTargetException e)
 		{
-			Throwable t = e.getCause();
-
-			if (t instanceof ServiceException)
-			{
-				throw (ServiceException) t;
-			}
-			
-			throw new ServiceException(e);
+			throw (RuntimeException) e.getCause();
 		}
         catch (Exception e)
         {

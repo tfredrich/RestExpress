@@ -61,7 +61,6 @@ public class Action
 	 */
     public Object invoke(Request request, Response response)
     {
-//		applyParameterHeaders(request);
     	return getRoute().invoke(request, response);
     }
 
