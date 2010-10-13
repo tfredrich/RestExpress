@@ -23,6 +23,7 @@ import java.util.Map;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBufferInputStream;
 
+import com.strategicgains.restexpress.RestExpress;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
 import com.thoughtworks.xstream.XStream;
 
@@ -78,7 +79,7 @@ implements SerializationProcessor
 	@Override
 	public String getResultingContentType()
 	{
-		return "application/xml";
+		return "application/xml; charset=" + RestExpress.ENCODING;
 	}
 
 	private void addAliasIfNecessary(Class<?> type)
