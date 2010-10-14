@@ -1,8 +1,8 @@
 package com.strategicgains.kickstart;
 
-import static com.strategicgains.restx.RestX.JSON_FORMAT;
-import static com.strategicgains.restx.RestX.TXT_FORMAT;
-import static com.strategicgains.restx.RestX.XML_FORMAT;
+import static com.strategicgains.restexpress.RestExpress.JSON_FORMAT;
+import static com.strategicgains.restexpress.RestExpress.TXT_FORMAT;
+import static com.strategicgains.restexpress.RestExpress.XML_FORMAT;
 
 import java.net.InetSocketAddress;
 import java.util.Collections;
@@ -11,21 +11,21 @@ import java.util.Map;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 
-import com.strategicgains.restx.domain.Link;
-import com.strategicgains.restx.pipeline.DefaultRequestHandler;
-import com.strategicgains.restx.pipeline.PipelineBuilder;
-import com.strategicgains.restx.route.RouteResolver;
-import com.strategicgains.restx.serialization.DefaultSerializationResolver;
-import com.strategicgains.restx.serialization.SerializationProcessor;
-import com.strategicgains.restx.serialization.json.DefaultJsonProcessor;
-import com.strategicgains.restx.serialization.text.DefaultTxtProcessor;
-import com.strategicgains.restx.serialization.xml.DefaultXmlProcessor;
-import com.strategicgains.restx.util.Bootstraps;
-import com.strategicgains.restx.util.Resolver;
+import com.strategicgains.restexpress.domain.Link;
+import com.strategicgains.restexpress.pipeline.DefaultRequestHandler;
+import com.strategicgains.restexpress.pipeline.PipelineBuilder;
+import com.strategicgains.restexpress.route.RouteResolver;
+import com.strategicgains.restexpress.serialization.DefaultSerializationResolver;
+import com.strategicgains.restexpress.serialization.SerializationProcessor;
+import com.strategicgains.restexpress.serialization.json.DefaultJsonProcessor;
+import com.strategicgains.restexpress.serialization.text.DefaultTxtProcessor;
+import com.strategicgains.restexpress.serialization.xml.DefaultXmlProcessor;
+import com.strategicgains.restexpress.util.Bootstraps;
+import com.strategicgains.restexpress.util.Resolver;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * The main entry-point into RestX for the example services.
+ * The main entry-point into RestExpress for the example services.
  * 
  * @author toddf
  * @since Aug 31, 2009
@@ -62,7 +62,7 @@ public class RestServer
 		bootstrap.setPipelineFactory(pf);
 
 		// Bind and start to accept incoming connections.
-		System.out.println("Starting RestX Example Server on port " + port);
+		System.out.println("Starting KickStart Example Server on port " + port);
 		bootstrap.bind(new InetSocketAddress(port));
 	}
 

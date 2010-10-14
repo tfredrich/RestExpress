@@ -3,7 +3,7 @@ package com.strategicgains.kickstart;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import com.strategicgains.kickstart.service.KickStartService;
-import com.strategicgains.restx.route.RouteMapping;
+import com.strategicgains.restexpress.route.RouteMapping;
 
 /**
  * @author toddf

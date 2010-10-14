@@ -1,7 +1,7 @@
 package com.strategicgains.kickstart.service;
 
-import com.strategicgains.restx.Request;
-import com.strategicgains.restx.Response;
+import com.strategicgains.restexpress.Request;
+import com.strategicgains.restexpress.Response;
 
 /**
  * @author toddf

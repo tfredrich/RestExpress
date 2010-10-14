@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="build-all" name="RestX">
+<project basedir="." default="build-all" name="RestExpress">
 
 	<property environment="env"/>
 	<property file="build.properties"/>
@@ -88,7 +88,7 @@
 	<!-- ====================================================================== 
           target: unit-test
          ====================================================================== -->
-    <target name="unit-test" depends="_init, compile" description="--> Execute RestX unit tests">
+    <target name="unit-test" depends="_init, compile" description="--> Execute RestExpress unit tests">
         <delete dir="${dir.test.results}"/>
     	<mkdir dir="${dir.test.results}"/>
     	<junit printsummary="true">

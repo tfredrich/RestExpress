@@ -1,7 +1,7 @@
-This kickstart project illustrates how to create a simple RestX project.  Complete with Ant build, 
+This kickstart project illustrates how to create a simple RestExpress project.  Complete with Ant build, 
 it contains a skeleton main() class, RestServer, and an empty, but functional service.
 
-Copy the lib/ directory of RestX, along with the dist/ directory of RestX into the lib directory
+Copy the lib/ directory of RestExpress, along with the dist/ directory of RestExpress into the lib directory
 for the kickstart application.  Ant should compile the project.  Then:
 
 1) Change the Routes.java file to match your URL requirements using the using the RouteBuilder DSL.

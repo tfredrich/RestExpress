@@ -1,4 +1,4 @@
-RestX is a thin wrapper on the JBOSS Netty HTTP stack to provide a simple and easy way to create
+RestExpress is a thin wrapper on the JBOSS Netty HTTP stack to provide a simple and easy way to create
 RESTful services in Java.
 
 Born to be simple, only three things are required to wire up a service:
@@ -28,6 +28,13 @@ before returning to set the response HTTP status code to 204 (no content).
 On successful creation, call response.setResponseCreated() to set the returning HTTP status code to 201.
 
 Change History:
+===================================================================================================
+Release 0.5
+* Renamed repository from RestX to RestExpress.
+* Repackaged everything from com.strategicgains.restx... to com.strategicgains.restexpress...
+* Changed DefaultHttpResponseWriter to output resonse headers correctly.
+* Updated javadoc on RouteBuilder to provide some documentation on route DSL.
+
 ===================================================================================================
 Release 0.4
 * Fixed error in "Connection: keep-alive" processing during normal and error response writing.
