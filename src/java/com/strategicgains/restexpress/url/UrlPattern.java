@@ -46,8 +46,9 @@ public class UrlPattern
 	// Finds parameters in the URL pattern string.
 	private static final String URL_PARAM_REGEX = "\\{(\\w*?)\\}";
 	
-	// Replaces parameter names in the URL pattern string before compilation to match URLs. 
-	private static final String URL_MATCH_REGEX = "\\(\\\\w+?\\)";
+	// Replaces parameter names in the URL pattern string before compilation to match URLs.
+	// Notice: valid URL characters are alphanumerics plus $-_.+!*'(),%
+	private static final String URL_MATCH_REGEX = "\\([\\\\w-:%!',\\\\(\\\\)\\\\~\\\\+\\\\*\\$]+?\\)";
 	
 	// Pattern to match URL pattern parameter names.
 	private static final Pattern URL_PARAM_PATTERN = Pattern.compile(URL_PARAM_REGEX);
