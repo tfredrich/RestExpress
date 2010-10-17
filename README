@@ -29,6 +29,12 @@ On successful creation, call response.setResponseCreated() to set the returning 
 
 Change History:
 ===================================================================================================
+Release 0.5.1
+* Enhanced support for mark, unreserved and some reserved characters in URL. Specifically, added
+  $-+*()~:!' and %.  Still doesn't parse URLs with '.' within the string itself--because of the
+  support for .{format} URL section.
+
+===================================================================================================
 Release 0.5
 * Renamed repository from RestX to RestExpress.
 * Repackaged everything from com.strategicgains.restx... to com.strategicgains.restexpress...
