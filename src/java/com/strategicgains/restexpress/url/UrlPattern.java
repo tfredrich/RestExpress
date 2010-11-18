@@ -36,6 +36,11 @@ import java.util.regex.Pattern;
  *   <li>/api/{version}/search/users/{userid}</li>
  * </ul>
  * 
+ * <p/>Limitations:
+ * <ol>
+ * 	<li>While parameter names within URL patterns may, parameter values within the URL may not contain dots ('.').</li>
+ * </ol>
+ * 
  * @author toddf
  * @since Apr 28, 2010
  */
