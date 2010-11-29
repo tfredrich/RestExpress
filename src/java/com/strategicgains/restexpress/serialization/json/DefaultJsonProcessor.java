@@ -30,6 +30,9 @@ import com.strategicgains.restexpress.serialization.SerializationProcessor;
 import com.strategicgains.util.date.DateAdapterConstants;
 
 /**
+ * A SerializationProcessor to handle JSON input/output.  It anticipates ISO 8601-compatible time points for date instances
+ * and outputs dates as ISO 8601 time points.
+ * 
  * @author toddf
  * @since Mar 16, 2010
  */
