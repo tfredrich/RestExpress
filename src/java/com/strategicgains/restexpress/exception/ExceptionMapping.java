@@ -32,7 +32,7 @@ public class ExceptionMapping
 		exceptions.put(inExceptionClass, outExceptionClass);
 	}
 
-	public ServiceException getExceptionFor(Exception e)
+	public ServiceException getExceptionFor(Throwable e)
 	{
 		Class<?> mapped = exceptions.get(e.getClass());
 		
