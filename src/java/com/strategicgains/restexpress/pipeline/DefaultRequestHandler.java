@@ -87,7 +87,7 @@ implements PreprocessorAware, PostprocessorAware
 
 	// SECTION: MUTATORS
 	
-	public void addObserver(MessageObserver... observers)
+	public void addMessageObserver(MessageObserver... observers)
 	{
 		for (MessageObserver observer : observers)
 		{
