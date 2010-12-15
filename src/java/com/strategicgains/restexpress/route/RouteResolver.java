@@ -18,7 +18,7 @@ package com.strategicgains.restexpress.route;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import com.strategicgains.restexpress.Request;
-import com.strategicgains.restexpress.exception.BadRequestException;
+import com.strategicgains.restexpress.exception.NotFoundException;
 import com.strategicgains.restexpress.url.UrlMatch;
 import com.strategicgains.restexpress.util.Resolver;
 
@@ -55,6 +55,6 @@ implements Resolver<Action>
 			}
 		}
 
-		throw new BadRequestException("Unresolvable URL: " + request.getUrl());
+		throw new NotFoundException("Unresolvable URL: " + request.getUrl());
 	}
 }
