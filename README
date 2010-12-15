@@ -29,6 +29,13 @@ On successful creation, call response.setResponseCreated() to set the returning 
 
 Change History:
 ===================================================================================================
+Release 0.5.2
+* Introduced DateJsonProcessor (sibling to DefaultJsonProcessor) which parses dates vs. time points.
+* Refactored ExceptionMapping.getExceptionFor() signature from Exception to Throwable.
+* Introduced MessageObserver, which accepts notifications of onReceived(), onSuccess(), onException(), onComplete() to facilitate logging, auditing, timing, etc.
+* Changed RouteResolver.resolve() to throw NotFoundException instead of BadRequestException for unresolvable URI.
+
+===================================================================================================
 Release 0.5.1
 * Enhanced support for mark, unreserved and some reserved characters in URL. Specifically, added
   $-+*()~:!' and %.  Still doesn't parse URLs with '.' within the string itself--because of the
