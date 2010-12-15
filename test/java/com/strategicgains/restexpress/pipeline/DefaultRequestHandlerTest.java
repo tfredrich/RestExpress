@@ -55,7 +55,7 @@ public class DefaultRequestHandlerTest
 	{
 		messageHandler = new DefaultRequestHandler(new RouteResolver(new DummyRoutes()), new DefaultSerializationResolver());
 		observer = new DummyObserver();
-		messageHandler.addObserver(observer);
+		messageHandler.addMessageObserver(observer);
 		PipelineBuilder pf = new PipelineBuilder()
 			.setRequestHandler(messageHandler);
 	    pl = pf.getPipeline();
