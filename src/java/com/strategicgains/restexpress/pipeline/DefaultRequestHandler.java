@@ -64,6 +64,7 @@ implements PreprocessorAware, PostprocessorAware
 	private List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
 	private List<Postprocessor> postprocessors = new ArrayList<Postprocessor>();
 	private ExceptionMapping exceptionMap = new ExceptionMapping();
+	private List<MessageObserver> messageObservers = new ArrayList<MessageObserver>();
 
 
 	// SECTION: CONSTRUCTORS
@@ -85,6 +86,17 @@ implements PreprocessorAware, PostprocessorAware
 
 
 	// SECTION: MUTATORS
+	
+	public void addObserver(MessageObserver... observers)
+	{
+		for (MessageObserver observer : observers)
+		{
+			if (!messageObservers.contains(observer))
+			{
+				messageObservers.add(observer);
+			}
+		}
+	}
 	
 	public <T extends Exception, U extends ServiceException> DefaultRequestHandler mapException(Class<T> from, Class<U> to)
 	{
@@ -121,6 +133,7 @@ implements PreprocessorAware, PostprocessorAware
 	{
 		Request request = createRequest((HttpRequest) event.getMessage(), ctx);
 		Response response = createResponse(request);
+		notifyReceived(request, response);
 
 		try
 		{
@@ -170,16 +183,72 @@ implements PreprocessorAware, PostprocessorAware
 		{
 			if (response.hasException())
 			{
+				notifyException(response.getException(), request, response);
 				writeError(ctx, request, response);
 			}
 			else
 			{
+				notifySuccess(request, response);
 				// Set response and accept headers, if appropriate.
 				writeResponse(ctx, request, response);
 			}
+			
+			notifyComplete(request, response);
 		}
 	}
-	
+
+
+    /**
+     * @param request
+     * @param response
+     */
+    private void notifyReceived(Request request, Response response)
+    {
+    	for (MessageObserver observer : messageObservers)
+    	{
+    		observer.onReceived(request, response);
+    	}
+    }
+
+	/**
+     * @param request
+     * @param response
+     */
+    private void notifyComplete(Request request, Response response)
+    {
+    	for (MessageObserver observer : messageObservers)
+    	{
+    		observer.onComplete(request, response);
+    	}
+    }
+
+	// SECTION: UTILITY -- PRIVATE
+
+	/**
+     * @param exception
+     * @param request
+     * @param response
+     */
+    private void notifyException(Throwable exception, Request request, Response response)
+    {
+    	for (MessageObserver observer : messageObservers)
+    	{
+    		observer.onException(exception, request, response);
+    	}
+    }
+
+	/**
+     * @param request
+     * @param response
+     */
+    private void notifySuccess(Request request, Response response)
+    {
+    	for (MessageObserver observer : messageObservers)
+    	{
+    		observer.onSuccess(request, response);
+    	}
+    }
+
 	private boolean hasSerializationResolver()
 	{
 		return (serializationResolver != null);
