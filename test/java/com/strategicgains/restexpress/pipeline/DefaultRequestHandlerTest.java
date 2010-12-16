@@ -98,15 +98,15 @@ public class DefaultRequestHandlerTest
 		assertEquals(0, observer.getExceptionCount());
 	}
 
-//	@Test
-//	public void shouldParseTimepointXml()
-//	{
-//		sendGetEvent("/date.xml", "<com.strategicgains.restexpress.pipeline.Dated><at>2010-12-17T120000Z</at></com.strategicgains.restexpress.pipeline.Dated>");
-//		assertEquals(1, observer.getReceivedCount());
-//		assertEquals(1, observer.getCompleteCount());
-//		assertEquals(1, observer.getSuccessCount());
-//		assertEquals(0, observer.getExceptionCount());
-//	}
+	@Test
+	public void shouldParseTimepointXml()
+	{
+		sendGetEvent("/date.xml", "<com.strategicgains.restexpress.pipeline.Dated><at>2010-12-17T120000Z</at></com.strategicgains.restexpress.pipeline.Dated>");
+		assertEquals(1, observer.getReceivedCount());
+		assertEquals(1, observer.getCompleteCount());
+		assertEquals(1, observer.getSuccessCount());
+		assertEquals(0, observer.getExceptionCount());
+	}
 
 	private void sendGetEvent(String path)
     {

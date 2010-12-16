@@ -57,6 +57,9 @@ implements SerializationProcessor
 		this.gson = gson;
 	}
 
+
+	// SECTION: SERIALIZATION PROCESSOR
+
     @Override
     public <T> T deserialize(String string, Class<T> type)
     {
