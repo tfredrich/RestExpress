@@ -27,7 +27,16 @@ before returning to set the response HTTP status code to 204 (no content).
 
 On successful creation, call response.setResponseCreated() to set the returning HTTP status code to 201.
 
-Change History:
+Change History/Release Notes:
+===================================================================================================
+Release 0.5.3
+* Fixed issue with JSON date/timestamp parsing.
+* Fixed issues with XML date/timestamp parsing.
+* Upgraded to GSON 1.6 release.
+* Added correlation ID to Request to facilitate timing, etc. in pipeline.
+* Added alias(String, Class) to DefaultXmlProcessor.
+* By default, alias List and Link in DefaultXmlProcessor.
+
 ===================================================================================================
 Release 0.5.2
 * Introduced DateJsonProcessor (sibling to DefaultJsonProcessor) which parses dates vs. time points.
