@@ -44,6 +44,8 @@ public class Request
 
 	private static final String METHOD_QUERY_PARAMETER = "_method";
 	private static final String FORMAT_HEADER_NAME = "format";
+	
+	private static long nextCorrelationId = 0;
 
 
 	// SECTION: INSTANCE VARIABLES
@@ -53,6 +55,7 @@ public class Request
 	private RouteResolver urlRouter;
 	private HttpMethod realMethod;
 	private Route resolvedRoute;
+	private String correlationId;
 
 	
 	// SECTION: CONSTRUCTOR
@@ -65,10 +68,21 @@ public class Request
 		this.serializationResolver = serializationResolver;
 		this.urlRouter = routes;
 		handleMethodTunneling(addQueryStringParametersAsHeaders());
+		createCorrelationId();
 	}
 	
 	// SECTION: ACCESSORS/MUTATORS
-	
+
+	/**
+	 * Return the Correlation ID for this request.  The Correlation ID is unique for each request within
+	 * this VM instance.  Restarting the VM will reset the correlation ID to zero.  It is not a GUID.
+	 * It is useful, however, in correlating events in the pipeline (e.g. timing, etc.).  
+	 */
+	public String getCorrelationId()
+	{
+		return correlationId;
+	}
+
 	/**
 	 * Return the HTTP method of the request.
 	 * 
@@ -299,5 +313,10 @@ public class Request
 				break;
 			}
 		}
+	}
+	
+	private void createCorrelationId()
+	{
+		this.correlationId = String.valueOf(++nextCorrelationId);
 	}
 }
