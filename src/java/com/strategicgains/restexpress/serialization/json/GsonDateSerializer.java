@@ -62,7 +62,7 @@ implements GsonSerializer<Date>
     {
     	try
         {
-	        return adapter.parse(json.getAsJsonPrimitive().toString());
+	        return adapter.parse(json.getAsJsonPrimitive().getAsString());
         }
         catch (ParseException e)
         {
