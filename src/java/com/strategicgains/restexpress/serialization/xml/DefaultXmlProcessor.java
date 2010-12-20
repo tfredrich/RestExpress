@@ -17,6 +17,7 @@
 
 package com.strategicgains.restexpress.serialization.xml;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBufferInputStream;
 
 import com.strategicgains.restexpress.RestExpress;
+import com.strategicgains.restexpress.domain.Link;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
 import com.thoughtworks.xstream.XStream;
 
@@ -40,8 +42,10 @@ implements SerializationProcessor
 	
 	public DefaultXmlProcessor()
 	{
-		super();
-		xstream = new XStream();
+		this(new XStream());
+		xstream.registerConverter(new XstreamTimestampConverter());
+		xstream.alias("link", Link.class);
+		xstream.alias("list", Collections.EMPTY_LIST.getClass());
 	}
 	
 	public DefaultXmlProcessor(XStream xstream)
@@ -50,6 +54,17 @@ implements SerializationProcessor
 		this.xstream = xstream;
 		shouldAutoAlias = false;
 	}
+	
+	
+	// SECTION: XML NAME ALIASING
+
+	public void alias(String name, Class<?> type)
+	{
+		xstream.alias(name, type);
+	}
+
+
+	// SECTION: SERIALIZATION PROCESSOR
 
 	@Override
 	public String serialize(Object object)

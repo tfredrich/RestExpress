@@ -44,7 +44,7 @@ implements SerializationProcessor
 	@Override
 	public String serialize(Object object)
 	{
-		return object.toString();
+		return String.valueOf(object);
 	}
 
 	@Override

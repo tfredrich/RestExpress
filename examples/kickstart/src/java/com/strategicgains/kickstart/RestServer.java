@@ -53,9 +53,13 @@ public class RestServer
 	    DefaultRequestHandler requestHandler = new DefaultRequestHandler(
 	    	new RouteResolver(new Routes()),
 	    	createSerializationResolver());
+	    
+	    // Add MessageObservers to the request handler here, if desired...
+	    requestHandler.addMessageObserver(new ExampleMessageObserver());
+
 	    // Add pre/post processors to the request handler here...
-//	    requestHandler.addPreprocessor(handler);
-//	    requestHandler.addPostprocessor(handler);
+//	    requestHandler.addPreprocessor(postprocessorHandler);
+//	    requestHandler.addPostprocessor(preprocessorHandler);
 
 	    PipelineBuilder pf = new PipelineBuilder()
 			.setRequestHandler(requestHandler);
@@ -71,16 +75,16 @@ public class RestServer
 		Map<String, SerializationProcessor> serializationProcessors = new HashMap<String, SerializationProcessor>();
 		serializationProcessors.put(JSON_FORMAT, new DefaultJsonProcessor());
 		serializationProcessors.put(TXT_FORMAT, new DefaultTxtProcessor());
-		serializationProcessors.put(XML_FORMAT, new DefaultXmlProcessor(createXStream()));
+		serializationProcessors.put(XML_FORMAT, createXmlProcessor());
 
 		return new DefaultSerializationResolver(serializationProcessors, JSON_FORMAT);
 	}
 
-	private static XStream createXStream()
+	private static SerializationProcessor createXmlProcessor()
 	{
-		XStream xstream = new XStream();
-		xstream.alias("link", Link.class);
-		xstream.alias("list", Collections.EMPTY_LIST.getClass());
-		return xstream;
+		DefaultXmlProcessor xmlProcessor = new DefaultXmlProcessor();
+//		xmlProcessor.alias("element_name", Element.class);
+//		...
+		return xmlProcessor;
 	}
 }
