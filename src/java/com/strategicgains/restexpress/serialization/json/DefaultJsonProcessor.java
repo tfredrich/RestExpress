@@ -81,6 +81,6 @@ implements SerializationProcessor
 	@Override
 	public String getResultingContentType()
 	{
-		return "application/json; charset=" + RestExpress.ENCODING;
+		return RestExpress.CONTENT_TYPE_JSON;
 	}
 }

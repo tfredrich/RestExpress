@@ -17,9 +17,14 @@
 
 package com.strategicgains.restexpress.serialization.text;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.netty.buffer.ChannelBuffer;
 
+import com.strategicgains.restexpress.RestExpress;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
+import com.strategicgains.restexpress.serialization.Serializer;
 
 /**
  * This SerializationProcessor implementation performs serialize() only so it's applicable
@@ -36,16 +41,54 @@ import com.strategicgains.restexpress.serialization.SerializationProcessor;
 public class DefaultTxtProcessor
 implements SerializationProcessor
 {
+	private Map<Class<?>, TextSerializer> aliases = new HashMap<Class<?>, TextSerializer>();
+
 	public DefaultTxtProcessor()
 	{
 		super();
 	}
 
+	/**
+	 * Essentially override the toString() method for a given Class with a TextSerializer.
+	 * Observes the inheritance hierarchy such that if an alias is not given for the sub-class
+	 * but is provided for the superclass, the superclass's alias will be used to serialize
+	 * the object.
+	 * 
+	 * @param aClass
+	 * @param serializer
+	 */
+	public void alias(Class<?> aClass, TextSerializer serializer)
+	{
+		if (!aliases.containsKey(aClass))
+		{
+			aliases.put(aClass, serializer);
+		}
+	}
+
 	@Override
 	public String serialize(Object object)
 	{
-		return String.valueOf(object);
+		Serializer serializer = findSerializerFor(object);
+		return (serializer == null ? String.valueOf(object) : serializer.serialize(object));
 	}
+
+	private TextSerializer findSerializerFor(Object object)
+    {
+		Class<?> aClass = object.getClass();
+		TextSerializer serializer = null;
+		
+		while (serializer == null && aClass != null)
+		{
+			serializer = aliases.get(aClass);
+			
+			if (serializer == null)
+			{
+				aClass = aClass.getSuperclass();
+			}
+		}
+		
+	    return serializer;
+    }
 
 	@Override
 	public <T> T deserialize(String text, Class<T> type)
@@ -62,6 +105,6 @@ implements SerializationProcessor
 	@Override
 	public String getResultingContentType()
 	{
-		return "text/plain";
+		return RestExpress.CONTENT_TYPE_TEXT_PLAIN;
 	}
 }

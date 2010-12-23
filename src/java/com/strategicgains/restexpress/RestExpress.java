@@ -28,6 +28,15 @@ public class RestExpress
 	public static final String ENCODING = "UTF-8";
 	
 
+	// CONTENT TYPES
+
+	public static final String CONTENT_TYPE_JSON = "application/json; charset=" + ENCODING;
+	public static final String CONTENT_TYPE_TEXT_PLAIN = "text/plain; charset=" + ENCODING;
+	public static final String CONTENT_TYPE_XML = "application/xml; charset=" + ENCODING;
+
+	
+	// CONSTRUCTOR - PRIVATE
+
 	private RestExpress()
 	{
 		// prevents instantiation.
