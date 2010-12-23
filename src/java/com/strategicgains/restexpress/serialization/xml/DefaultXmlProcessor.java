@@ -94,7 +94,7 @@ implements SerializationProcessor
 	@Override
 	public String getResultingContentType()
 	{
-		return "application/xml; charset=" + RestExpress.ENCODING;
+		return RestExpress.CONTENT_TYPE_XML;
 	}
 
 	private void addAliasIfNecessary(Class<?> type)
