@@ -29,6 +29,12 @@ On successful creation, call response.setResponseCreated() to set the returning 
 
 Change History/Release Notes:
 ===================================================================================================
+Release 0.5.4
+* Added alias() capability to DefaultTxtProcessor to facilitate custom text serialization.
+* Updated kickstart application to illustrate latest features.
+* Minor refactoring of constants and their locations (moved to RestExpress.java).
+
+===================================================================================================
 Release 0.5.3
 * Fixed issue with JSON date/timestamp parsing.
 * Fixed issues with XML date/timestamp parsing.
