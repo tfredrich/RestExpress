@@ -24,7 +24,8 @@ import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.ServiceException;
 import com.strategicgains.restexpress.url.UrlMatch;
-import com.strategicgains.restexpress.url.UrlPattern;
+import com.strategicgains.restexpress.url.UrlMatcher;
+
 
 /**
  * A Route is an immutable relationship between a URL pattern and a REST
@@ -33,11 +34,11 @@ import com.strategicgains.restexpress.url.UrlPattern;
  * @author toddf
  * @since May 4, 2010
  */
-public class Route
+public abstract class Route
 {
 	// SECTION: INSTANCE VARIABLES
 
-	private UrlPattern urlPattern;
+	private UrlMatcher urlMatcher;
 	private Object controller;
 	private Method action;
 	private HttpMethod method;
@@ -47,23 +48,18 @@ public class Route
 	// SECTION: CONSTRUCTORS
 
 	/**
-	 * @param urlPattern
+	 * @param urlMatcher
 	 * @param controller
 	 */
-	public Route(UrlPattern urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse, String name)
+	public Route(UrlMatcher urlMatcher, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse, String name)
 	{
 		super();
-		this.urlPattern = urlPattern;
+		this.urlMatcher = urlMatcher;
 		this.controller = controller;
 		this.action = action;
 		this.method = method;
 		this.shouldSerializeResponse = shouldSerializeResponse;
 		this.name = name;
-	}
-
-	public Route(String urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse, String name)
-	{
-		this(new UrlPattern(urlPattern), controller, action, method, shouldSerializeResponse, name);
 	}
 	
 	public Method getAction()
@@ -91,9 +87,9 @@ public class Route
 		return (getName() != null && !getName().trim().isEmpty());
 	}
 	
-	public String getUrlPattern()
+	public String getPattern()
 	{
-		return urlPattern.getNormalizedUrlPattern();
+		return urlMatcher.getPattern();
 	}
 	
 	public boolean shouldSerializeResponse()
@@ -103,7 +99,7 @@ public class Route
 
 	public UrlMatch match(String url)
 	{
-		return urlPattern.match(url);
+		return urlMatcher.match(url);
 	}
 
 	public Object invoke(Request request, Response response)

@@ -194,7 +194,7 @@ public class Request
 		
 		if (route != null)
 		{
-			return route.getUrlPattern();
+			return route.getPattern();
 		}
 		
 		return null;
@@ -204,7 +204,7 @@ public class Request
 	{
 		return HttpHeaders.isKeepAlive(httpRequest);
 	}
-	
+
 	public boolean isChunked()
 	{
 		return httpRequest.isChunked();

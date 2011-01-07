@@ -26,8 +26,8 @@ import org.junit.Test;
  */
 public class UrlPatternTest
 {
-	private UrlPattern p = new UrlPattern("/xxx/{a_id}/yyy/{b_id}");
-	private UrlPattern pFormat = new UrlPattern("/xxx/{a_id}/yyy/{b_id}.{format}");
+	private UrlMatcher p = new UrlPattern("/xxx/{a_id}/yyy/{b_id}");
+	private UrlMatcher pFormat = new UrlPattern("/xxx/{a_id}/yyy/{b_id}.{format}");
 
 	@Test
 	public void shouldMatchUrlWithFormat()
@@ -126,7 +126,7 @@ public class UrlPatternTest
 	@Test
 	public void shouldParseTimestampParameters()
 	{
-		UrlPattern huge = new UrlPattern("/name/{ORDER}/{NO_OF_RECORDS}/{SIFREF_ID}/{REQUEST_TIME_STAMP}/{KEY_MONIKER}/{AUTHENTICATION_TOKEN}");
+		UrlMatcher huge = new UrlPattern("/name/{ORDER}/{NO_OF_RECORDS}/{SIFREF_ID}/{REQUEST_TIME_STAMP}/{KEY_MONIKER}/{AUTHENTICATION_TOKEN}");
 		UrlMatch match = huge.match("/name/asc/4/2A3B4C5E6D/12345/foo/560261e05f7c21533a3d7d09efff4b91eb7ca702f490e073e1d51614c2e33c1e?contenttype=jsonp%26jsonp=_jqjsp%26_1287161495587");
 		assertNotNull(match);
 		assertEquals("12345", match.get("REQUEST_TIME_STAMP"));
@@ -152,7 +152,7 @@ public class UrlPatternTest
 	@Test
 	public void shouldReturnBaseUriAsNormalizedUrlPattern()
 	{
-		assertEquals("/xxx/{a_id}/yyy/{b_id}", new UrlPattern("/xxx/{a_id}/yyy/{b_id}").getNormalizedUrlPattern());
-		assertEquals("/xxx/{a_id}/yyy/{b_id}", new UrlPattern("/xxx/{a_id}/yyy/{b_id}.{format}").getNormalizedUrlPattern());
+		assertEquals("/xxx/{a_id}/yyy/{b_id}", new UrlPattern("/xxx/{a_id}/yyy/{b_id}").getPattern());
+		assertEquals("/xxx/{a_id}/yyy/{b_id}", new UrlPattern("/xxx/{a_id}/yyy/{b_id}.{format}").getPattern());
 	}
 }
