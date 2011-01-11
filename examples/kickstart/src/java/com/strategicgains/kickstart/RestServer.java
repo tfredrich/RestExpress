@@ -5,15 +5,14 @@ import static com.strategicgains.restexpress.RestExpress.TXT_FORMAT;
 import static com.strategicgains.restexpress.RestExpress.XML_FORMAT;
 
 import java.net.InetSocketAddress;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 
-import com.strategicgains.restexpress.domain.Link;
 import com.strategicgains.restexpress.pipeline.DefaultRequestHandler;
 import com.strategicgains.restexpress.pipeline.PipelineBuilder;
+import com.strategicgains.restexpress.pipeline.SimpleMessageObserver;
 import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.serialization.DefaultSerializationResolver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
@@ -22,7 +21,6 @@ import com.strategicgains.restexpress.serialization.text.DefaultTxtProcessor;
 import com.strategicgains.restexpress.serialization.xml.DefaultXmlProcessor;
 import com.strategicgains.restexpress.util.Bootstraps;
 import com.strategicgains.restexpress.util.Resolver;
-import com.thoughtworks.xstream.XStream;
 
 /**
  * The main entry-point into RestExpress for the example services.
