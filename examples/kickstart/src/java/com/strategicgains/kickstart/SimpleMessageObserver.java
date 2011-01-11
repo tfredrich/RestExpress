@@ -11,7 +11,7 @@ import com.strategicgains.restexpress.pipeline.MessageObserver;
  * @author toddf
  * @since Dec 16, 2010
  */
-public class ExampleMessageObserver
+public class SimpleMessageObserver
 extends MessageObserver
 {
 	// SECTION: INSTANCE VARIABLES

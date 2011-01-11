@@ -55,7 +55,7 @@ public class RestServer
 	    	createSerializationResolver());
 	    
 	    // Add MessageObservers to the request handler here, if desired...
-	    requestHandler.addMessageObserver(new ExampleMessageObserver());
+	    requestHandler.addMessageObserver(new SimpleMessageObserver());
 
 	    // Add pre/post processors to the request handler here...
 //	    requestHandler.addPreprocessor(postprocessorHandler);
