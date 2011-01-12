@@ -7,3 +7,8 @@ for the kickstart application.  Ant should compile the project.  Then:
 1) Change the Routes.java file to match your URL requirements using the using the RouteBuilder DSL.
 2) Implement the functionality for those URLs in a service class, much like KickstartService does.
 3) Impress your superiors with the speed at which you've completed your tasks.
+
+Alternatively, there is a kickstart zip file generated in the release process.  Simply:
+
+1) Unzip the file.
+2) Run ant to build it.

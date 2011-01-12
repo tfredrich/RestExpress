@@ -85,7 +85,7 @@ public abstract class RouteMapping
 
 
 	// SECTION: URL MAPPING
-	
+
     /**
      * Map a URL pattern to a controller.
      * 
@@ -94,7 +94,20 @@ public abstract class RouteMapping
      */
 	public RouteBuilder uri(String uri, Object controller)
 	{
-		RouteBuilder builder = new RouteBuilder(uri, controller);
+		RouteBuilder builder = new RouteBuilder(uri, controller, RouteTypes.PARAMETERIZED);
+		routeBuilders.add(builder);
+		return builder;
+	}
+
+    /**
+     * Map a Regex pattern to a controller.
+     * 
+     * @param regex a string specifying a regex pattern to match.
+     * @param controller a pojo which contains implementations of create(), read(), update(), delete() methods.
+     */
+	public RouteBuilder regex(String regex, Object controller)
+	{
+		RouteBuilder builder = new RouteBuilder(regex, controller, RouteTypes.REGEX);
 		routeBuilders.add(builder);
 		return builder;
 	}

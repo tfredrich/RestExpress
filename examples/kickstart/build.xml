@@ -37,6 +37,7 @@
 		<mkdir dir="${dir.compile}"/>
 		<mkdir dir="${dir.compile.test}"/>
 		<mkdir dir="${dir.dist}"/>
+    	<mkdir dir="${dir.src.test}"/>
     </target>
 
 	<target name="clean">

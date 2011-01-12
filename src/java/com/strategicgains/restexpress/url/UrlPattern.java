@@ -45,6 +45,7 @@ import java.util.regex.Pattern;
  * @since Apr 28, 2010
  */
 public class UrlPattern
+implements UrlMatcher
 {
 	// SECTION: CONSTANTS
 
@@ -106,7 +107,7 @@ public class UrlPattern
     	return urlPattern;
     }
     
-    public String getNormalizedUrlPattern()
+    public String getPattern()
     {
     	return getUrlPattern().replaceFirst(URL_FORMAT_REGEX, "");
     }
@@ -130,7 +131,8 @@ public class UrlPattern
      * @param url an URL string with or without query string.
      * @return a UrlMatch instance reflecting the outcome of the comparison, if matched. Otherwise, null.
      */
-	public UrlMatch match(String url)
+	@Override
+    public UrlMatch match(String url)
 	{
 		Matcher matcher = compiledUrl.matcher(url);
 
@@ -149,7 +151,8 @@ public class UrlPattern
 	 * @param url an URL string with or without query string.
 	 * @return true if the given URL matches the underlying pattern.  Otherwise false.
 	 */
-	public boolean matches(String url)
+	@Override
+    public boolean matches(String url)
 	{
 		return (match(url) != null);
 	}

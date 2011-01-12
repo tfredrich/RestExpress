@@ -59,6 +59,7 @@ public class RouteBuilder
 	private Object controller;
 	private boolean shouldSerializeResponse = true;
 	private String name;
+	private RouteTypes routeType;
 	
 	/**
 	 * Create a RouteBuilder instance for the given URI pattern. URIs that match the pattern
@@ -67,11 +68,12 @@ public class RouteBuilder
 	 * @param uri a URI pattern
 	 * @param controller the POJO service controller.
 	 */
-	public RouteBuilder(String uri, Object controller)
+	public RouteBuilder(String uri, Object controller, RouteTypes routeType)
 	{
 		super();
 		this.uri = uri;
 		this.controller = controller;
+		this.routeType = routeType;
 	}
 	
 	/**
@@ -184,7 +186,7 @@ public class RouteBuilder
 			}
 			
 			Method action = determineActionMethod(controller, actionName);
-			routes.add(new Route(pattern, controller, action, method, shouldSerializeResponse, name));
+			routes.add(routeType.newRoute(pattern, controller, action, method, shouldSerializeResponse, name));
 		}
 		
 		return routes;
