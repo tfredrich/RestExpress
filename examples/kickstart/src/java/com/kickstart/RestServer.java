@@ -1,4 +1,4 @@
-package com.strategicgains.kickstart;
+package com.kickstart;
 
 import static com.strategicgains.restexpress.RestExpress.JSON_FORMAT;
 import static com.strategicgains.restexpress.RestExpress.TXT_FORMAT;

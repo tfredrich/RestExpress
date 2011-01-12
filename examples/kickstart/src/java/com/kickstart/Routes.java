@@ -1,8 +1,8 @@
-package com.strategicgains.kickstart;
+package com.kickstart;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
-import com.strategicgains.kickstart.service.KickStartService;
+import com.kickstart.service.KickStartService;
 import com.strategicgains.restexpress.route.RouteMapping;
 
 /**
