@@ -13,12 +13,13 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-package com.strategicgains.restexpress.route;
+package com.strategicgains.restexpress.route.regex;
 
 import java.lang.reflect.Method;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
+import com.strategicgains.restexpress.route.Route;
 import com.strategicgains.restexpress.url.UrlRegex;
 
 /**

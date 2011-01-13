@@ -23,6 +23,9 @@ import java.util.Map;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
+import com.strategicgains.restexpress.route.parameterized.ParameterizedRouteBuilder;
+import com.strategicgains.restexpress.route.regex.RegexRouteBuilder;
+
 /**
  * Contains the routes for a given service implementation.  Sub-classes will implement the initialize() method which
  * calls map() to specify how URL request will be routed to the underlying controllers. 
