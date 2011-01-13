@@ -94,7 +94,7 @@ public abstract class RouteMapping
      */
 	public RouteBuilder uri(String uri, Object controller)
 	{
-		RouteBuilder builder = new RouteBuilder(uri, controller, RouteTypes.PARAMETERIZED);
+		RouteBuilder builder = new ParameterizedRouteBuilder(uri, controller);
 		routeBuilders.add(builder);
 		return builder;
 	}
@@ -107,7 +107,7 @@ public abstract class RouteMapping
      */
 	public RouteBuilder regex(String regex, Object controller)
 	{
-		RouteBuilder builder = new RouteBuilder(regex, controller, RouteTypes.REGEX);
+		RouteBuilder builder = new RegexRouteBuilder(regex, controller);
 		routeBuilders.add(builder);
 		return builder;
 	}

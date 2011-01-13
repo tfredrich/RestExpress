@@ -27,7 +27,7 @@ import com.strategicgains.restexpress.exception.ConfigurationException;
  * @author toddf
  * @since 2010
  */
-public class RouteBuilder
+public abstract class RouteBuilder
 {
 	// SECTION: CONSTANTS
 
