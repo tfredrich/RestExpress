@@ -10,10 +10,13 @@ import java.util.Map;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 
+import com.strategicgains.restexpress.console.Console;
 import com.strategicgains.restexpress.pipeline.DefaultRequestHandler;
 import com.strategicgains.restexpress.pipeline.PipelineBuilder;
 import com.strategicgains.restexpress.pipeline.SimpleMessageObserver;
+import com.strategicgains.restexpress.route.RouteMapping;
 import com.strategicgains.restexpress.route.RouteResolver;
+import com.strategicgains.restexpress.route.RoutesDeclaration;
 import com.strategicgains.restexpress.serialization.DefaultSerializationResolver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
 import com.strategicgains.restexpress.serialization.json.DefaultJsonProcessor;
@@ -49,7 +52,7 @@ public class RestServer
 
 		// Set up the event pipeline factory.
 	    DefaultRequestHandler requestHandler = new DefaultRequestHandler(
-	    	new RouteResolver(new Routes()),
+	    	createRouteResolver(new Routes()),
 	    	createSerializationResolver());
 	    
 	    // Add MessageObservers to the request handler here, if desired...
@@ -66,6 +69,13 @@ public class RestServer
 		// Bind and start to accept incoming connections.
 		System.out.println("Starting KickStart Example Server on port " + port);
 		bootstrap.bind(new InetSocketAddress(port));
+	}
+	
+	private static RouteResolver createRouteResolver(RoutesDeclaration routeDeclaration)
+	{
+		RouteMapping mapping = routeDeclaration.createRouteMapping();
+		Console.initialize(routeDeclaration, mapping);
+		return new RouteResolver(mapping);
 	}
 
 	private static Resolver<SerializationProcessor> createSerializationResolver()

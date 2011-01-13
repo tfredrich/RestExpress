@@ -23,10 +23,6 @@ import java.util.Map;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
-import com.strategicgains.restexpress.console.ServiceMetadata;
-import com.strategicgains.restexpress.route.parameterized.ParameterizedRouteBuilder;
-import com.strategicgains.restexpress.route.regex.RegexRouteBuilder;
-
 /**
  * Contains the routes for a given service implementation. Sub-classes will
  * implement the initialize() method which calls map() to specify how URL
@@ -35,7 +31,7 @@ import com.strategicgains.restexpress.route.regex.RegexRouteBuilder;
  * @author toddf
  * @since May 21, 2010
  */
-public abstract class RouteMapping
+public class RouteMapping
 {
 	// SECTION: INSTANCE VARIABLES
 
@@ -48,7 +44,6 @@ public abstract class RouteMapping
 	private List<Route> headRoutes = new ArrayList<Route>();
 
 	private Map<String, Map<HttpMethod, Route>> routesByName = new HashMap<String, Map<HttpMethod, Route>>();
-	private List<RouteBuilder> routeBuilders = new ArrayList<RouteBuilder>();
 
 	// SECTION: CONSTRUCTOR
 
@@ -64,63 +59,6 @@ public abstract class RouteMapping
 		routes.put(HttpMethod.OPTIONS, optionRoutes);
 	}
 
-	/**
-	 * Initialize MUST be called to invoke the RouteBuilder instances before the
-	 * routes will be activated.
-	 */
-	public RouteMapping initialize()
-	{
-		defineRoutes();
-
-		for (RouteBuilder builder : routeBuilders)
-		{
-			for (Route route : builder.build())
-			{
-				addRoute(route);
-			}
-		}
-
-		routeBuilders.clear();
-		routeBuilders = null;
-		return this;
-	}
-
-	protected abstract void defineRoutes();
-
-
-	// SECTION: URL MAPPING
-
-	/**
-	 * Map a URL pattern to a controller.
-	 * 
-	 * @param urlPattern
-	 *            a string specifying a URL pattern to match.
-	 * @param controller
-	 *            a pojo which contains implementations of create(), read(),
-	 *            update(), delete() methods.
-	 */
-	public RouteBuilder uri(String uri, Object controller)
-	{
-		RouteBuilder builder = new ParameterizedRouteBuilder(uri, controller);
-		routeBuilders.add(builder);
-		return builder;
-	}
-
-	/**
-	 * Map a Regex pattern to a controller.
-	 * 
-	 * @param regex
-	 *            a string specifying a regex pattern to match.
-	 * @param controller
-	 *            a pojo which contains implementations of create(), read(),
-	 *            update(), delete() methods.
-	 */
-	public RouteBuilder regex(String regex, Object controller)
-	{
-		RouteBuilder builder = new RegexRouteBuilder(regex, controller);
-		routeBuilders.add(builder);
-		return builder;
-	}
 
 	// SECTION: UTILITY - PUBLIC
 
@@ -162,29 +100,15 @@ public abstract class RouteMapping
 
 		return routesByMethod.get(method);
 	}
-	
-	
+
+
 	// SECTION: UTILITY
-	
-	public ServiceMetadata asServiceMetadata()
-	{
-		ServiceMetadata results = new ServiceMetadata();
-		
-		for (RouteBuilder builder : routeBuilders)
-		{
-			results.addRoute(builder.asRouteMetadata());
-		}
-
-		return results;
-	}
-
-	// SECTION: UTILITY - PRIVATE
 
 	/**
 	 * @param method
 	 * @param route
 	 */
-	private void addRoute(Route route)
+	public void addRoute(Route route)
 	{
 		routes.get(route.getMethod()).add(route);
 
@@ -196,10 +120,12 @@ public abstract class RouteMapping
 		// TODO: call log4j for added route, method
 	}
 
+
+	// SECTION: UTILITY - PRIVATE
+
 	private void addNamedRoute(Route route)
 	{
-		Map<HttpMethod, Route> routesByMethod = routesByName.get(route
-		    .getName());
+		Map<HttpMethod, Route> routesByMethod = routesByName.get(route.getName());
 
 		if (routesByMethod == null)
 		{

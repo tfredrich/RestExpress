@@ -17,7 +17,10 @@ package com.strategicgains.restexpress.console;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
+import com.strategicgains.restexpress.route.RouteBuilder;
 import com.strategicgains.restexpress.route.RouteMapping;
+import com.strategicgains.restexpress.route.RoutesDeclaration;
+import com.strategicgains.restexpress.route.parameterized.ParameterizedRouteBuilder;
 
 /**
  * @author toddf
@@ -25,19 +28,22 @@ import com.strategicgains.restexpress.route.RouteMapping;
  */
 public class Console
 {
-	public static void initialize(RouteMapping routes)
+	public static void initialize(RoutesDeclaration declarations, RouteMapping mapping)
 	{
-		
-		ConsoleController consoleController = new ConsoleController(routes.asServiceMetadata());
-		defineRoutes(routes, consoleController);
+		ServiceMetadata metadata = new ServiceMetadata();
+		metadata.setRoutes(declarations.getRouteMetadata());
+		ConsoleController consoleController = new ConsoleController(metadata);
+		defineRoutes(mapping, consoleController);
 	}
 
 	private static void defineRoutes(RouteMapping routes, ConsoleController controller)
 	{
-		routes.uri("/_routes/_meta.{format}", controller)
+		RouteBuilder metaBuilder = new ParameterizedRouteBuilder("/_routes/_meta.{format}", controller)
 			.action("getMetadata", HttpMethod.GET);
+		routes.addRoute(metaBuilder.build().get(0));
 
-		routes.uri("/_routes/_console.{format}", controller)
+		RouteBuilder consoleBuilder = new ParameterizedRouteBuilder("/_routes/_console.{format}", controller)
 			.action("getConsole", HttpMethod.GET);
+		routes.addRoute(consoleBuilder.build().get(0));
 	}
 }

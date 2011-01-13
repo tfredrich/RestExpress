@@ -36,8 +36,8 @@ import org.junit.Test;
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.BadRequestException;
-import com.strategicgains.restexpress.route.RouteMapping;
 import com.strategicgains.restexpress.route.RouteResolver;
+import com.strategicgains.restexpress.route.RoutesDeclaration;
 import com.strategicgains.restexpress.serialization.DefaultSerializationResolver;
 
 
@@ -56,7 +56,8 @@ public class DefaultRequestHandlerTest
 	public void initialize()
 	throws Exception
 	{
-		messageHandler = new DefaultRequestHandler(new RouteResolver(new DummyRoutes()), new DefaultSerializationResolver());
+		messageHandler = new DefaultRequestHandler(new RouteResolver(new DummyRoutes().createRouteMapping()),
+			new DefaultSerializationResolver());
 		observer = new DummyObserver();
 		messageHandler.addMessageObserver(observer);
 		PipelineBuilder pf = new PipelineBuilder()
@@ -128,7 +129,7 @@ public class DefaultRequestHandlerTest
     }
 	
 	public class DummyRoutes
-	extends RouteMapping
+	extends RoutesDeclaration
 	{
 		private Object controller = new FooBarController();
 

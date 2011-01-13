@@ -3,22 +3,21 @@ package com.kickstart;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import com.kickstart.service.KickStartService;
-import com.strategicgains.restexpress.route.RouteMapping;
+import com.strategicgains.restexpress.route.RoutesDeclaration;
 
 /**
  * @author toddf
  * @since May 21, 2010
  */
 public class Routes
-extends RouteMapping
+extends RoutesDeclaration
 {
 	private KickStartService service;
 	
-	@Override
-	public RouteMapping initialize()
+	public Routes()
 	{
-		service = new KickStartService();
-		return super.initialize();
+		super();
+		this.service = new KickStartService();
 	}
 	
 	@Override
