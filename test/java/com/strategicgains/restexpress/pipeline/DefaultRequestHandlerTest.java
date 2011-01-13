@@ -37,7 +37,7 @@ import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.BadRequestException;
 import com.strategicgains.restexpress.route.RouteResolver;
-import com.strategicgains.restexpress.route.RoutesDeclaration;
+import com.strategicgains.restexpress.route.RouteDeclaration;
 import com.strategicgains.restexpress.serialization.DefaultSerializationResolver;
 
 
@@ -129,7 +129,7 @@ public class DefaultRequestHandlerTest
     }
 	
 	public class DummyRoutes
-	extends RoutesDeclaration
+	extends RouteDeclaration
 	{
 		private Object controller = new FooBarController();
 

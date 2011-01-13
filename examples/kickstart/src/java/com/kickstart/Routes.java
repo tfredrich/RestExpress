@@ -3,14 +3,14 @@ package com.kickstart;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import com.kickstart.service.KickStartService;
-import com.strategicgains.restexpress.route.RoutesDeclaration;
+import com.strategicgains.restexpress.route.RouteDeclaration;
 
 /**
  * @author toddf
  * @since May 21, 2010
  */
 public class Routes
-extends RoutesDeclaration
+extends RouteDeclaration
 {
 	private KickStartService service;
 	

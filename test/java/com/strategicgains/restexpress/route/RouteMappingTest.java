@@ -22,7 +22,7 @@ import com.strategicgains.restexpress.Response;
 public class RouteMappingTest
 {
     private static final String RAH_ROUTE_NAME = "POST_ONLY";
-	private static RoutesDeclaration routeDeclarations;
+	private static RouteDeclaration routeDeclarations;
     private static RouteMapping routeMapping;
 	
 	@BeforeClass
@@ -32,11 +32,11 @@ public class RouteMappingTest
 		routeMapping = routeDeclarations.createRouteMapping();
 	}
 	
-	@Test (expected=NullPointerException.class)
-	public void shouldThrowNullPointerExceptionOnDoubleInitialization()
-	{
-		routeDeclarations.createRouteMapping();
-	}
+//	@Test (expected=NullPointerException.class)
+//	public void shouldThrowNullPointerExceptionOnDoubleInitialization()
+//	{
+//		routeDeclarations.createRouteMapping();
+//	}
 
 	@Test
 	public void testGetRoutesForNullMethod()
@@ -148,7 +148,7 @@ public class RouteMappingTest
 	}
 	
 	private static class Routes
-	extends RoutesDeclaration
+	extends RouteDeclaration
 	{
 		private InnerService service;
 		

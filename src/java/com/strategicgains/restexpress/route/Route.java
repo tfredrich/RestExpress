@@ -17,6 +17,8 @@ package com.strategicgains.restexpress.route;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
@@ -44,6 +46,8 @@ public abstract class Route
 	private HttpMethod method;
 	private boolean shouldSerializeResponse = true;
 	private String name;
+	private List<String> supportedFormats = new ArrayList<String>();
+	private String defaultFormat;
 
 	// SECTION: CONSTRUCTORS
 
@@ -95,6 +99,24 @@ public abstract class Route
 	public boolean shouldSerializeResponse()
 	{
 		return shouldSerializeResponse;
+	}
+	
+	public void addSupportedFormat(String format)
+	{
+		if (!supportsFormat(format))
+		{
+			supportedFormats.add(format);
+		}
+	}
+
+	public boolean supportsFormat(String format)
+	{
+		return supportedFormats.contains(format);
+	}
+	
+	public String getDefaultFormat()
+	{
+		return defaultFormat;
 	}
 
 	public UrlMatch match(String url)
