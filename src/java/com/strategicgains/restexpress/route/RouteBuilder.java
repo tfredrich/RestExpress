@@ -18,6 +18,7 @@ import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
+import com.strategicgains.restexpress.console.RouteMetadata;
 import com.strategicgains.restexpress.exception.ConfigurationException;
 
 /**
@@ -190,6 +191,21 @@ public class RouteBuilder
 		}
 		
 		return routes;
+	}
+	
+	
+	// SECTION: UTILITY
+	
+	public RouteMetadata asRouteMetadata()
+	{
+		RouteMetadata metadata = new RouteMetadata(uri, name, shouldSerializeResponse);
+		
+		for (HttpMethod method : methods)
+		{
+			metadata.addMethod(method);
+		}
+		
+		return metadata;
 	}
 
 

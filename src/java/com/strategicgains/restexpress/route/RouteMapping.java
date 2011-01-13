@@ -23,9 +23,12 @@ import java.util.Map;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
+import com.strategicgains.restexpress.console.ServiceMetadata;
+
 /**
- * Contains the routes for a given service implementation.  Sub-classes will implement the initialize() method which
- * calls map() to specify how URL request will be routed to the underlying controllers. 
+ * Contains the routes for a given service implementation. Sub-classes will
+ * implement the initialize() method which calls map() to specify how URL
+ * request will be routed to the underlying controllers.
  * 
  * @author toddf
  * @since May 21, 2010
@@ -42,9 +45,8 @@ public abstract class RouteMapping
 	private List<Route> optionRoutes = new ArrayList<Route>();
 	private List<Route> headRoutes = new ArrayList<Route>();
 
-	private Map<String, Map<HttpMethod, Route>> routesByName = new HashMap<String, Map<HttpMethod,Route>>();
+	private Map<String, Map<HttpMethod, Route>> routesByName = new HashMap<String, Map<HttpMethod, Route>>();
 	private List<RouteBuilder> routeBuilders = new ArrayList<RouteBuilder>();
-
 
 	// SECTION: CONSTRUCTOR
 
@@ -59,82 +61,92 @@ public abstract class RouteMapping
 		routes.put(HttpMethod.HEAD, headRoutes);
 		routes.put(HttpMethod.OPTIONS, optionRoutes);
 	}
-    
-    /**
-     * Initialize MUST be called to invoke the RouteBuilder instances before the routes will be activated.
-     */
-    public RouteMapping initialize()
-    {
-    	defineRoutes();
-    	
-    	for (RouteBuilder builder : routeBuilders)
-    	{
-    		for (Route route : builder.build())
-    		{
-    			addRoute(route);
-    		}
-    	}
-    	
-    	// Garbage collect the builders and blow chow if buildRoutes() gets called a second time.
-    	routeBuilders.clear();
-    	routeBuilders = null;
-    	return this;
-    }
 
-    protected abstract void defineRoutes();
+	/**
+	 * Initialize MUST be called to invoke the RouteBuilder instances before the
+	 * routes will be activated.
+	 */
+	public RouteMapping initialize()
+	{
+		defineRoutes();
+
+		for (RouteBuilder builder : routeBuilders)
+		{
+			for (Route route : builder.build())
+			{
+				addRoute(route);
+			}
+		}
+
+		routeBuilders.clear();
+		routeBuilders = null;
+		return this;
+	}
+
+	protected abstract void defineRoutes();
 
 
 	// SECTION: URL MAPPING
 
-    /**
-     * Map a URL pattern to a controller.
-     * 
-     * @param urlPattern a string specifying a URL pattern to match.
-     * @param controller a pojo which contains implementations of create(), read(), update(), delete() methods.
-     */
+	/**
+	 * Map a URL pattern to a controller.
+	 * 
+	 * @param urlPattern
+	 *            a string specifying a URL pattern to match.
+	 * @param controller
+	 *            a pojo which contains implementations of create(), read(),
+	 *            update(), delete() methods.
+	 */
 	public RouteBuilder uri(String uri, Object controller)
 	{
-		RouteBuilder builder = new RouteBuilder(uri, controller, RouteTypes.PARAMETERIZED);
+		RouteBuilder builder = new RouteBuilder(uri, controller,
+		    RouteTypes.PARAMETERIZED);
 		routeBuilders.add(builder);
 		return builder;
 	}
 
-    /**
-     * Map a Regex pattern to a controller.
-     * 
-     * @param regex a string specifying a regex pattern to match.
-     * @param controller a pojo which contains implementations of create(), read(), update(), delete() methods.
-     */
+	/**
+	 * Map a Regex pattern to a controller.
+	 * 
+	 * @param regex
+	 *            a string specifying a regex pattern to match.
+	 * @param controller
+	 *            a pojo which contains implementations of create(), read(),
+	 *            update(), delete() methods.
+	 */
 	public RouteBuilder regex(String regex, Object controller)
 	{
-		RouteBuilder builder = new RouteBuilder(regex, controller, RouteTypes.REGEX);
+		RouteBuilder builder = new RouteBuilder(regex, controller,
+		    RouteTypes.REGEX);
 		routeBuilders.add(builder);
 		return builder;
 	}
-	
-	
+
 	// SECTION: UTILITY - PUBLIC
 
 	/**
-	 * Return a list of Route instances for the given HTTP method.  The returned list is immutable.
+	 * Return a list of Route instances for the given HTTP method. The returned
+	 * list is immutable.
 	 * 
-	 * @param method the HTTP method (GET, PUT, POST, DELETE) for which to retrieve the routes.
+	 * @param method
+	 *            the HTTP method (GET, PUT, POST, DELETE) for which to retrieve
+	 *            the routes.
 	 */
 	public List<Route> getRoutesFor(HttpMethod method)
 	{
 		List<Route> routesFor = routes.get(method);
-		
+
 		if (routesFor == null)
 		{
 			return Collections.emptyList();
 		}
-		
+
 		return Collections.unmodifiableList(routesFor);
 	}
-	
+
 	/**
-	 * Return a Route by the name and HttpMethod provided in DSL.
-	 * Returns null if no route found.
+	 * Return a Route by the name and HttpMethod provided in DSL. Returns null
+	 * if no route found.
 	 * 
 	 * @param name
 	 * @return
@@ -142,15 +154,29 @@ public abstract class RouteMapping
 	public Route getNamedRoute(String name, HttpMethod method)
 	{
 		Map<HttpMethod, Route> routesByMethod = routesByName.get(name);
-		
+
 		if (routesByMethod == null)
 		{
 			return null;
 		}
-		
+
 		return routesByMethod.get(method);
 	}
+	
+	
+	// SECTION: UTILITY
+	
+	public ServiceMetadata asServiceMetadata()
+	{
+		ServiceMetadata results = new ServiceMetadata();
+		
+		for (RouteBuilder builder : routeBuilders)
+		{
+			results.addRoute(builder.asRouteMetadata());
+		}
 
+		return results;
+	}
 
 	// SECTION: UTILITY - PRIVATE
 
@@ -161,7 +187,7 @@ public abstract class RouteMapping
 	private void addRoute(Route route)
 	{
 		routes.get(route.getMethod()).add(route);
-		
+
 		if (route.hasName())
 		{
 			addNamedRoute(route);
@@ -169,17 +195,18 @@ public abstract class RouteMapping
 
 		// TODO: call log4j for added route, method
 	}
-	
+
 	private void addNamedRoute(Route route)
 	{
-		Map<HttpMethod, Route> routesByMethod = routesByName.get(route.getName());
-		
+		Map<HttpMethod, Route> routesByMethod = routesByName.get(route
+		    .getName());
+
 		if (routesByMethod == null)
 		{
 			routesByMethod = new HashMap<HttpMethod, Route>();
 			routesByName.put(route.getName(), routesByMethod);
 		}
-		
+
 		routesByMethod.put(route.getMethod(), route);
 	}
 }
