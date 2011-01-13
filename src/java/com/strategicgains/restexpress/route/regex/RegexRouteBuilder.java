@@ -13,17 +13,36 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-package com.strategicgains.restexpress.route;
+package com.strategicgains.restexpress.route.regex;
 
 import java.lang.reflect.Method;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
+import com.strategicgains.restexpress.route.Route;
+import com.strategicgains.restexpress.route.RouteBuilder;
+
 /**
  * @author toddf
- * @since Jan 7, 2011
+ * @since Jan 13, 2011
  */
-public interface RouteFactory
+public class RegexRouteBuilder
+extends RouteBuilder
 {
-	public Route newRoute(String urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse, String name);
+	/**
+	 * @param uri
+	 * @param controller
+	 * @param routeType
+	 */
+	public RegexRouteBuilder(String uri, Object controller)
+	{
+		super(uri, controller);
+	}
+
+    @Override
+    protected Route newRoute(String pattern, Object controller, Method action,
+        HttpMethod method, boolean shouldSerializeResponse, String name)
+    {
+    	return new RegexRoute(pattern, controller, action, method, shouldSerializeResponse, name);
+    }
 }

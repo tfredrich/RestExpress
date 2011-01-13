@@ -24,6 +24,8 @@ import java.util.Map;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import com.strategicgains.restexpress.console.ServiceMetadata;
+import com.strategicgains.restexpress.route.parameterized.ParameterizedRouteBuilder;
+import com.strategicgains.restexpress.route.regex.RegexRouteBuilder;
 
 /**
  * Contains the routes for a given service implementation. Sub-classes will
@@ -99,8 +101,7 @@ public abstract class RouteMapping
 	 */
 	public RouteBuilder uri(String uri, Object controller)
 	{
-		RouteBuilder builder = new RouteBuilder(uri, controller,
-		    RouteTypes.PARAMETERIZED);
+		RouteBuilder builder = new ParameterizedRouteBuilder(uri, controller);
 		routeBuilders.add(builder);
 		return builder;
 	}
@@ -116,8 +117,7 @@ public abstract class RouteMapping
 	 */
 	public RouteBuilder regex(String regex, Object controller)
 	{
-		RouteBuilder builder = new RouteBuilder(regex, controller,
-		    RouteTypes.REGEX);
+		RouteBuilder builder = new RegexRouteBuilder(regex, controller);
 		routeBuilders.add(builder);
 		return builder;
 	}

@@ -28,7 +28,7 @@ import com.strategicgains.restexpress.exception.ConfigurationException;
  * @author toddf
  * @since 2010
  */
-public class RouteBuilder
+public abstract class RouteBuilder
 {
 	// SECTION: CONSTANTS
 
@@ -60,7 +60,6 @@ public class RouteBuilder
 	private Object controller;
 	private boolean shouldSerializeResponse = true;
 	private String name;
-	private RouteTypes routeType;
 	
 	/**
 	 * Create a RouteBuilder instance for the given URI pattern. URIs that match the pattern
@@ -69,12 +68,11 @@ public class RouteBuilder
 	 * @param uri a URI pattern
 	 * @param controller the POJO service controller.
 	 */
-	public RouteBuilder(String uri, Object controller, RouteTypes routeType)
+	public RouteBuilder(String uri, Object controller)
 	{
 		super();
 		this.uri = uri;
 		this.controller = controller;
-		this.routeType = routeType;
 	}
 	
 	/**
@@ -187,7 +185,7 @@ public class RouteBuilder
 			}
 			
 			Method action = determineActionMethod(controller, actionName);
-			routes.add(routeType.newRoute(pattern, controller, action, method, shouldSerializeResponse, name));
+			routes.add(newRoute(pattern, controller, action, method, shouldSerializeResponse, name));
 		}
 		
 		return routes;
@@ -207,6 +205,21 @@ public class RouteBuilder
 		
 		return metadata;
 	}
+
+	
+	// SECTION: UTILITY - SUBSCLASSES
+
+	/**
+     * @param pattern
+     * @param controller
+     * @param action
+     * @param method
+     * @param shouldSerializeResponse
+     * @param name
+     * @return
+     */
+    protected abstract Route newRoute(String pattern, Object controller, Method action,
+    	HttpMethod method, boolean shouldSerializeResponse, String name);
 
 
 	// SECTION: UTILITY - PRIVATE
