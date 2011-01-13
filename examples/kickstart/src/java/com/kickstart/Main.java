@@ -1,7 +1,6 @@
 package com.kickstart;
 
 import com.strategicgains.restexpress.RestExpress;
-import com.strategicgains.restexpress.RestExpressServer;
 import com.strategicgains.restexpress.pipeline.SimpleMessageObserver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
 import com.strategicgains.restexpress.serialization.xml.DefaultXmlProcessor;
@@ -12,7 +11,7 @@ import com.strategicgains.restexpress.serialization.xml.DefaultXmlProcessor;
  * @author toddf
  * @since Aug 31, 2009
  */
-public class RestServer
+public class Main
 {
 	private static final int DEFAULT_PORT = 3330;
 
@@ -28,7 +27,7 @@ public class RestServer
 			port = Integer.parseInt(args[0]);
 		}
 
-		RestExpressServer server = new RestExpressServer("KickStart Example")
+		RestExpress server = new RestExpress("KickStart Example")
 			.setPort(port)
 			.setRoutes(new Routes())
 			.putSerializationProcessor(RestExpress.XML_FORMAT, createXmlProcessor())
