@@ -56,6 +56,8 @@ public abstract class RouteBuilder
 
 	private String uri;
 	private List<HttpMethod> methods = new ArrayList<HttpMethod>();
+	private List<String> supportedFormats = new ArrayList<String>();
+	private String defaultFormat;
 	private Map<HttpMethod, String> actionNames = new HashMap<HttpMethod, String>();
 	private Object controller;
 	private boolean shouldSerializeResponse = true;
@@ -154,6 +156,25 @@ public abstract class RouteBuilder
 		this.name = name;
 		return this;
 	}
+	
+	public RouteBuilder format(String format)
+	{
+		if (!supportedFormats.contains(format))
+		{
+			supportedFormats.add(format);
+		}
+		
+		return this;
+	}
+	
+	public RouteBuilder defaultFormat(String format)
+	{
+		this.defaultFormat = format;
+		return this;
+	}
+	
+	
+	// SECTION - BUILDER
 
 	/**
 	 * Build the Route instances.  The last step in the Builder process.
@@ -185,7 +206,7 @@ public abstract class RouteBuilder
 			}
 			
 			Method action = determineActionMethod(controller, actionName);
-			routes.add(newRoute(pattern, controller, action, method, shouldSerializeResponse, name));
+			routes.add(newRoute(pattern, controller, action, method, shouldSerializeResponse, name, supportedFormats, defaultFormat));
 		}
 		
 		return routes;
@@ -216,10 +237,12 @@ public abstract class RouteBuilder
      * @param method
      * @param shouldSerializeResponse
      * @param name
+	 * @param supportedFormats 
+	 * @param defaultFormat
      * @return
      */
     protected abstract Route newRoute(String pattern, Object controller, Method action,
-    	HttpMethod method, boolean shouldSerializeResponse, String name);
+    	HttpMethod method, boolean shouldSerializeResponse, String name, List<String> supportedFormats, String defaultFormat);
 
 
 	// SECTION: UTILITY - PRIVATE
