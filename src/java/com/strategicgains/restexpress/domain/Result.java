@@ -23,31 +23,42 @@ import com.strategicgains.restexpress.exception.ServiceException;
  */
 public class Result
 {
-	private int responseCode;
+	private static final String STATUS_SUCCESS = "success";
+	private static final String STATUS_ERROR = "error";
+	private static final String STATUS_FAIL = "fail";
+
+	private int code;
+	private String status;
 	private String message;
 	private Object data;
 
 	public Result(ServiceException exception)
 	{
-		this(exception.getHttpStatus().getCode(), exception.getHttpStatus().getReasonPhrase(), null);
+		this(exception.getHttpStatus().getCode(), STATUS_ERROR, exception.getMessage(), exception.getStackTrace().toString());
 	}
 
-	public Result(int responseCode, String message, Object data)
+	public Result(int httpResponseCode, String status, String errorMessage, Object data)
 	{
 		super();
-		this.responseCode = responseCode;
-		this.message = message;
+		this.code = httpResponseCode;
+		this.status = status;
+		this.message = errorMessage;
 		this.data = data;
 	}
 
-	public int getResponseCode()
+	public int getCode()
     {
-    	return responseCode;
+    	return code;
     }
-
+	
 	public String getMessage()
+	{
+		return message;
+	}
+
+	public String getStatus()
     {
-    	return message;
+    	return status;
     }
 
 	public Object getData()

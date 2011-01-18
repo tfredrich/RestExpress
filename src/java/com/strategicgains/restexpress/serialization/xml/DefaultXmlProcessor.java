@@ -26,6 +26,7 @@ import org.jboss.netty.buffer.ChannelBufferInputStream;
 
 import com.strategicgains.restexpress.RestExpress;
 import com.strategicgains.restexpress.domain.Link;
+import com.strategicgains.restexpress.domain.Result;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
 import com.thoughtworks.xstream.XStream;
 
@@ -46,6 +47,7 @@ implements SerializationProcessor
 		xstream.registerConverter(new XstreamTimestampConverter());
 		xstream.alias("link", Link.class);
 		xstream.alias("list", Collections.EMPTY_LIST.getClass());
+		xstream.alias("response", Result.class);
 	}
 	
 	public DefaultXmlProcessor(XStream xstream)
