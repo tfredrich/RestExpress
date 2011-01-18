@@ -30,7 +30,11 @@ On successful creation, call response.setResponseCreated() to set the returning 
 Change History/Release Notes:
 ===================================================================================================
 Release 0.5.6
-* 
+* Upgraded to Netty 3.2.3 final.
+* Added getProtocol(), getHost(), getPath() to Request
+* Functionality of getUrl() is now getPath() and getUrl() now returns the entire URL string,
+  including protocol, host and port, and path.
+
 ===================================================================================================
 Release 0.5.5
 * Added regex URL matching with RouteMapping.regex(String) method.
