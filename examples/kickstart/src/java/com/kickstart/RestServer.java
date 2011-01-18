@@ -56,8 +56,8 @@ public class RestServer
 	    requestHandler.addMessageObserver(new SimpleMessageObserver());
 
 	    // Add pre/post processors to the request handler here...
-//	    requestHandler.addPreprocessor(postprocessorHandler);
-//	    requestHandler.addPostprocessor(preprocessorHandler);
+//	    requestHandler.addPreprocessor(preprocessorHandler);
+//	    requestHandler.addPostprocessor(postprocessorHandler);
 
 	    PipelineBuilder pf = new PipelineBuilder()
 			.setRequestHandler(requestHandler);

@@ -31,6 +31,7 @@ Change History/Release Notes:
 ===================================================================================================
 Release 0.5.5
 * Added regex URL matching with RouteMapping.regex(String) method.
+* Refactored Route into an abstract class, moving previous functionality into ParameterizedRoute.
 * Added KickStart release artifact to get projects going quickly--simply unzip the kickstart file.
 * Added SimpleMessageObserver which performs simple timings and outputs to System.out.
 
