@@ -28,9 +28,9 @@ public class Main
 			port = Integer.parseInt(args[0]);
 		}
 
-		RestExpress server = new RestExpress("KickStart Example")
+		RestExpress server = new RestExpress(new Routes())
+			.setName("KickStart Example")
 			.setPort(port)
-			.setRoutes(new Routes())
 			.putSerializationProcessor(Format.XML, createXmlProcessor())
 			.addMessageObserver(new SimpleMessageObserver());
 		server.bind();

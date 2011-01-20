@@ -39,11 +39,15 @@ import com.strategicgains.restexpress.util.Bootstraps;
 import com.strategicgains.restexpress.util.Resolver;
 
 /**
+ * Primary entry point to create a RestExpress service.  All that's required is a RouteDeclaration.
+ * The default port is 8081.
+ *   
  * @author toddf
- *
  */
 public class RestExpress
 {
+	private static final int DEFAULT_PORT = 8081;
+
 	private String name;
 	private int port;
 	private RouteDeclaration routes;
@@ -55,15 +59,22 @@ public class RestExpress
 	private List<Postprocessor> postprocessors = new ArrayList<Postprocessor>();
 	private boolean useSystemOut = true;
 	
-	public RestExpress(String name)
+	public RestExpress(RouteDeclaration routes)
 	{
 		super();
-		this.name = name;
+		setRoutes(routes);
+		setPort(DEFAULT_PORT);
 	}
 	
 	public String getName()
 	{
 		return name;
+	}
+	
+	public RestExpress setName(String name)
+	{
+		this.name = name;
+		return this;
 	}
 
 	public int getPort()
@@ -82,7 +93,7 @@ public class RestExpress
 		return routes;
 	}
 
-	public RestExpress setRoutes(RouteDeclaration routes)
+	private RestExpress setRoutes(RouteDeclaration routes)
 	{
 		this.routes = routes;
 		return this;
