@@ -40,7 +40,7 @@ import com.strategicgains.restexpress.util.Resolver;
 
 /**
  * Primary entry point to create a RestExpress service.  All that's required is a RouteDeclaration.
- * The default port is 8081.
+ * By default: port is 8081, serialization format is JSON, supported formats are JSON and XML.
  *   
  * @author toddf
  */
@@ -51,6 +51,8 @@ public class RestExpress
 	private String name;
 	private int port;
 	private RouteDeclaration routes;
+	
+	//TODO: create serializationProcessors for default formats.
 	Map<String, SerializationProcessor> serializationProcessors = new HashMap<String, SerializationProcessor>();
 	private Resolver<SerializationProcessor> serializationResolver;
 	private String defaultSerializationFormat = Format.JSON;
@@ -58,6 +60,7 @@ public class RestExpress
 	private List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
 	private List<Postprocessor> postprocessors = new ArrayList<Postprocessor>();
 	private boolean useSystemOut = true;
+	private Map<String, Class<?>> xmlAliases = new HashMap<String, Class<?>>();
 	
 	public RestExpress(RouteDeclaration routes)
 	{
@@ -188,6 +191,12 @@ public class RestExpress
 		return this;
 	}
 	
+	public RestExpress xmlAlias(String elementName, Class<?> theClass)
+	{
+		xmlAliases.put(elementName, theClass);
+		return this;
+	}
+	
 	public Channel bind()
 	{
 		// Configure the server.
@@ -232,6 +241,8 @@ public class RestExpress
     private Resolver<SerializationProcessor> createSerializationResolver()
     {
 	    DefaultSerializationResolver resolver = new DefaultSerializationResolver();
+	    
+	    // TODO: assign XML aliases to XML serializer, if applicable.
 	    
 	    for (Entry<String, SerializationProcessor> entry : getSerializationProcessors().entrySet())
 	    {

@@ -31,16 +31,20 @@ public class Main
 		RestExpress server = new RestExpress(new Routes())
 			.setName("KickStart Example")
 			.setPort(port)
-			.putSerializationProcessor(Format.XML, createXmlProcessor())
+			.setDefaultFormat(Format.JSON)
+			.supportFormat(Format.XML)
+//			.putSerializationProcessor(Format.XML, createXmlProcessor())
 			.addMessageObserver(new SimpleMessageObserver());
+		configureXmlAliases(server);
 		server.bind();
 	}
 
-	private static SerializationProcessor createXmlProcessor()
+	private static void configureXmlAliases(RestExpress server)
 	{
-		DefaultXmlProcessor xmlProcessor = new DefaultXmlProcessor();
-//		xmlProcessor.alias("element_name", Element.class);
-//		...
-		return xmlProcessor;
+//		server
+//		.xmlAlias("element_name", Element.class)
+//		.xmlAlias("element_name", Element.class)
+//		.xmlAlias("element_name", Element.class)
+//		.xmlAlias("element_name", Element.class)
 	}
 }
