@@ -1,5 +1,6 @@
 package com.kickstart;
 
+import com.strategicgains.restexpress.Format;
 import com.strategicgains.restexpress.RestExpress;
 import com.strategicgains.restexpress.pipeline.SimpleMessageObserver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
@@ -30,7 +31,7 @@ public class Main
 		RestExpress server = new RestExpress("KickStart Example")
 			.setPort(port)
 			.setRoutes(new Routes())
-			.putSerializationProcessor(RestExpress.XML_FORMAT, createXmlProcessor())
+			.putSerializationProcessor(Format.XML, createXmlProcessor())
 			.addMessageObserver(new SimpleMessageObserver());
 		server.bind();
 	}

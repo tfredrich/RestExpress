@@ -24,7 +24,7 @@ import java.util.Map;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBufferInputStream;
 
-import com.strategicgains.restexpress.RestExpress;
+import com.strategicgains.restexpress.ContentType;
 import com.strategicgains.restexpress.domain.Link;
 import com.strategicgains.restexpress.domain.Result;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
@@ -96,7 +96,7 @@ implements SerializationProcessor
 	@Override
 	public String getResultingContentType()
 	{
-		return RestExpress.CONTENT_TYPE_XML;
+		return ContentType.XML;
 	}
 
 	private void addAliasIfNecessary(Class<?> type)

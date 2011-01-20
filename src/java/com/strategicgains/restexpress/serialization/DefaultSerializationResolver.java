@@ -17,15 +17,12 @@
 
 package com.strategicgains.restexpress.serialization;
 
-import static com.strategicgains.restexpress.RestExpress.JSON_FORMAT;
-import static com.strategicgains.restexpress.RestExpress.TXT_FORMAT;
-import static com.strategicgains.restexpress.RestExpress.XML_FORMAT;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.strategicgains.restexpress.Format;
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.exception.BadRequestException;
 import com.strategicgains.restexpress.serialization.json.DefaultJsonProcessor;
@@ -46,10 +43,10 @@ implements Resolver<SerializationProcessor>
 	public DefaultSerializationResolver()
 	{
 		super();
-		processors.put(JSON_FORMAT, new DefaultJsonProcessor());
-		processors.put(TXT_FORMAT, new DefaultTxtProcessor());
-		processors.put(XML_FORMAT, new DefaultXmlProcessor());
-		defaultFormat = JSON_FORMAT;
+		processors.put(Format.JSON, new DefaultJsonProcessor());
+		processors.put(Format.TXT, new DefaultTxtProcessor());
+		processors.put(Format.XML, new DefaultXmlProcessor());
+		defaultFormat = Format.JSON;
 	}
 	
 	public DefaultSerializationResolver(Map<String, SerializationProcessor> processors, String defaultFormat)

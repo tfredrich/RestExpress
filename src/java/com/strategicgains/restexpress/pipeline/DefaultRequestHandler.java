@@ -142,7 +142,7 @@ implements PreprocessorAware, PostprocessorAware
 			request.setResolvedRoute(action.getRoute());
 			invokePreprocessors(request);
 			Object result = action.invoke(request, response);
-			
+
 			if (action.shouldSerializeResponse() && hasSerializationResolver())
 			{
 				SerializationProcessor p = serializationResolver.resolve(request);
@@ -181,6 +181,9 @@ implements PreprocessorAware, PostprocessorAware
 		}
 		finally
 		{
+//			Result result = Result.fromResponse(response);
+			// TODO: marshal the result into the response body.
+
 			if (response.hasException())
 			{
 				notifyException(response.getException(), request, response);

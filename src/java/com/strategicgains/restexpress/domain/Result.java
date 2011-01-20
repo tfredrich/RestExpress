@@ -15,9 +15,14 @@
 */
 package com.strategicgains.restexpress.domain;
 
+import org.jboss.netty.handler.codec.http.HttpResponseStatus;
+
+import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.ServiceException;
 
 /**
+ * Generic JSEND-style wrapper for responses.
+ * 
  * @author toddf
  * @since Jan 11, 2011
  */
@@ -35,6 +40,11 @@ public class Result
 	public Result(ServiceException exception)
 	{
 		this(exception.getHttpStatus().getCode(), STATUS_ERROR, exception.getMessage(), exception.getStackTrace().toString());
+	}
+	
+	public Result(Throwable throwable)
+	{
+		this(HttpResponseStatus.INTERNAL_SERVER_ERROR.getCode(), STATUS_FAIL, HttpResponseStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), throwable.getStackTrace().toString());
 	}
 
 	public Result(int httpResponseCode, String status, String errorMessage, Object data)
@@ -65,4 +75,24 @@ public class Result
     {
     	return data;
     }
+	
+	
+	// SECTION: FACTORY
+	
+	public static Result successResult(Object data)
+	{
+		HttpResponseStatus status = HttpResponseStatus.OK;
+		return new Result(status.getCode(), STATUS_SUCCESS, null, data);
+	}
+	
+	public static Result fromResponse(Response response)
+	{
+		if (response.hasException())
+		{
+			return new Result(response.getException());
+		}
+		
+		HttpResponseStatus status = response.getStatus();
+		return new Result(status.getCode(), STATUS_SUCCESS, null, response.getBody());
+	}
 }

@@ -25,7 +25,7 @@ import org.jboss.netty.buffer.ChannelBufferInputStream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.strategicgains.restexpress.RestExpress;
+import com.strategicgains.restexpress.ContentType;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
 import com.strategicgains.util.date.DateAdapterConstants;
 
@@ -81,6 +81,6 @@ implements SerializationProcessor
 	@Override
 	public String getResultingContentType()
 	{
-		return RestExpress.CONTENT_TYPE_JSON;
+		return ContentType.JSON;
 	}
 }

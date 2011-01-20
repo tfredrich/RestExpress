@@ -44,25 +44,12 @@ import com.strategicgains.restexpress.util.Resolver;
  */
 public class RestExpress
 {
-	public static final String JSON_FORMAT = "json";
-	public static final String TXT_FORMAT = "txt";
-	public static final String XML_FORMAT = "xml";
-	public static final String ENCODING = "UTF-8";
-	
-
-	// CONTENT TYPES
-
-	public static final String CONTENT_TYPE_JSON = "application/json; charset=" + ENCODING;
-	public static final String CONTENT_TYPE_TEXT_PLAIN = "text/plain; charset=" + ENCODING;
-	public static final String CONTENT_TYPE_XML = "application/xml; charset=" + ENCODING;
-
-	
 	private String name;
 	private int port;
 	private RouteDeclaration routes;
 	Map<String, SerializationProcessor> serializationProcessors = new HashMap<String, SerializationProcessor>();
 	private Resolver<SerializationProcessor> serializationResolver;
-	private String defaultSerializationFormat = RestExpress.JSON_FORMAT;
+	private String defaultSerializationFormat = Format.JSON;
 	private List<MessageObserver> messageObservers = new ArrayList<MessageObserver>();
 	private List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
 	private List<Postprocessor> postprocessors = new ArrayList<Postprocessor>();
