@@ -44,6 +44,7 @@ public class Request
 
 	private static final String METHOD_QUERY_PARAMETER = "_method";
 	private static final String FORMAT_HEADER_NAME = "format";
+	private static final String DEFAULT_PROTOCOL = "http";
 	
 	private static long nextCorrelationId = 0;
 
@@ -182,10 +183,25 @@ public class Request
 	{
 		this.resolvedRoute = route;
 	}
-	
-	public String getUrl()
+
+	/**
+	 * Gets the path for this request.
+	 * 
+	 * @return
+	 */
+	public String getPath()
 	{
 		return httpRequest.getUri();
+	}
+
+	/**
+	 * Returns the full URL for the request, containing protocol, host and path.
+	 * 
+	 * @return the full URL for the request.
+	 */
+	public String getUrl()
+	{
+		return getProtocol() + "://" + getHost() + getPath();
 	}
 	
 	public String getNamedUrl(String resourceName)
@@ -210,9 +226,35 @@ public class Request
 		return httpRequest.isChunked();
 	}
 	
+	/**
+	 * Get the value of the {format} header in the request.
+	 * 
+	 * @return
+	 */
 	public String getFormat()
 	{
 		return getHeader(FORMAT_HEADER_NAME);
+	}
+	
+	/**
+	 * Get the host (and port) from the request.
+	 * 
+	 * @return
+	 */
+	public String getHost()
+	{
+		return HttpHeaders.getHost(httpRequest);
+	}
+
+	/**
+	 * Get the protocol of the request.  RESTExpress currently only supports 'http'
+	 * and will always return that value.
+	 * 
+	 * @return "http"
+	 */
+	public String getProtocol()
+	{
+		return DEFAULT_PROTOCOL;
 	}
 	
 	/**
