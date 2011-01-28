@@ -27,7 +27,7 @@ import org.jboss.netty.buffer.ChannelBufferInputStream;
 import com.strategicgains.restexpress.ContentType;
 import com.strategicgains.restexpress.domain.Link;
 import com.strategicgains.restexpress.domain.Result;
-import com.strategicgains.restexpress.serialization.SerializationProcessor;
+import com.strategicgains.restexpress.serialization.AliasingSerializationProcessor;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -35,7 +35,7 @@ import com.thoughtworks.xstream.XStream;
  * @since Mar 16, 2010
  */
 public class DefaultXmlProcessor
-implements SerializationProcessor
+implements AliasingSerializationProcessor
 {
 	private XStream xstream;
 	private Map<Class<?>, String> aliases = new HashMap<Class<?>, String>();
@@ -60,6 +60,7 @@ implements SerializationProcessor
 	
 	// SECTION: XML NAME ALIASING
 
+	@Override
 	public void alias(String name, Class<?> type)
 	{
 		xstream.alias(name, type);

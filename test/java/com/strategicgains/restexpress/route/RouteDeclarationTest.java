@@ -19,7 +19,7 @@ import com.strategicgains.restexpress.Response;
  * @author toddf
  * @since Sep 27, 2010
  */
-public class RouteMappingTest
+public class RouteDeclarationTest
 {
     private static final String RAH_ROUTE_NAME = "POST_ONLY";
 	private static RouteDeclaration routeDeclarations;

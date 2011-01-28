@@ -22,12 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.strategicgains.restexpress.Format;
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.exception.BadRequestException;
-import com.strategicgains.restexpress.serialization.json.DefaultJsonProcessor;
-import com.strategicgains.restexpress.serialization.text.DefaultTxtProcessor;
-import com.strategicgains.restexpress.serialization.xml.DefaultXmlProcessor;
 import com.strategicgains.restexpress.util.Resolver;
 
 /**
@@ -43,10 +39,6 @@ implements Resolver<SerializationProcessor>
 	public DefaultSerializationResolver()
 	{
 		super();
-		processors.put(Format.JSON, new DefaultJsonProcessor());
-		processors.put(Format.TXT, new DefaultTxtProcessor());
-		processors.put(Format.XML, new DefaultXmlProcessor());
-		defaultFormat = Format.JSON;
 	}
 	
 	public DefaultSerializationResolver(Map<String, SerializationProcessor> processors, String defaultFormat)
