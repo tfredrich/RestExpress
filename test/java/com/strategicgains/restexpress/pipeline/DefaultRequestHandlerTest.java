@@ -33,12 +33,15 @@ import org.jboss.netty.handler.codec.http.HttpVersion;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.strategicgains.restexpress.Format;
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.BadRequestException;
 import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.route.RouteDeclaration;
 import com.strategicgains.restexpress.serialization.DefaultSerializationResolver;
+import com.strategicgains.restexpress.serialization.json.DefaultJsonProcessor;
+import com.strategicgains.restexpress.serialization.xml.DefaultXmlProcessor;
 
 
 /**
@@ -56,8 +59,12 @@ public class DefaultRequestHandlerTest
 	public void initialize()
 	throws Exception
 	{
-		messageHandler = new DefaultRequestHandler(new RouteResolver(new DummyRoutes().createRouteMapping()),
-			new DefaultSerializationResolver());
+		DefaultSerializationResolver resolver = new DefaultSerializationResolver();
+		resolver.put(Format.JSON, new DefaultJsonProcessor());
+		resolver.put(Format.XML, new DefaultXmlProcessor());
+		resolver.setDefaultFormat(Format.JSON);
+		
+		messageHandler = new DefaultRequestHandler(new RouteResolver(new DummyRoutes().createRouteMapping()), resolver);
 		observer = new DummyObserver();
 		messageHandler.addMessageObserver(observer);
 		PipelineBuilder pf = new PipelineBuilder()
