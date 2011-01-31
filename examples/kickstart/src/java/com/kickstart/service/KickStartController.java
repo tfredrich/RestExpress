@@ -7,7 +7,7 @@ import com.strategicgains.restexpress.Response;
  * @author toddf
  * @since Aug 31, 2010
  */
-public class KickStartService
+public class KickStartController
 {
 	public Object create(Request request, Response response)
 	{

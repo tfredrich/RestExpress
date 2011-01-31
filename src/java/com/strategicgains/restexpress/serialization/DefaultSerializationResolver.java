@@ -17,9 +17,6 @@
 
 package com.strategicgains.restexpress.serialization;
 
-import static com.strategicgains.restexpress.RestExpress.JSON_FORMAT;
-import static com.strategicgains.restexpress.RestExpress.XML_FORMAT;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +24,6 @@ import java.util.Map;
 
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.exception.BadRequestException;
-import com.strategicgains.restexpress.serialization.json.DefaultJsonProcessor;
-import com.strategicgains.restexpress.serialization.xml.DefaultXmlProcessor;
 import com.strategicgains.restexpress.util.Resolver;
 
 /**
@@ -44,9 +39,6 @@ implements Resolver<SerializationProcessor>
 	public DefaultSerializationResolver()
 	{
 		super();
-		processors.put(JSON_FORMAT, new DefaultJsonProcessor());
-		processors.put(XML_FORMAT, new DefaultXmlProcessor());
-		defaultFormat = JSON_FORMAT;
 	}
 	
 	public DefaultSerializationResolver(Map<String, SerializationProcessor> processors, String defaultFormat)
@@ -54,6 +46,16 @@ implements Resolver<SerializationProcessor>
 		super();
 		this.processors.putAll(processors);
 		this.defaultFormat = defaultFormat;
+	}
+	
+	public SerializationProcessor put(String format, SerializationProcessor processor)
+	{
+		return processors.put(format, processor);
+	}
+	
+	public void setDefaultFormat(String format)
+	{
+		this.defaultFormat = format;
 	}
 
 	@Override

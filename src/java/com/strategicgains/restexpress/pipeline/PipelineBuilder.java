@@ -29,7 +29,6 @@ implements ChannelPipelineFactory
 	
 	// SECTION: INSTANCE VARIABLES
 
-	private boolean shouldUseSsl = false;
 	private boolean shouldHandleChunked = false;
 	private boolean shouldUseCompression = false;
 	private int maxChunkSize = DEFAULT_MAX_CHUNK_SIZE;
@@ -45,18 +44,6 @@ implements ChannelPipelineFactory
 
 	
 	// SECTION: BUILDER METHODS
-	
-	public PipelineBuilder useSsl()
-	{
-		this.shouldUseSsl = true;
-		return this;
-	}
-	
-	public PipelineBuilder noSsl()
-	{
-		this.shouldUseSsl = false;
-		return this;
-	}
 	
 	public PipelineBuilder useCompression()
 	{
@@ -102,13 +89,6 @@ implements ChannelPipelineFactory
 	throws Exception
 	{
 		ChannelPipeline pipeline = Channels.pipeline();
-
-		if (shouldUseSsl)
-		{
-//			SSLEngine engine = SecureChatSslContextFactory.getServerContext().createSSLEngine();
-//			engine.setUseClientMode(false);
-//			pipeline.addLast("ssl", new SslHandler(engine));
-		}
 
 		pipeline.addLast("decoder", new HttpRequestDecoder());
 

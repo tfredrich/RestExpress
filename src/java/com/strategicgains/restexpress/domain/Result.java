@@ -15,43 +15,84 @@
 */
 package com.strategicgains.restexpress.domain;
 
+import org.jboss.netty.handler.codec.http.HttpResponseStatus;
+
+import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.ServiceException;
 
 /**
+ * Generic JSEND-style wrapper for responses.
+ * 
  * @author toddf
  * @since Jan 11, 2011
  */
 public class Result
 {
-	private int responseCode;
+	private static final String STATUS_SUCCESS = "success";
+	private static final String STATUS_ERROR = "error";
+	private static final String STATUS_FAIL = "fail";
+
+	private int code;
+	private String status;
 	private String message;
 	private Object data;
 
 	public Result(ServiceException exception)
 	{
-		this(exception.getHttpStatus().getCode(), exception.getHttpStatus().getReasonPhrase(), null);
+		this(exception.getHttpStatus().getCode(), STATUS_ERROR, exception.getMessage(), exception.getStackTrace().toString());
+	}
+	
+	public Result(Throwable throwable)
+	{
+		this(HttpResponseStatus.INTERNAL_SERVER_ERROR.getCode(), STATUS_FAIL, HttpResponseStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), throwable.getStackTrace().toString());
 	}
 
-	public Result(int responseCode, String message, Object data)
+	public Result(int httpResponseCode, String status, String errorMessage, Object data)
 	{
 		super();
-		this.responseCode = responseCode;
-		this.message = message;
+		this.code = httpResponseCode;
+		this.status = status;
+		this.message = errorMessage;
 		this.data = data;
 	}
 
-	public int getResponseCode()
+	public int getCode()
     {
-    	return responseCode;
+    	return code;
     }
-
+	
 	public String getMessage()
+	{
+		return message;
+	}
+
+	public String getStatus()
     {
-    	return message;
+    	return status;
     }
 
 	public Object getData()
     {
     	return data;
     }
+	
+	
+	// SECTION: FACTORY
+	
+	public static Result successResult(Object data)
+	{
+		HttpResponseStatus status = HttpResponseStatus.OK;
+		return new Result(status.getCode(), STATUS_SUCCESS, null, data);
+	}
+	
+	public static Result fromResponse(Response response)
+	{
+		if (response.hasException())
+		{
+			return new Result(response.getException());
+		}
+		
+		HttpResponseStatus status = response.getStatus();
+		return new Result(status.getCode(), STATUS_SUCCESS, null, response.getBody());
+	}
 }

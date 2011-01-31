@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 
-import com.strategicgains.restexpress.RestExpress;
+import com.strategicgains.restexpress.ContentType;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
 import com.strategicgains.restexpress.serialization.Serializer;
 
@@ -105,6 +105,6 @@ implements SerializationProcessor
 	@Override
 	public String getResultingContentType()
 	{
-		return RestExpress.CONTENT_TYPE_TEXT_PLAIN;
+		return ContentType.TEXT_PLAIN;
 	}
 }

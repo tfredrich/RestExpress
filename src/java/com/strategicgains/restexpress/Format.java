@@ -1,5 +1,5 @@
 /*
-    Copyright 2010, Strategic Gains, Inc.
+    Copyright 2011, Strategic Gains, Inc.
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -13,21 +13,24 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-package com.strategicgains.restexpress.serialization.text;
-
-import com.strategicgains.restexpress.ContentType;
-import com.strategicgains.restexpress.serialization.Serializer;
+package com.strategicgains.restexpress;
 
 /**
+ * Some helpful constants for possible values of the {format} specifier in routes.
+ * 
  * @author toddf
- * @since Dec 22, 2010
+ * @since Jan 19, 2011
  */
-public abstract class TextSerializer
-implements Serializer
+public abstract class Format
 {
-	@Override
-	public String getResultingContentType()
+	public static final String HTML = "html";
+	public static final String JAVASCRIPT = "js";
+	public static final String JSON = "json";
+	public static final String TXT = "txt";
+	public static final String XML = "xml";
+
+	private Format()
 	{
-		return ContentType.TEXT_PLAIN;
+		// prevents instantiation.
 	}
 }

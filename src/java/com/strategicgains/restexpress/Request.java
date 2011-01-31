@@ -326,7 +326,7 @@ public class Request
 	{
         try
         {
-	        return URLDecoder.decode(request.getUri(), RestExpress.ENCODING);
+	        return URLDecoder.decode(request.getUri(), ContentType.ENCODING);
         }
         catch (UnsupportedEncodingException e)
         {

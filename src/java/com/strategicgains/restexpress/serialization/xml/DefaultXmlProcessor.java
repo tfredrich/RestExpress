@@ -24,9 +24,10 @@ import java.util.Map;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBufferInputStream;
 
-import com.strategicgains.restexpress.RestExpress;
+import com.strategicgains.restexpress.ContentType;
 import com.strategicgains.restexpress.domain.Link;
-import com.strategicgains.restexpress.serialization.SerializationProcessor;
+import com.strategicgains.restexpress.domain.Result;
+import com.strategicgains.restexpress.serialization.AliasingSerializationProcessor;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -34,7 +35,7 @@ import com.thoughtworks.xstream.XStream;
  * @since Mar 16, 2010
  */
 public class DefaultXmlProcessor
-implements SerializationProcessor
+implements AliasingSerializationProcessor
 {
 	private XStream xstream;
 	private Map<Class<?>, String> aliases = new HashMap<Class<?>, String>();
@@ -46,6 +47,7 @@ implements SerializationProcessor
 		xstream.registerConverter(new XstreamTimestampConverter());
 		xstream.alias("link", Link.class);
 		xstream.alias("list", Collections.EMPTY_LIST.getClass());
+		xstream.alias("response", Result.class);
 	}
 	
 	public DefaultXmlProcessor(XStream xstream)
@@ -58,6 +60,7 @@ implements SerializationProcessor
 	
 	// SECTION: XML NAME ALIASING
 
+	@Override
 	public void alias(String name, Class<?> type)
 	{
 		xstream.alias(name, type);
@@ -94,7 +97,7 @@ implements SerializationProcessor
 	@Override
 	public String getResultingContentType()
 	{
-		return RestExpress.CONTENT_TYPE_XML;
+		return ContentType.XML;
 	}
 
 	private void addAliasIfNecessary(Class<?> type)
