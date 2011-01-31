@@ -47,7 +47,7 @@ implements Resolver<Action>
 	{
 		for (Route route : routes.getRoutesFor(request.getRealMethod()))
 		{
-			UrlMatch match = route.match(request.getUrl());
+			UrlMatch match = route.match(request.getPath());
 
 			if (match != null)
 			{

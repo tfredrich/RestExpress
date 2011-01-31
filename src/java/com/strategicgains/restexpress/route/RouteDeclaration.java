@@ -87,7 +87,6 @@ public abstract class RouteDeclaration
 		}
 
 		routeBuilders.clear();
-//		routeBuilders = null;
 		return results;
 	}
 

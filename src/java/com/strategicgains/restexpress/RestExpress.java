@@ -52,19 +52,22 @@ public class RestExpress
 {
 	private static final int DEFAULT_PORT = 8081;
 	private static final String DEFAULT_NAME = "RestExpress";
+	private static final String DEFAULT_CONSOLE_PREFIX = "/console";
 
 	private String name;
 	private int port;
 	private RouteDeclaration routes;
+	private String defaultFormat;
+	private boolean useSystemOut;
+	private boolean useConsoleRoutes;
+	private String consoleUrlPrefix;
 	
 	Map<String, SerializationProcessor> serializationProcessors = new HashMap<String, SerializationProcessor>();
-	private Resolver<SerializationProcessor> serializationResolver;
-	private String defaultFormat;
 	private List<MessageObserver> messageObservers = new ArrayList<MessageObserver>();
 	private List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
 	private List<Postprocessor> postprocessors = new ArrayList<Postprocessor>();
-	private boolean useSystemOut;
 	private Map<String, Class<?>> xmlAliases = new HashMap<String, Class<?>>();
+	private Resolver<SerializationProcessor> serializationResolver;
 	
 	/**
 	 * Create a new RestExpress service.  By default, RestExpress uses port 8081.  Supports JSON, and XML.
@@ -91,6 +94,7 @@ public class RestExpress
 		setPort(DEFAULT_PORT);
 		supportJson(true);
 		supportXml();
+		supportConsoleRoutes();
 		useSystemOut();
 	}
 
@@ -403,6 +407,18 @@ public class RestExpress
 	public RestExpress alias(String elementName, Class<?> theClass)
 	{
 		xmlAliases.put(elementName, theClass);
+		return this;
+	}
+	
+	public RestExpress supportConsoleRoutes()
+	{
+		return supportConsoleRoutes(DEFAULT_CONSOLE_PREFIX);
+	}
+	
+	public RestExpress supportConsoleRoutes(String urlPrefix)
+	{
+		useConsoleRoutes = true;
+		this.consoleUrlPrefix = urlPrefix;
 		return this;
 	}
 	

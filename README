@@ -34,6 +34,12 @@ Release 0.6.0
 * Refactored everything into RestExpress object, using builder pattern for configuration.
 * Added supported formats and default format to RouteBuilder.
 * 
+===================================================================================================
+Release 0.5.6
+* Upgraded to Netty 3.2.3 final.
+* Added getProtocol(), getHost(), getPath() to Request
+* Functionality of getUrl() is now getPath() and getUrl() now returns the entire URL string,
+  including protocol, host and port, and path.
 
 ===================================================================================================
 Release 0.5.5
