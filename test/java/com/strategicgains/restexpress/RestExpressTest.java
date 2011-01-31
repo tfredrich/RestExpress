@@ -49,7 +49,7 @@ public class RestExpressTest
 		assertTrue(server.getPostprocessors().isEmpty());
 		assertTrue(server.getPreprocessors().isEmpty());
 		assertTrue(server.shouldUseSystemOut());
-		assertNotNull(server.getRoutes());
+		assertNotNull(server.getRouteDeclarations());
 	}
 	
 	@Test

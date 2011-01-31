@@ -18,6 +18,7 @@ public class Main
 	{
 		RestExpress server = new RestExpress(new Routes())
 			.setName("KickStart Example")
+			.supportConsoleRoutes()
 			.addMessageObserver(new SimpleMessageObserver());
 		configureXmlAliases(server);
 		server.bind();

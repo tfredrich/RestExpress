@@ -18,6 +18,7 @@ package com.strategicgains.restexpress.route;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.strategicgains.restexpress.domain.console.RouteMetadata;
 import com.strategicgains.restexpress.route.parameterized.ParameterizedRouteBuilder;
 import com.strategicgains.restexpress.route.regex.RegexRouteBuilder;
 
@@ -94,4 +95,24 @@ public abstract class RouteDeclaration
 	// SECTION: ROUTES -SUBCLASSES
 
 	protected abstract void defineRoutes();
+
+	
+	// SECTION: CONSOLE
+
+	/**
+     * @return
+     */
+    public List<RouteMetadata> asMetadata()
+    {
+    	defineRoutes();
+    	List<RouteMetadata> routes = new ArrayList<RouteMetadata>();
+    	
+    	for (RouteBuilder builder : routeBuilders)
+    	{
+    		routes.add(builder.asMetadata());
+    	}
+
+    	routeBuilders.clear();
+    	return routes;
+    }
 }

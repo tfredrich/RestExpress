@@ -18,6 +18,7 @@ import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
+import com.strategicgains.restexpress.domain.console.RouteMetadata;
 import com.strategicgains.restexpress.exception.ConfigurationException;
 
 /**
@@ -56,7 +57,7 @@ public abstract class RouteBuilder
 	private String uri;
 	private List<HttpMethod> methods = new ArrayList<HttpMethod>();
 	private List<String> supportedFormats = new ArrayList<String>();
-	private String defaultFormat;
+	private String defaultFormat = null;
 	private Map<HttpMethod, String> actionNames = new HashMap<HttpMethod, String>();
 	private Object controller;
 	private boolean shouldSerializeResponse = true;
@@ -209,6 +210,20 @@ public abstract class RouteBuilder
 		}
 		
 		return routes;
+	}
+	
+	
+	// SECTION: CONSOLE
+	
+	public RouteMetadata asMetadata()
+	{
+		RouteMetadata route = new RouteMetadata();
+		route.setName(name);
+		route.setUri(uri);
+		route.setSerialized(shouldSerializeResponse);
+		route.setDefaultFormat(defaultFormat);
+		route.addAllSupportedFormats(supportedFormats);
+		return route;
 	}
 
 	

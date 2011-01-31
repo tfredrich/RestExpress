@@ -25,7 +25,11 @@ import java.util.Map.Entry;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
+import org.jboss.netty.handler.codec.http.HttpMethod;
 
+import com.strategicgains.restexpress.controller.ConsoleController;
+import com.strategicgains.restexpress.domain.console.RouteMetadata;
+import com.strategicgains.restexpress.domain.console.ServerMetadata;
 import com.strategicgains.restexpress.pipeline.DefaultRequestHandler;
 import com.strategicgains.restexpress.pipeline.MessageObserver;
 import com.strategicgains.restexpress.pipeline.PipelineBuilder;
@@ -43,9 +47,10 @@ import com.strategicgains.restexpress.util.Bootstraps;
 import com.strategicgains.restexpress.util.Resolver;
 
 /**
- * Primary entry point to create a RestExpress service.  All that's required is a RouteDeclaration.
- * By default: port is 8081, serialization format is JSON, supported formats are JSON and XML.
- *   
+ * Primary entry point to create a RestExpress service. All that's required is a
+ * RouteDeclaration. By default: port is 8081, serialization format is JSON,
+ * supported formats are JSON and XML.
+ * 
  * @author toddf
  */
 public class RestExpress
@@ -56,35 +61,43 @@ public class RestExpress
 
 	private String name;
 	private int port;
-	private RouteDeclaration routes;
+	private RouteDeclaration routeDeclarations;
 	private String defaultFormat;
 	private boolean useSystemOut;
 	private boolean useConsoleRoutes;
 	private String consoleUrlPrefix;
-	
+
 	Map<String, SerializationProcessor> serializationProcessors = new HashMap<String, SerializationProcessor>();
 	private List<MessageObserver> messageObservers = new ArrayList<MessageObserver>();
 	private List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
 	private List<Postprocessor> postprocessors = new ArrayList<Postprocessor>();
 	private Map<String, Class<?>> xmlAliases = new HashMap<String, Class<?>>();
 	private Resolver<SerializationProcessor> serializationResolver;
-	
+
 	/**
-	 * Create a new RestExpress service.  By default, RestExpress uses port 8081.  Supports JSON, and XML.
-	 * And displays some messages on System.out.  These can be altered with the setPort(), noJson(), noXml(),
-	 * noSystemOut() DSL modifiers, as needed.
+	 * Create a new RestExpress service. By default, RestExpress uses port 8081.
+	 * Supports JSON, and XML. And displays some messages on System.out. These
+	 * can be altered with the setPort(), noJson(), noXml(), noSystemOut() DSL
+	 * modifiers, as needed.
 	 * 
-	 * <p/>The default input and output format for messages is JSON.  To change that, use the
-	 * setDefaultFormat(String) DSL modifier, passing the format to use by default.  Make sure there's
-	 * a corresponding SerializationProcessor for that format.  The Format class has the basics.
+	 * <p/>
+	 * The default input and output format for messages is JSON. To change that,
+	 * use the setDefaultFormat(String) DSL modifier, passing the format to use
+	 * by default. Make sure there's a corresponding SerializationProcessor for
+	 * that format. The Format class has the basics.
 	 * 
-	 * <p/>This DSL was created as a thin veneer on Netty functionality.  The bind() method simply builds a
-	 * Netty pipeline and uses this builder class to create it.  Underneath the covers, RestExpress uses
-	 * Google GSON for JSON handling and XStream for XML processing.  However, both of those can be swapped
-	 * out using the putSerializationProcessor(String, SerializationProcessor) method, creating your own
-	 * instance of SerializationProcessor as necessary.
+	 * <p/>
+	 * This DSL was created as a thin veneer on Netty functionality. The bind()
+	 * method simply builds a Netty pipeline and uses this builder class to
+	 * create it. Underneath the covers, RestExpress uses Google GSON for JSON
+	 * handling and XStream for XML processing. However, both of those can be
+	 * swapped out using the putSerializationProcessor(String,
+	 * SerializationProcessor) method, creating your own instance of
+	 * SerializationProcessor as necessary.
 	 * 
-	 * @param routes a RouteDeclaration that declares the URL routes that this service supports.
+	 * @param routes
+	 *            a RouteDeclaration that declares the URL routes that this
+	 *            service supports.
 	 */
 	public RestExpress(RouteDeclaration routes)
 	{
@@ -94,7 +107,7 @@ public class RestExpress
 		setPort(DEFAULT_PORT);
 		supportJson(true);
 		supportXml();
-		supportConsoleRoutes();
+//		supportConsoleRoutes();
 		useSystemOut();
 	}
 
@@ -107,11 +120,12 @@ public class RestExpress
 	{
 		return name;
 	}
-	
+
 	/**
 	 * Set the name of this RestExpress service suite.
 	 * 
-	 * @param name the name.
+	 * @param name
+	 *            the name.
 	 * @return the RestExpress instance to facilitate DSL-style method chaining.
 	 */
 	public RestExpress setName(String name)
@@ -122,7 +136,7 @@ public class RestExpress
 
 	/**
 	 * Get the port that this RestExpress service suite is listening on.
-	 *  
+	 * 
 	 * @return the HTTP port.
 	 */
 	public int getPort()
@@ -131,10 +145,11 @@ public class RestExpress
 	}
 
 	/**
-	 * Set the port that this RestExpress service suite should listen on.
-	 * The default is 8081.
+	 * Set the port that this RestExpress service suite should listen on. The
+	 * default is 8081.
 	 * 
-	 * @param port the HTTP port RestExpress will listen on.
+	 * @param port
+	 *            the HTTP port RestExpress will listen on.
 	 * @return the RestExpress instance to facilitate DSL-style method chaining.
 	 */
 	public RestExpress setPort(int port)
@@ -143,24 +158,26 @@ public class RestExpress
 		return this;
 	}
 
-	public RouteDeclaration getRoutes()
+	public RouteDeclaration getRouteDeclarations()
 	{
-		return routes;
+		return routeDeclarations;
 	}
 
 	/**
 	 * Set the routes (URLs) that this RestExpress service suite supports.
 	 * 
-	 * @param routes a RouteDeclaration
+	 * @param routes
+	 *            a RouteDeclaration
 	 * @return the RestExpress instance to facilitate DSL-style method chaining.
 	 */
 	private RestExpress setRoutes(RouteDeclaration routes)
 	{
-		this.routes = routes;
+		this.routeDeclarations = routes;
 		return this;
 	}
 
-	public RestExpress putSerializationProcessor(String format, SerializationProcessor processor)
+	public RestExpress putSerializationProcessor(String format,
+	    SerializationProcessor processor)
 	{
 		serializationProcessors.put(format, processor);
 		return this;
@@ -176,7 +193,8 @@ public class RestExpress
 		return serializationResolver;
 	}
 
-	public RestExpress setSerializationResolver(Resolver<SerializationProcessor> serializationResolver)
+	public RestExpress setSerializationResolver(
+	    Resolver<SerializationProcessor> serializationResolver)
 	{
 		this.serializationResolver = serializationResolver;
 		return this;
@@ -194,17 +212,19 @@ public class RestExpress
 	}
 
 	/**
-	 * Tell RestExpress to support JSON in routes, incoming and outgoing.
-	 * By default RestExpress supports JSON and is the default.
-	 *
-	 * @param isDefault true to make JSON the default format.
+	 * Tell RestExpress to support JSON in routes, incoming and outgoing. By
+	 * default RestExpress supports JSON and is the default.
+	 * 
+	 * @param isDefault
+	 *            true to make JSON the default format.
 	 * @return the RestExpress instance.
 	 */
 	public RestExpress supportJson(boolean isDefault)
 	{
-		if (! getSerializationProcessors().containsKey(Format.JSON))
+		if (!getSerializationProcessors().containsKey(Format.JSON))
 		{
-			serializationProcessors.put(Format.JSON, new DefaultJsonProcessor());
+			serializationProcessors
+			    .put(Format.JSON, new DefaultJsonProcessor());
 		}
 
 		if (isDefault)
@@ -216,8 +236,8 @@ public class RestExpress
 	}
 
 	/**
-	 * Tell RestExpress to support JSON in routes, incoming and outgoing.
-	 * By default RestExpress supports JSON and is the default.
+	 * Tell RestExpress to support JSON in routes, incoming and outgoing. By
+	 * default RestExpress supports JSON and is the default.
 	 * 
 	 * @return the RestExpress instance.
 	 */
@@ -228,7 +248,8 @@ public class RestExpress
 
 	/**
 	 * Tell RestExpress to not support JSON in routes, incoming or outgoing.
-	 * Client must call setDefaultFormat(String) to set the default format to something else.
+	 * Client must call setDefaultFormat(String) to set the default format to
+	 * something else.
 	 * 
 	 * @return the RestExpress instance.
 	 */
@@ -239,39 +260,42 @@ public class RestExpress
 	}
 
 	/**
-	 * Tell RestExpress to support XML in routes, incoming and outgoing.
-	 * By default RestExpress supports XML.
-	 *
-	 * @param isDefault true to make XML the default format.
+	 * Tell RestExpress to support XML in routes, incoming and outgoing. By
+	 * default RestExpress supports XML.
+	 * 
+	 * @param isDefault
+	 *            true to make XML the default format.
 	 * @return the RestExpress instance.
 	 */
 	public RestExpress supportXml(boolean isDefault)
 	{
 		if (!getSerializationProcessors().containsKey(Format.XML))
 		{
-			getSerializationProcessors().put(Format.XML, new DefaultXmlProcessor());
+			getSerializationProcessors().put(Format.XML,
+			    new DefaultXmlProcessor());
 		}
-		
+
 		if (isDefault)
 		{
 			setDefaultFormat(Format.XML);
 		}
-		
+
 		return this;
 	}
-	
+
 	/**
-	 * Tell RestExpress to support XML in routes, incoming and outgoing.
-	 * By default RestExpress supports XML.
-	 *
-	 * @param isDefault true to make XML the default format.
+	 * Tell RestExpress to support XML in routes, incoming and outgoing. By
+	 * default RestExpress supports XML.
+	 * 
+	 * @param isDefault
+	 *            true to make XML the default format.
 	 * @return the RestExpress instance.
 	 */
 	public RestExpress supportXml()
 	{
 		return supportXml(false);
 	}
-	
+
 	/**
 	 * Tell RestExpress to not support XML in routes, incoming or outgoing.
 	 * 
@@ -284,16 +308,19 @@ public class RestExpress
 	}
 
 	/**
-	 * Tell RestExpress to support TXT format specifiers in routes, outgoing only at present.
-	 *
-	 * @param isDefault true to make TXT the default format.
+	 * Tell RestExpress to support TXT format specifiers in routes, outgoing
+	 * only at present.
+	 * 
+	 * @param isDefault
+	 *            true to make TXT the default format.
 	 * @return the RestExpress instance.
 	 */
 	public RestExpress supportTxt(boolean isDefault)
 	{
 		if (!getSerializationProcessors().containsKey(Format.TXT))
 		{
-			getSerializationProcessors().put(Format.TXT, new DefaultTxtProcessor());
+			getSerializationProcessors().put(Format.TXT,
+			    new DefaultTxtProcessor());
 		}
 
 		if (isDefault)
@@ -305,7 +332,8 @@ public class RestExpress
 	}
 
 	/**
-	 * Tell RestExpress to support TXT format specifier in routes, outgoing only at present.
+	 * Tell RestExpress to support TXT format specifier in routes, outgoing only
+	 * at present.
 	 * 
 	 * @return the RestExpress instance.
 	 */
@@ -316,11 +344,11 @@ public class RestExpress
 
 	public RestExpress addMessageObserver(MessageObserver observer)
 	{
-		if(!messageObservers.contains(observer))
+		if (!messageObservers.contains(observer))
 		{
 			messageObservers.add(observer);
 		}
-		
+
 		return this;
 	}
 
@@ -330,9 +358,9 @@ public class RestExpress
 	}
 
 	/**
-	 * Add a Preprocessor instance that gets called before an incoming message gets processed.
-	 * Preprocessors get called in the order in which they are added.  To break out of the chain,
-	 * simply throw an exception.
+	 * Add a Preprocessor instance that gets called before an incoming message
+	 * gets processed. Preprocessors get called in the order in which they are
+	 * added. To break out of the chain, simply throw an exception.
 	 * 
 	 * @param processor
 	 * @return
@@ -343,7 +371,7 @@ public class RestExpress
 		{
 			preprocessors.add(processor);
 		}
-		
+
 		return this;
 	}
 
@@ -353,20 +381,20 @@ public class RestExpress
 	}
 
 	/**
-	 * Add a PostProcessor instance that gets call after an incoming message is processed.  A 
-	 * Postprocessor is useful for augmenting or transforming the results.  Postprocessors get
-	 * called in the order in which they get added.
+	 * Add a PostProcessor instance that gets call after an incoming message is
+	 * processed. A Postprocessor is useful for augmenting or transforming the
+	 * results. Postprocessors get called in the order in which they get added.
 	 * 
 	 * @param processor
 	 * @return
 	 */
 	public RestExpress addPostprocessor(Postprocessor processor)
 	{
-		if(!postprocessors.contains(processor))
+		if (!postprocessors.contains(processor))
 		{
 			postprocessors.add(processor);
 		}
-		
+
 		return this;
 	}
 
@@ -385,19 +413,19 @@ public class RestExpress
 		this.useSystemOut = useSystemOut;
 		return this;
 	}
-	
+
 	public RestExpress useSystemOut()
 	{
 		setUseSystemOut(true);
 		return this;
 	}
-	
+
 	public RestExpress noSystemOut()
 	{
 		setUseSystemOut(false);
 		return this;
 	}
-	
+
 	/**
 	 * 
 	 * @param elementName
@@ -409,22 +437,38 @@ public class RestExpress
 		xmlAliases.put(elementName, theClass);
 		return this;
 	}
-	
+
 	public RestExpress supportConsoleRoutes()
 	{
 		return supportConsoleRoutes(DEFAULT_CONSOLE_PREFIX);
 	}
-	
+
 	public RestExpress supportConsoleRoutes(String urlPrefix)
 	{
 		useConsoleRoutes = true;
 		this.consoleUrlPrefix = urlPrefix;
 		return this;
 	}
+
+	public boolean shouldUseConsoleRoutes()
+	{
+		return useConsoleRoutes;
+	}
 	
+	public void noConsoleRoutes()
+	{
+		this.useConsoleRoutes = false;
+		this.consoleUrlPrefix = null;
+	}
+
+	public String getConsoleUrlPrefix()
+	{
+		return consoleUrlPrefix;
+	}
+
 	/**
-	 * The last call in the building of a RestExpress server, bind() causes Netty to bind to the
-	 * listening address and process incoming messages.
+	 * The last call in the building of a RestExpress server, bind() causes
+	 * Netty to bind to the listening address and process incoming messages.
 	 * 
 	 * @return Channel
 	 */
@@ -434,89 +478,128 @@ public class RestExpress
 		ServerBootstrap bootstrap = Bootstraps.createServerNioBootstrap();
 
 		// Set up the event pipeline factory.
-	    DefaultRequestHandler requestHandler = new DefaultRequestHandler(
-	    	createRouteResolver(),
-	    	createSerializationResolver());
-	    
-	    // Add MessageObservers to the request handler here, if desired...
-	    requestHandler.addMessageObserver();
+		DefaultRequestHandler requestHandler = new DefaultRequestHandler(
+		    createRouteResolver(), createSerializationResolver());
 
-	    // Add pre/post processors to the request handler here...
-	    addPrerocessors(requestHandler);
-	    addPostprocessors(requestHandler);
+		// Add MessageObservers to the request handler here, if desired...
+		requestHandler.addMessageObserver();
 
-	    PipelineBuilder pf = new PipelineBuilder()
-			.setRequestHandler(requestHandler);
+		// Add pre/post processors to the request handler here...
+		addPrerocessors(requestHandler);
+		addPostprocessors(requestHandler);
+
+		PipelineBuilder pf = new PipelineBuilder()
+		    .setRequestHandler(requestHandler);
 		bootstrap.setPipelineFactory(pf);
 
 		// Bind and start to accept incoming connections.
-		if(shouldUseSystemOut())
+		if (shouldUseSystemOut())
 		{
-			System.out.println("Starting " + getName() + " Server on port " + port);
+			System.out.println("Starting " + getName() + " Server on port "
+			    + port);
 		}
 
 		return bootstrap.bind(new InetSocketAddress(getPort()));
 	}
 
 	/**
-     * @return
-     */
-    private RouteResolver createRouteResolver()
-    {
-	    return new RouteResolver(getRoutes().createRouteMapping());
-    }
+	 * @return
+	 */
+	private RouteResolver createRouteResolver()
+	{
+		RouteDeclaration routes = getRouteDeclarations();
+
+		if (shouldUseConsoleRoutes())
+		{
+			buildConsoleRoutes(routes, getConsoleUrlPrefix());
+		}
+
+		return new RouteResolver(routes.createRouteMapping());
+	}
 
 	/**
-     * @return
-     */
-    private Resolver<SerializationProcessor> createSerializationResolver()
-    {
-	    DefaultSerializationResolver resolver = new DefaultSerializationResolver();
-	    resolver.setDefaultFormat(getDefaultFormat());
-	    
-	    for (Entry<String, SerializationProcessor> entry : getSerializationProcessors().entrySet())
-	    {
-	    	if (entry.getKey().equals(Format.XML))
-	    	{
-	    		setXmlAliases((AliasingSerializationProcessor) entry.getValue());
-	    	}
-
-	    	resolver.put(entry.getKey(), entry.getValue());
-	    }
-
-	    return resolver;
-    }
+	 * @param routes2
+	 * @param consoleUrlPrefix2
+	 */
+	private void buildConsoleRoutes(RouteDeclaration routes, String prefix)
+	{
+		ServerMetadata metadata = buildMetadata();
+		ConsoleController controller = new ConsoleController(metadata);
+		routes.uri(prefix + "/routes.{format}", controller).action("getRoutes", HttpMethod.GET);
+		// routes.uri(prefix + "/console.html", controller)
+		// .action("getConsole", HttpMethod.GET)
+		// .format(Format.HTML)
+		// .noSerialization();
+		alias("service", ServerMetadata.class);
+		alias("route", RouteMetadata.class);
+	}
 
 	/**
-     * @param value
-     */
-    private void setXmlAliases(AliasingSerializationProcessor value)
-    {
-    	for (Entry<String, Class<?>> entry : xmlAliases.entrySet())
-    	{
-    		value.alias(entry.getKey(), entry.getValue());
-    	}
-    }
+	 * @return
+	 */
+	private ServerMetadata buildMetadata()
+	{
+		ServerMetadata m = new ServerMetadata();
+		m.setName(getName());
+		m.setPort(getPort());
+		m.setDefaultFormat(getDefaultFormat());
+		m.addAllSupportedFormats(getSerializationProcessors().keySet());
+		m.addAllRoutes(getRouteDeclarations().asMetadata());
+		return m;
+	}
 
 	/**
-     * @param requestHandler
-     */
-    private void addPrerocessors(DefaultRequestHandler requestHandler)
-    {
-    	for (Preprocessor processor : getPreprocessors())
-    	{
-    		requestHandler.addPreprocessor(processor);
-    	}
-    }
+	 * @return
+	 */
+	private Resolver<SerializationProcessor> createSerializationResolver()
+	{
+		DefaultSerializationResolver resolver = new DefaultSerializationResolver();
+		resolver.setDefaultFormat(getDefaultFormat());
+
+		for (Entry<String, SerializationProcessor> entry : getSerializationProcessors()
+		    .entrySet())
+		{
+			if (entry.getKey().equals(Format.XML))
+			{
+				setXmlAliases((AliasingSerializationProcessor) entry.getValue());
+			}
+
+			resolver.put(entry.getKey(), entry.getValue());
+		}
+
+		return resolver;
+	}
 
 	/**
-     * @param requestHandler
-     */
-    private void addPostprocessors(DefaultRequestHandler requestHandler)
-    {
-    	for (Postprocessor processor : getPostprocessors())
-    	{
-    		requestHandler.addPostprocessor(processor);
-    	}
-    }
+	 * @param value
+	 */
+	private void setXmlAliases(AliasingSerializationProcessor value)
+	{
+		for (Entry<String, Class<?>> entry : xmlAliases.entrySet())
+		{
+			value.alias(entry.getKey(), entry.getValue());
+		}
+	}
+
+	/**
+	 * @param requestHandler
+	 */
+	private void addPrerocessors(DefaultRequestHandler requestHandler)
+	{
+		for (Preprocessor processor : getPreprocessors())
+		{
+			requestHandler.addPreprocessor(processor);
+		}
+	}
+
+	/**
+	 * @param requestHandler
+	 */
+	private void addPostprocessors(DefaultRequestHandler requestHandler)
+	{
+		for (Postprocessor processor : getPostprocessors())
+		{
+			requestHandler.addPostprocessor(processor);
+		}
+	}
 }
