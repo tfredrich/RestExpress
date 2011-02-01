@@ -25,6 +25,9 @@ import java.util.Map.Entry;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.group.ChannelGroupFuture;
+import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import com.strategicgains.restexpress.controller.ConsoleController;
@@ -45,6 +48,7 @@ import com.strategicgains.restexpress.serialization.text.DefaultTxtProcessor;
 import com.strategicgains.restexpress.serialization.xml.DefaultXmlProcessor;
 import com.strategicgains.restexpress.util.Bootstraps;
 import com.strategicgains.restexpress.util.Resolver;
+import com.strategicgains.restexpress.util.DefaultShutdownHook;
 
 /**
  * Primary entry point to create a RestExpress service. All that's required is a
@@ -55,10 +59,13 @@ import com.strategicgains.restexpress.util.Resolver;
  */
 public class RestExpress
 {
+	private static final ChannelGroup allChannels = new DefaultChannelGroup("RestExpress" );
+
 	private static final int DEFAULT_PORT = 8081;
 	private static final String DEFAULT_NAME = "RestExpress";
 	private static final String DEFAULT_CONSOLE_PREFIX = "/console";
 
+	private ServerBootstrap bootstrap;
 	private String name;
 	private int port;
 	private RouteDeclaration routeDeclarations;
@@ -475,31 +482,70 @@ public class RestExpress
 	public Channel bind()
 	{
 		// Configure the server.
-		ServerBootstrap bootstrap = Bootstraps.createServerNioBootstrap();
+		bootstrap = Bootstraps.createServerNioBootstrap();
 
 		// Set up the event pipeline factory.
 		DefaultRequestHandler requestHandler = new DefaultRequestHandler(
 		    createRouteResolver(), createSerializationResolver());
 
 		// Add MessageObservers to the request handler here, if desired...
-		requestHandler.addMessageObserver();
+		requestHandler.addMessageObserver(messageObservers.toArray(new MessageObserver[0]));
 
 		// Add pre/post processors to the request handler here...
-		addPrerocessors(requestHandler);
+		addPreprocessors(requestHandler);
 		addPostprocessors(requestHandler);
 
 		PipelineBuilder pf = new PipelineBuilder()
 		    .setRequestHandler(requestHandler);
 		bootstrap.setPipelineFactory(pf);
 
+		// TODO: make these configurable via DSL.
+		bootstrap.setOption("child.tcpNoDelay", true);
+		bootstrap.setOption("child.keepAlive", true);
+
 		// Bind and start to accept incoming connections.
 		if (shouldUseSystemOut())
 		{
-			System.out.println("Starting " + getName() + " Server on port "
-			    + port);
+			System.out.println("Starting " + getName() + " Server on port " + port);
 		}
 
-		return bootstrap.bind(new InetSocketAddress(getPort()));
+		Channel channel = bootstrap.bind(new InetSocketAddress(getPort()));
+		allChannels.add(channel);
+		return channel;
+	}
+	
+	/**
+	 * Used in main() to install a default JVM shutdown hook and shut down the server cleanly.
+	 * Calls shutdown() when JVM termination detected.  To utilize your own shutdown hook(s),
+	 * install your own shutdown hook(s) and call shutdown() instead of awaitShutdown().
+	 */
+	public void awaitShutdown()
+	{
+		Runtime.getRuntime().addShutdownHook(new DefaultShutdownHook(this));
+
+		do
+		{
+			try
+	        {
+		        Thread.sleep(300);
+	        }
+	        catch (InterruptedException e)
+	        {
+	        }
+		}
+		while(true);
+	}
+
+	/**
+	 * Releases all resources associated with this server so the JVM can shutdown cleanly.
+	 * Call this method to finish using the server.  To utilize the default shutdown hook
+	 * in main() provided by RestExpress, call awaitShutdown() instead.
+	 */
+	public void shutdown()
+	{
+		ChannelGroupFuture future = allChannels.close();
+		future.awaitUninterruptibly();
+		bootstrap.getFactory().releaseExternalResources();
 	}
 
 	/**
@@ -525,7 +571,8 @@ public class RestExpress
 	{
 		ServerMetadata metadata = buildMetadata();
 		ConsoleController controller = new ConsoleController(metadata);
-		routes.uri(prefix + "/routes.{format}", controller).action("getRoutes", HttpMethod.GET);
+		routes.uri(prefix + "/routes.{format}", controller)
+			.action("getRoutes", HttpMethod.GET);
 		// routes.uri(prefix + "/console.html", controller)
 		// .action("getConsole", HttpMethod.GET)
 		// .format(Format.HTML)
@@ -584,7 +631,7 @@ public class RestExpress
 	/**
 	 * @param requestHandler
 	 */
-	private void addPrerocessors(DefaultRequestHandler requestHandler)
+	private void addPreprocessors(DefaultRequestHandler requestHandler)
 	{
 		for (Preprocessor processor : getPreprocessors())
 		{

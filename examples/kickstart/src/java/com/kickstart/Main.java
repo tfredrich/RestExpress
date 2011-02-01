@@ -17,19 +17,20 @@ public class Main
 	public static void main(String[] args)
 	{
 		RestExpress server = new RestExpress(new Routes())
-			.setName("KickStart Example")
-			.supportConsoleRoutes()
-			.addMessageObserver(new SimpleMessageObserver());
+		    .setName("KickStart Example").supportConsoleRoutes()
+		    .addMessageObserver(new SimpleMessageObserver());
 		configureXmlAliases(server);
 		server.bind();
+		server.awaitShutdown();
+		System.out.println("Done.");
 	}
 
 	private static void configureXmlAliases(RestExpress server)
 	{
-//		server
-//		.alias("element_name", Element.class)
-//		.alias("element_name", Element.class)
-//		.alias("element_name", Element.class)
-//		.alias("element_name", Element.class)
+		// server
+		// .alias("element_name", Element.class)
+		// .alias("element_name", Element.class)
+		// .alias("element_name", Element.class)
+		// .alias("element_name", Element.class)
 	}
 }
