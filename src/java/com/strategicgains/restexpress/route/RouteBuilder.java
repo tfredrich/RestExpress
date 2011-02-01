@@ -223,6 +223,12 @@ public abstract class RouteBuilder
 		route.setSerialized(shouldSerializeResponse);
 		route.setDefaultFormat(defaultFormat);
 		route.addAllSupportedFormats(supportedFormats);
+		
+		for (HttpMethod method : methods)
+		{
+			route.addMethod(method.getName());
+		}
+
 		return route;
 	}
 

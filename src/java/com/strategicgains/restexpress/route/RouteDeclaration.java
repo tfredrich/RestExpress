@@ -109,6 +109,7 @@ public abstract class RouteDeclaration
     	
     	for (RouteBuilder builder : routeBuilders)
     	{
+    		builder.build();
     		routes.add(builder.asMetadata());
     	}
 

@@ -29,6 +29,7 @@ public class RouteMetadata
 	private String uri;
 	private List<String> supportedFormats;
 	private String defaultFormat;
+	private List<String> methods = new ArrayList<String>();
 	private boolean isSerialized;
 
 	public String getName()
@@ -85,6 +86,27 @@ public class RouteMetadata
 	public void setDefaultFormat(String defaultFormat)
 	{
 		this.defaultFormat = defaultFormat;
+	}
+	
+	public List<String> getMethods()
+	{
+		return methods;
+	}
+	
+	public void addMethod(String method)
+	{
+		if (!methods.contains(method))
+		{
+			methods.add(method);
+		}
+	}
+	
+	public void addAllMethods(Collection<String> methods)
+	{
+		for (String method : methods)
+		{
+			addMethod(method);
+		}
 	}
 
 	public boolean isSerialized()
