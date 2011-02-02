@@ -144,7 +144,12 @@
           target: run              
          ====================================================================== -->
     <target name="run" depends="_init, compile" description="Run the project from the command line">
-        <java classpathref="runtime.classpath" classname="com.kickstart.Main"/>
+        <java fork="true" classname="com.kickstart.Main">
+            <classpath>
+                    <path refid="runtime.classpath"/>
+            </classpath>
+            <!-- arg value="${runtime.environment}"/ -->
+        </java>
     </target>
 
 </project>
