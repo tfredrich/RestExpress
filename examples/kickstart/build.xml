@@ -22,12 +22,12 @@
 
 	<path id="compile.classpath">
 		<pathelement location="${dir.compile}"/>
-		<pathelement location="${lib.classpath}"/>
+		<path refid="lib.classpath"/>
     </path>
 
 	<path id="runtime.classpath">
 		<pathelement location="${dir.compile}"/>
-		<fileset refid="lib.classpath"/>
+		<path refid="lib.classpath"/>
     </path>
 
 	<path id="unit_test.classpath">
