@@ -13,19 +13,21 @@
 	<property name="dir.test.results" value="${dir.build}/junit"/>
 	<property name="dir.test.report" value="${dir.test.results}/report"/>
 
-	<path id="compile.classpath">
-		<pathelement location="${dir.compile}"/>
-		<fileset dir="${dir.lib}">
-			<include name="**/*.jar"/>
-		</fileset>
-    </path>
-
-	<path id="runtime.classpath">
-		<pathelement location="${dir.compile}"/>
+	<path id="lib.classpath">
 		<fileset dir="${dir.lib}">
 			<include name="**/*.jar"/>
 			<exclude name="**/sources/*"/>
 		</fileset>
+	</path>
+
+	<path id="compile.classpath">
+		<pathelement location="${dir.compile}"/>
+		<pathelement location="${lib.classpath}"/>
+    </path>
+
+	<path id="runtime.classpath">
+		<pathelement location="${dir.compile}"/>
+		<fileset refid="lib.classpath"/>
     </path>
 
 	<path id="unit_test.classpath">
@@ -115,8 +117,19 @@
           target: release
          ====================================================================== -->
     <target name="release" depends="_init, compile" description="Release a distro">
+		<manifestclasspath property="jar.classpath" jarfile="${dir.dist}/${ant.project.name}deps.jar">
+			<classpath refid="lib.classpath" />
+		</manifestclasspath>
 		<jar destfile="${dir.dist}/${ant.project.name}-${version}.jar">
+			<manifest>
+				<attribute name="Main-Class" value="com.kickstart.Main"/>
+				<attribute name="Class-Path" value="${jar.classpath}"/>
+			</manifest>
     		<fileset dir="${dir.compile}"/>
+			<!-- fileset dir="${dir.lib}">
+				<exclude name="sources/**"/>
+				<include name="*.jar"/>
+			</fileset -->
     	</jar>
 		<jar destfile="${dir.dist}/${ant.project.name}-${version}-src.jar">
     		<fileset dir="${dir.src.java}"/>
