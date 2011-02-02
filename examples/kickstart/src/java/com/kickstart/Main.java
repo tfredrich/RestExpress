@@ -17,12 +17,12 @@ public class Main
 	public static void main(String[] args)
 	{
 		RestExpress server = new RestExpress(new Routes())
-		    .setName("KickStart Example").supportConsoleRoutes()
+		    .setName("KickStart Example")
+		    .supportConsoleRoutes()
 		    .addMessageObserver(new SimpleMessageObserver());
 		configureXmlAliases(server);
 		server.bind();
 		server.awaitShutdown();
-		System.out.println("Done.");
 	}
 
 	private static void configureXmlAliases(RestExpress server)
