@@ -29,23 +29,23 @@ import com.strategicgains.restexpress.util.Resolver;
 public class RouteResolver
 implements Resolver<Action>
 {
-	private RouteMapping routes;
+	private RouteMapping routeMapping;
 	
 	public RouteResolver(RouteMapping routes)
 	{
 		super();
-		this.routes = routes;
+		this.routeMapping = routes;
 	}
 	
 	public Route getNamedRoute(String name, HttpMethod method)
 	{
-		return routes.getNamedRoute(name, method);
+		return routeMapping.getNamedRoute(name, method);
 	}
 	
 	@Override
 	public Action resolve(Request request)
 	{
-		for (Route route : routes.getRoutesFor(request.getRealMethod()))
+		for (Route route : routeMapping.getRoutesFor(request.getRealMethod()))
 		{
 			UrlMatch match = route.match(request.getPath());
 

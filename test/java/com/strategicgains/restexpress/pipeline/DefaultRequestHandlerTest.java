@@ -68,7 +68,7 @@ public class DefaultRequestHandlerTest
 		observer = new DummyObserver();
 		messageHandler.addMessageObserver(observer);
 		PipelineBuilder pf = new PipelineBuilder()
-			.setRequestHandler(messageHandler);
+			.addRequestHandler(messageHandler);
 	    pl = pf.getPipeline();
 	    ChannelFactory channelFactory = new DefaultLocalServerChannelFactory();
 	    channel = channelFactory.newChannel(pl);

@@ -496,7 +496,7 @@ public class RestExpress
 		addPostprocessors(requestHandler);
 
 		PipelineBuilder pf = new PipelineBuilder()
-		    .setRequestHandler(requestHandler);
+		    .addRequestHandler(requestHandler);
 		bootstrap.setPipelineFactory(pf);
 
 		// TODO: make these configurable via DSL.
@@ -603,8 +603,7 @@ public class RestExpress
 		DefaultSerializationResolver resolver = new DefaultSerializationResolver();
 		resolver.setDefaultFormat(getDefaultFormat());
 
-		for (Entry<String, SerializationProcessor> entry : getSerializationProcessors()
-		    .entrySet())
+		for (Entry<String, SerializationProcessor> entry : getSerializationProcessors().entrySet())
 		{
 			if (entry.getKey().equals(Format.XML))
 			{
