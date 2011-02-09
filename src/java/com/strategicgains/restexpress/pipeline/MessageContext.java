@@ -18,18 +18,19 @@ package com.strategicgains.restexpress.pipeline;
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.route.Action;
+import com.strategicgains.restexpress.serialization.SerializationProcessor;
 
 /**
  * @author toddf
  * @since Feb 2, 2011
  */
-public class PipelineContext
+public class MessageContext
 {
 	private Request request;
 	private Response response;
-	private Action action;
+	private Action action = null;
 
-	public PipelineContext(Request request, Response response)
+	public MessageContext(Request request, Response response)
 	{
 		super();
 		this.request = request;
@@ -51,9 +52,17 @@ public class PipelineContext
 		return action;
 	}
 	
+	public boolean hasAction()
+	{
+		return (getAction() != null);
+	}
+	
 	public void setAction(Action action)
 	{
 		this.action = action;
+		getRequest().addAllHeaders(action.getParameters());
+		getRequest().setResolvedRoute(action.getRoute());
+		getResponse().setIsSerialized(action.shouldSerializeResponse());
 	}
 
 	/**
@@ -61,6 +70,23 @@ public class PipelineContext
      */
     public boolean shouldSerializeResponse()
     {
-    	return action.shouldSerializeResponse();
+    	return getResponse().isSerialized();
+//    	return (hasAction() ? action.shouldSerializeResponse() : true);
+    }
+
+    public void setSerializationProcessor(SerializationProcessor processor)
+    {
+		getRequest().setSerializationProcessor(processor);
+		getResponse().setContentType(processor.getResultingContentType());
+    }
+
+    public SerializationProcessor getSerializationProcessor()
+    {
+	    return getRequest().getSerializationProcessor();
+    }
+
+    public String getContentType()
+    {
+    	return getResponse().getContentType();
     }
 }
