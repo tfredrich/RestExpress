@@ -17,7 +17,6 @@ package com.strategicgains.restexpress.domain;
 
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 
-import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.ServiceException;
 
 /**
@@ -83,16 +82,5 @@ public class Result
 	{
 		HttpResponseStatus status = HttpResponseStatus.OK;
 		return new Result(status.getCode(), STATUS_SUCCESS, null, data);
-	}
-	
-	public static Result fromResponse(Response response)
-	{
-		if (response.hasException())
-		{
-			return new Result(response.getException());
-		}
-		
-		HttpResponseStatus status = response.getStatus();
-		return new Result(status.getCode(), STATUS_SUCCESS, null, response.getBody());
 	}
 }

@@ -47,7 +47,7 @@ extends MessageObserver
 	@Override
     protected void onException(Throwable exception, Request request, Response response)
     {
-		System.out.println(request.getRealMethod().toString() + " " + request.getUrl() + " responded with " + response.getStatus().toString());
+		System.out.println(request.getRealMethod().toString() + " " + request.getUrl() + " responded with " + response.getResponseStatus().toString());
 		exception.printStackTrace();
     }
 

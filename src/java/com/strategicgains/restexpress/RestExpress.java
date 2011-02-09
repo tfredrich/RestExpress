@@ -59,7 +59,7 @@ import com.strategicgains.restexpress.util.DefaultShutdownHook;
  */
 public class RestExpress
 {
-	private static final ChannelGroup allChannels = new DefaultChannelGroup("RestExpress" );
+	private static final ChannelGroup allChannels = new DefaultChannelGroup("RestExpress");
 
 	private static final int DEFAULT_PORT = 8081;
 	private static final String DEFAULT_NAME = "RestExpress";
@@ -278,8 +278,7 @@ public class RestExpress
 	{
 		if (!getSerializationProcessors().containsKey(Format.XML))
 		{
-			getSerializationProcessors().put(Format.XML,
-			    new DefaultXmlProcessor());
+			getSerializationProcessors().put(Format.XML, new DefaultXmlProcessor());
 		}
 
 		if (isDefault)

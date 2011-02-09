@@ -35,9 +35,10 @@ public class Response
 	// SECTION: INSTANCE VARIABLES
 
 	private HttpResponseStatus responseCode = OK;
-	private Throwable exception = null;
+	private String contentType = null;
 	private Object body;
 	private Map<String, List<String>> headers = new HashMap<String, List<String>>();
+	private boolean isSerialized = true;
 	
 	
 	// SECTION: CONSTRUCTORS
@@ -45,15 +46,14 @@ public class Response
 	public Response(Request request)
 	{
 		super();
-		initialize(request);
+		initializeFrom(request);
 	}
 	
 	/**
      * @param request
      */
-    private void initialize(Request request)
+    private void initializeFrom(Request request)
     {
-    	// TODO: initilize the response from data in the request.
     }
 
 
@@ -166,47 +166,38 @@ public class Response
 	 * 
 	 * @return
 	 */
-	public HttpResponseStatus getStatus()
+	public HttpResponseStatus getResponseStatus()
 	{
 		return responseCode;
 	}
-	
-	/**
-	 * Retrieve the exception, if any, that occurred during the request handling cycle.
-	 * 
-	 * @return
-	 */
-	public Throwable getException()
+
+	public String getContentType()
+    {
+    	return contentType;
+    }
+
+	public void setContentType(String contentType)
+    {
+    	this.contentType = contentType;
+    }
+
+	public boolean isSerialized()
 	{
-		return exception;
+		return isSerialized;
 	}
 	
-	/**
-	 * Return whether an exception occurred during the request handling cycle.
-	 * 
-	 * @return
-	 */
-	public boolean hasException()
+	public void setIsSerialized(boolean value)
 	{
-		return (getException() != null);
+		this.isSerialized = value;
 	}
 
-	public void setException(Throwable t)
+	public void noSerialization()
 	{
-		this.exception = t;
+		setIsSerialized(false);
 	}
 	
-	public String getResponseMessage()
+	public void useSerialization()
 	{
-		Throwable cause = getException();
-		Throwable current = cause;
-
-		while (current != null)
-		{
-			cause = current;
-			current = current.getCause();
-		}
-
-		return cause.getMessage();
+		setIsSerialized(true);
 	}
 }

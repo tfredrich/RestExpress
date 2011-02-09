@@ -19,6 +19,7 @@ package com.strategicgains.restexpress;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,7 +33,6 @@ import com.strategicgains.restexpress.exception.BadRequestException;
 import com.strategicgains.restexpress.route.Route;
 import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
-import com.strategicgains.restexpress.util.Resolver;
 
 /**
  * @author toddf
@@ -52,7 +52,7 @@ public class Request
 	// SECTION: INSTANCE VARIABLES
 
 	private HttpRequest httpRequest;
-	private Resolver<SerializationProcessor> serializationResolver;
+	private SerializationProcessor serializationProcessor;
 	private RouteResolver urlRouter;
 	private HttpMethod realMethod;
 	private Route resolvedRoute;
@@ -61,12 +61,11 @@ public class Request
 	
 	// SECTION: CONSTRUCTOR
 
-	public Request(HttpRequest request, Resolver<SerializationProcessor> serializationResolver, RouteResolver routes)
+	public Request(HttpRequest request, RouteResolver routes)
 	{
 		super();
 		this.httpRequest = request;
 		this.realMethod = request.getMethod();
-		this.serializationResolver = serializationResolver;
 		this.urlRouter = routes;
 		handleMethodTunneling(addQueryStringParametersAsHeaders());
 		createCorrelationId();
@@ -131,28 +130,33 @@ public class Request
     }
 	
 	/**
-	 * Attempts to deserialize the request body into an instance of the given type.  If no serialization
-	 * resolver is present in the request, null is returned.
+	 * Attempts to deserialize the request body into an instance of the given type.
 	 * 
 	 * @param type the resulting type
-	 * @return an instance of the requested type, or null (if no serialization resolver in request).
+	 * @return an instance of the requested type.
 	 * @throws BadRequestException if the deserialization fails.
 	 */
 	public <T> T getBodyAs(Class<T> type)
 	{
-		if (serializationResolver == null) return null;
-
-		SerializationProcessor processor = serializationResolver.resolve(this);
-		
 		try
 		{
-			return processor.deserialize(getBody(), type);
+			return serializationProcessor.deserialize(getBody(), type);
 		}
 		catch(Exception e)
 		{
 			throw new BadRequestException(e);
 		}
 	}
+
+	public SerializationProcessor getSerializationProcessor()
+    {
+    	return serializationProcessor;
+    }
+
+	public void setSerializationProcessor(SerializationProcessor serializationProcessor)
+    {
+    	this.serializationProcessor = serializationProcessor;
+    }
 
 	public void setBody(ChannelBuffer body)
     {
@@ -174,6 +178,14 @@ public class Request
 		httpRequest.addHeader(name, value);
     }
 	
+	public void addAllHeaders(Collection<Entry<String, String>> headers)
+	{
+    	for (Entry<String, String> entry : headers)
+    	{
+    		addHeader(entry.getKey(), entry.getValue());
+    	}
+	}
+
 	public Route getResolvedRoute()
 	{
 		return resolvedRoute;

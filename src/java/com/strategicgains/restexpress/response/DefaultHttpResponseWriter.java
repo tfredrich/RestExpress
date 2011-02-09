@@ -29,7 +29,7 @@ implements HttpResponseWriter
 	@Override
 	public void write(ChannelHandlerContext ctx, Request request, Response response)
 	{
-		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getStatus());
+		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getResponseStatus());
 		addHeaders(response, httpResponse);
 		
 		if (response.hasBody())

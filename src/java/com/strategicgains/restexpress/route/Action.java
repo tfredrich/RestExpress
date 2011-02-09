@@ -15,6 +15,7 @@
 */
 package com.strategicgains.restexpress.route;
 
+import java.util.Collection;
 import java.util.Map.Entry;
 
 import com.strategicgains.restexpress.Request;
@@ -64,19 +65,14 @@ public class Action
     	return getRoute().invoke(request, response);
     }
 
-	/**
-	 * Applies the parameters from the URL match to the headers of the request before invocation.
-	 * 
-     * @param parameters a Set of Entry<String, String> name/value pairs of parameters parsed from the URL.
-     * @param request the Request instance in which to set parameter headers.
+    /**
+     * Retrieves the parameters from the URL match.  These are used as Request headers
+     * before invocation of the route.
+     * 
+     * @return a Collection of Map Entry name/value pairs to be used for headers.
      */
-    public void applyParameterHeaders(Request request)
+    public Collection<Entry<String, String>> getParameters()
     {
-    	if (match == null) return;
-
-    	for (Entry<String, String> entry : match.parameterSet())
-    	{
-    		request.addHeader(entry.getKey(), entry.getValue());
-    	}
+    	return match.parameterSet();
     }
 }

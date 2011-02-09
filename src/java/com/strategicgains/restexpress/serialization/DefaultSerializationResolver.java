@@ -76,7 +76,7 @@ implements Resolver<SerializationProcessor>
 		{
 			return processor;
 		}
-		
+
 		processor = resolveViaDefaultFormat();
 		
 		if (processor == null)
@@ -131,7 +131,7 @@ implements Resolver<SerializationProcessor>
      */
     private List<String> getAcceptHeaders(Request request)
     {
-	    // TODO Auto-generated method stub
+	    // TODO retrieve the accept headers from the request as a list.
     	return Collections.emptyList();
     }
 }

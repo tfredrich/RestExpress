@@ -143,10 +143,10 @@ public class DefaultRequestHandlerTest
         @Override
         protected void defineRoutes()
         {
-        	uri("/foo", controller)
+        	uri("/foo.{format}", controller)
         		.action("fooAction", HttpMethod.GET);
 
-        	uri("/bar", controller)
+        	uri("/bar.{format}", controller)
         		.action("barAction", HttpMethod.GET);
 
         	uri("/date.{format}", controller)
@@ -165,7 +165,7 @@ public class DefaultRequestHandlerTest
 		{
 			throw new BadRequestException("foobar'd");
 		}
-		
+
 		public Object dateAction(Request request, Response response)
 		{
 			return request.getBodyAs(Dated.class);
