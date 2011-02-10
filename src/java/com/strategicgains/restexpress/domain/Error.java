@@ -21,22 +21,22 @@ package com.strategicgains.restexpress.domain;
  */
 public class Error
 {
-	private String error;
+	private String message;
 
 	public Error(String message)
 	{
 		super();
-		this.error = message;
+		this.message = message;
 	}
 
-	public String getError()
+	public String getMessage()
 	{
-		return error;
+		return message;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return getError();
+		return getMessage();
 	}
 }
