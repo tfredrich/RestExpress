@@ -2,6 +2,7 @@ package com.kickstart.service;
 
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
+import com.strategicgains.restexpress.exception.NotFoundException;
 
 /**
  * @author toddf
@@ -17,16 +18,17 @@ public class KickStartController
 
 	public Object read(Request request, Response response)
 	{
-		return null;
+		String id = request.getHeader("orderId");
+		throw new NotFoundException("The order ID you requested was not found: " + id);
 	}
 
 	public void update(Request request, Response response)
 	{
-		response.setResponseNoContent();
+//		response.setResponseNoContent();
 	}
 
 	public void delete(Request request, Response response)
 	{
-		response.setResponseNoContent();
+//		response.setResponseNoContent();
 	}
 }

@@ -12,31 +12,31 @@
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
- */
-package com.strategicgains.restexpress.domain;
+*/
+package com.strategicgains.restexpress.response;
+
+import com.strategicgains.restexpress.Response;
+import com.strategicgains.restexpress.domain.ErrorMessage;
 
 /**
+ * Leaves the response alone, returning it without wrapping it at all, unless
+ * there is an exception.  If there is an exception, the exception is wrapped
+ * in a serializable Error instance.
+ * 
  * @author toddf
- * @since Feb 8, 2011
+ * @since Feb 10, 2011
  */
-public class Error
+public class RawResponseWrapper
+implements ResponseWrapperFactory
 {
-	private String message;
-
-	public Error(String message)
-	{
-		super();
-		this.message = message;
-	}
-
-	public String getMessage()
-	{
-		return message;
-	}
-	
 	@Override
-	public String toString()
+	public Object wrap(Response response)
 	{
-		return getMessage();
+		if (!response.hasException())
+		{
+			return response.getBody();
+		}
+		
+		return new ErrorMessage(response.getException().getMessage());
 	}
 }

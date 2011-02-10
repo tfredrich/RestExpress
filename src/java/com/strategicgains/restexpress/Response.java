@@ -39,6 +39,7 @@ public class Response
 	private Object body;
 	private Map<String, List<String>> headers = new HashMap<String, List<String>>();
 	private boolean isSerialized = true;
+	private Throwable exception = null;
 	
 	
 	// SECTION: CONSTRUCTORS
@@ -200,4 +201,19 @@ public class Response
 	{
 		setIsSerialized(true);
 	}
+
+	public Throwable getException()
+    {
+    	return exception;
+    }
+	
+	public boolean hasException()
+	{
+		return (getException() != null);
+	}
+
+	public void setException(Throwable exception)
+    {
+    	this.exception = exception;
+    }
 }

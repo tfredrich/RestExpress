@@ -32,11 +32,11 @@ import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
-import com.strategicgains.restexpress.domain.Error;
 import com.strategicgains.restexpress.exception.ExceptionMapping;
 import com.strategicgains.restexpress.exception.ServiceException;
 import com.strategicgains.restexpress.response.DefaultHttpResponseWriter;
 import com.strategicgains.restexpress.response.HttpResponseWriter;
+import com.strategicgains.restexpress.response.ResponseWrapperFactory;
 import com.strategicgains.restexpress.route.Action;
 import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
@@ -65,6 +65,7 @@ implements PreprocessorAware, PostprocessorAware
 	private List<Postprocessor> postprocessors = new ArrayList<Postprocessor>();
 	private ExceptionMapping exceptionMap = new ExceptionMapping();
 	private List<MessageObserver> messageObservers = new ArrayList<MessageObserver>();
+	private ResponseWrapperFactory responseWrapperFactory;
 
 
 	// SECTION: CONSTRUCTORS
@@ -112,6 +113,11 @@ implements PreprocessorAware, PostprocessorAware
 	{
 		this.responseWriter = writer;
 	}
+	
+	public void setResponseWrapperFactory(ResponseWrapperFactory factory)
+	{
+		this.responseWrapperFactory = factory;
+	}
 
 
 	// SECTION: SIMPLE-CHANNEL-UPSTREAM-HANDLER
@@ -125,7 +131,7 @@ implements PreprocessorAware, PostprocessorAware
 		resolveRoute(context);
 		invokePreprocessors(context.getRequest());
 		Object result = context.getAction().invoke(context.getRequest(), context.getResponse());
-		
+
 		if (result != null)
 		{
 			context.getResponse().setBody(result);
@@ -135,6 +141,31 @@ implements PreprocessorAware, PostprocessorAware
 		serializeResponse(context);
 		writeResponse(ctx, context);
 		notifySuccess(context);
+		notifyComplete(context);
+	}
+
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent event)
+	throws Exception
+	{
+		Throwable cause = event.getCause();
+		MessageContext context = (MessageContext) ctx.getAttachment();
+		Throwable rootCause = mapServiceException(cause);
+		
+		if (rootCause != null)
+		{
+			context.setHttpStatus(((ServiceException) rootCause).getHttpStatus());
+		}
+		else
+		{
+			rootCause = findRootCause(cause);
+			context.setHttpStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		context.setException(rootCause);
+		notifyException(context);
+		serializeResponse(context);
+		writeResponse(ctx, context);
 		notifyComplete(context);
 	}
 
@@ -187,8 +218,10 @@ implements PreprocessorAware, PostprocessorAware
      * @param request
      * @param response
      */
-    private void notifyException(Throwable exception, MessageContext context)
+    private void notifyException(MessageContext context)
     {
+    	Throwable exception = context.getException();
+
     	for (MessageObserver observer : messageObservers)
     	{
     		observer.onException(exception, context.getRequest(), context.getResponse());
@@ -281,41 +314,44 @@ implements PreprocessorAware, PostprocessorAware
 		}
     }
 
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent event)
-	throws Exception
+	/**
+	 * Uses the exceptionMap to map a Throwable to a ServiceException, if possible.
+	 * 
+	 * @param cause
+	 * @return Either a ServiceException or the root cause of the exception.
+	 */
+	private Throwable mapServiceException(Throwable cause)
+    {
+		if (ServiceException.class.isAssignableFrom(cause.getClass()))
+		{
+			return cause;
+		}
+			
+		return exceptionMap.getExceptionFor(cause);
+    }
+
+	/**
+	 * Traverses throwable.getCause() up the chain until the root cause is found.
+	 * 
+	 * @param throwable
+	 * @return the root cause.  Never null.
+	 */
+	private Throwable findRootCause(Throwable throwable)
 	{
-		Throwable throwable = event.getCause();
-		throwable.printStackTrace();
-		MessageContext context = (MessageContext) ctx.getAttachment();
-		ServiceException se = null;
-		Error error = null;
-
-		if (ServiceException.class.isAssignableFrom(throwable.getClass()))
+		Throwable cause = throwable;
+		Throwable rootCause = cause;
+		
+		while (cause != null)
 		{
-			se = (ServiceException) throwable;
+			cause = cause.getCause();
+			
+			if (cause != null)
+			{
+				rootCause = cause;
+			}
 		}
-		else
-		{
-			se = exceptionMap.getExceptionFor(throwable);
-		}
-
-		if (se != null)
-		{
-			context.getResponse().setResponseStatus(se.getHttpStatus());
-			error = new Error(se.getMessage());
-		}
-		else
-		{
-			context.getResponse().setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
-			error = new Error(throwable.getMessage());
-		}
-
-		context.getResponse().setBody(error);
-		notifyException(event.getCause(), context);
-		serializeResponse(context);
-		writeResponse(ctx, context);
-		notifyComplete(context);
+		
+		return rootCause;
 	}
 
 	/**
@@ -352,66 +388,11 @@ implements PreprocessorAware, PostprocessorAware
 			SerializationProcessor sp = context.getSerializationProcessor();
 			Request request = context.getRequest();
 			Response response = context.getResponse();
+			response.setBody(responseWrapperFactory.wrap(response));
 			response.setBody(serializeResult(response.getBody(), sp, request));
 		}
 
 		String contentType = (context.getContentType() == null ? TEXT_PLAIN : context.getContentType());
 		context.getResponse().addHeader(CONTENT_TYPE, contentType);
 	}
-
-//	private void yada()
-//	{
-//		PipelineContext context = createRequestContext(ctx, event);
-//		ctx.setAttachment(context);
-//		notifyReceived(context.getRequest(), context.getResponse());
-//
-//		try
-//		{
-//			invokePreprocessors(context.getRequest());
-//			Object result = context.getAction().invoke(context.getRequest(), context.getResponse());
-//			invokePostprocessors(context.getRequest(), context.getResponse());
-//			notifyComplete(request, response);
-//		}
-//		catch (ServiceException e)
-//		{
-//			e.printStackTrace();
-//			response.setResponseStatus(e.getHttpStatus());
-//			response.setException(e);
-//		}
-//		catch (Exception e)
-//		{
-//			e.printStackTrace();
-//			ServiceException se = exceptionMap.getExceptionFor(e);
-//			
-//			if (se != null)
-//			{
-//				response.setResponseStatus(se.getHttpStatus());
-//				response.setException(se);
-//			}
-//			else
-//			{
-//				response.setResponseStatus(INTERNAL_SERVER_ERROR);
-//				response.setException(e);
-//			}
-//		}
-//		finally
-//		{
-////			Result result = Result.fromResponse(response);
-//			// TODO: marshal the result into the response body.
-//
-//			if (response.hasException())
-//			{
-//				notifyException(response.getException(), request, response);
-//				writeError(ctx, request, response);
-//			}
-//			else
-//			{
-//				notifySuccess(request, response);
-//				// Set response and accept headers, if appropriate.
-//				writeResponse(ctx, request, response);
-//			}
-//
-//			notifyComplete(request, response);
-//		}
-//	}
 }

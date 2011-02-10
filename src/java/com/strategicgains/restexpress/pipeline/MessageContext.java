@@ -15,6 +15,8 @@
  */
 package com.strategicgains.restexpress.pipeline;
 
+import org.jboss.netty.handler.codec.http.HttpResponseStatus;
+
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.route.Action;
@@ -71,7 +73,6 @@ public class MessageContext
     public boolean shouldSerializeResponse()
     {
     	return getResponse().isSerialized();
-//    	return (hasAction() ? action.shouldSerializeResponse() : true);
     }
 
     public void setSerializationProcessor(SerializationProcessor processor)
@@ -88,5 +89,29 @@ public class MessageContext
     public String getContentType()
     {
     	return getResponse().getContentType();
+    }
+
+	/**
+     * @return
+     */
+    public Throwable getException()
+    {
+    	return getResponse().getException();
+    }
+
+	/**
+     * @param rootCause
+     */
+    public void setException(Throwable throwable)
+    {
+    	getResponse().setException(throwable);
+    }
+
+	/**
+     * @param httpStatus
+     */
+    public void setHttpStatus(HttpResponseStatus httpStatus)
+    {
+    	getResponse().setResponseStatus(httpStatus);
     }
 }

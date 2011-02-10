@@ -15,8 +15,7 @@
 */
 package com.strategicgains.restexpress.domain;
 
-import org.jboss.netty.handler.codec.http.HttpResponseStatus;
-
+import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.ServiceException;
 
 /**
@@ -25,7 +24,7 @@ import com.strategicgains.restexpress.exception.ServiceException;
  * @author toddf
  * @since Jan 11, 2011
  */
-public class Result
+public class JsendResult
 {
 	private static final String STATUS_SUCCESS = "success";
 	private static final String STATUS_ERROR = "error";
@@ -36,17 +35,7 @@ public class Result
 	private String message;
 	private Object data;
 
-	public Result(ServiceException exception)
-	{
-		this(exception.getHttpStatus().getCode(), STATUS_ERROR, exception.getMessage(), exception.getStackTrace().toString());
-	}
-	
-	public Result(Throwable throwable)
-	{
-		this(HttpResponseStatus.INTERNAL_SERVER_ERROR.getCode(), STATUS_FAIL, HttpResponseStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), throwable.getStackTrace().toString());
-	}
-
-	public Result(int httpResponseCode, String status, String errorMessage, Object data)
+	public JsendResult(int httpResponseCode, String status, String errorMessage, Object data)
 	{
 		super();
 		this.code = httpResponseCode;
@@ -78,9 +67,26 @@ public class Result
 	
 	// SECTION: FACTORY
 	
-	public static Result successResult(Object data)
+
+	public static JsendResult fromResponse(Response response)
 	{
-		HttpResponseStatus status = HttpResponseStatus.OK;
-		return new Result(status.getCode(), STATUS_SUCCESS, null, data);
+		if (!response.hasException())
+		{
+			return new JsendResult(response.getResponseStatus().getCode(), STATUS_SUCCESS, null, response.getBody());
+		}
+		
+		Throwable exception = response.getException();
+
+		if (isServiceException(exception))
+		{
+			return new JsendResult(response.getResponseStatus().getCode(), STATUS_ERROR, exception.getMessage(), null);
+		}
+		
+		return new JsendResult(response.getResponseStatus().getCode(), STATUS_FAIL, exception.getMessage(), null);
 	}
+
+	private static boolean isServiceException(Throwable exception)
+    {
+	    return ServiceException.class.isAssignableFrom(exception.getClass());
+    }
 }

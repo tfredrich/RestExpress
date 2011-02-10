@@ -38,6 +38,9 @@ import com.strategicgains.restexpress.pipeline.MessageObserver;
 import com.strategicgains.restexpress.pipeline.PipelineBuilder;
 import com.strategicgains.restexpress.pipeline.Postprocessor;
 import com.strategicgains.restexpress.pipeline.Preprocessor;
+import com.strategicgains.restexpress.response.JsendResponseWrapper;
+import com.strategicgains.restexpress.response.RawResponseWrapper;
+import com.strategicgains.restexpress.response.ResponseWrapperFactory;
 import com.strategicgains.restexpress.route.RouteDeclaration;
 import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.serialization.AliasingSerializationProcessor;
@@ -47,8 +50,8 @@ import com.strategicgains.restexpress.serialization.json.DefaultJsonProcessor;
 import com.strategicgains.restexpress.serialization.text.DefaultTxtProcessor;
 import com.strategicgains.restexpress.serialization.xml.DefaultXmlProcessor;
 import com.strategicgains.restexpress.util.Bootstraps;
-import com.strategicgains.restexpress.util.Resolver;
 import com.strategicgains.restexpress.util.DefaultShutdownHook;
+import com.strategicgains.restexpress.util.Resolver;
 
 /**
  * Primary entry point to create a RestExpress service. All that's required is a
@@ -73,6 +76,7 @@ public class RestExpress
 	private boolean useSystemOut;
 	private boolean useConsoleRoutes;
 	private String consoleUrlPrefix;
+	private ResponseWrapperFactory responseWrapperFactory;
 
 	Map<String, SerializationProcessor> serializationProcessors = new HashMap<String, SerializationProcessor>();
 	private List<MessageObserver> messageObservers = new ArrayList<MessageObserver>();
@@ -83,15 +87,16 @@ public class RestExpress
 
 	/**
 	 * Create a new RestExpress service. By default, RestExpress uses port 8081.
-	 * Supports JSON, and XML. And displays some messages on System.out. These
-	 * can be altered with the setPort(), noJson(), noXml(), noSystemOut() DSL
-	 * modifiers, as needed.
+	 * Supports JSON, and XML, providing JSEND-style wrapped responses. And
+	 * displays some messages on System.out. These can be altered with the setPort(),
+	 * noJson(), noXml(), noSystemOut(), and useRawResponses() DSL modifiers,
+	 * respectively, as needed.
 	 * 
 	 * <p/>
 	 * The default input and output format for messages is JSON. To change that,
 	 * use the setDefaultFormat(String) DSL modifier, passing the format to use
 	 * by default. Make sure there's a corresponding SerializationProcessor for
-	 * that format. The Format class has the basics.
+	 * that particular format. The Format class has the basics.
 	 * 
 	 * <p/>
 	 * This DSL was created as a thin veneer on Netty functionality. The bind()
@@ -116,6 +121,7 @@ public class RestExpress
 		supportXml();
 //		supportConsoleRoutes();
 		useSystemOut();
+		useWrappedResponses();
 	}
 
 	/**
@@ -455,21 +461,34 @@ public class RestExpress
 		this.consoleUrlPrefix = urlPrefix;
 		return this;
 	}
+	
+	public RestExpress noConsoleRoutes()
+	{
+		this.useConsoleRoutes = false;
+		this.consoleUrlPrefix = null;
+		return this;
+	}
 
 	public boolean shouldUseConsoleRoutes()
 	{
 		return useConsoleRoutes;
 	}
-	
-	public void noConsoleRoutes()
-	{
-		this.useConsoleRoutes = false;
-		this.consoleUrlPrefix = null;
-	}
 
 	public String getConsoleUrlPrefix()
 	{
 		return consoleUrlPrefix;
+	}
+
+	public RestExpress useWrappedResponses()
+	{
+		responseWrapperFactory = new JsendResponseWrapper();
+		return this;
+	}
+	
+	public RestExpress useRawResponses()
+	{
+		responseWrapperFactory = new RawResponseWrapper();
+		return this;
 	}
 
 	/**
@@ -486,6 +505,7 @@ public class RestExpress
 		// Set up the event pipeline factory.
 		DefaultRequestHandler requestHandler = new DefaultRequestHandler(
 		    createRouteResolver(), createSerializationResolver());
+		requestHandler.setResponseWrapperFactory(responseWrapperFactory);
 
 		// Add MessageObservers to the request handler here, if desired...
 		requestHandler.addMessageObserver(messageObservers.toArray(new MessageObserver[0]));
