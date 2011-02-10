@@ -16,7 +16,6 @@
 package com.strategicgains.restexpress.response;
 
 import com.strategicgains.restexpress.Response;
-import com.strategicgains.restexpress.domain.ErrorMessage;
 
 /**
  * Leaves the response alone, returning it without wrapping it at all, unless
@@ -37,6 +36,7 @@ implements ResponseWrapperFactory
 			return response.getBody();
 		}
 		
-		return new ErrorMessage(response.getException().getMessage());
+//		return new ErrorMessage(response.getException().getMessage());
+		return response.getException().getMessage();
 	}
 }
