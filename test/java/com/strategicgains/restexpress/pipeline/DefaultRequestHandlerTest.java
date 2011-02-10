@@ -116,6 +116,16 @@ public class DefaultRequestHandlerTest
 		assertEquals(0, observer.getExceptionCount());
 	}
 
+	@Test
+	public void shouldThrowExceptionOnInvalidUrl()
+	{
+		sendGetEvent("/xyzt.xml");
+		assertEquals(1, observer.getReceivedCount());
+		assertEquals(1, observer.getCompleteCount());
+		assertEquals(0, observer.getSuccessCount());
+		assertEquals(1, observer.getExceptionCount());
+	}
+
 	private void sendGetEvent(String path)
     {
 	    pl.sendUpstream(new UpstreamMessageEvent(
@@ -187,8 +197,7 @@ public class DefaultRequestHandlerTest
         }
 
 		@Override
-        protected void onException(Throwable exception, Request request,
-            Response response)
+        protected void onException(Throwable exception, Request request, Response response)
         {
 			++exceptionCount;
         }

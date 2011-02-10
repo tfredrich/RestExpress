@@ -32,12 +32,6 @@ public class RouteDeclarationTest
 		routeMapping = routeDeclarations.createRouteMapping();
 	}
 	
-//	@Test (expected=NullPointerException.class)
-//	public void shouldThrowNullPointerExceptionOnDoubleInitialization()
-//	{
-//		routeDeclarations.createRouteMapping();
-//	}
-
 	@Test
 	public void testGetRoutesForNullMethod()
 	{

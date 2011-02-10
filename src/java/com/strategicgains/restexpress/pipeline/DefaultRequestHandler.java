@@ -285,10 +285,35 @@ implements PreprocessorAware, PostprocessorAware
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent event)
 	throws Exception
 	{
-		event.getCause().printStackTrace();
+		Throwable throwable = event.getCause();
+		throwable.printStackTrace();
 		MessageContext context = (MessageContext) ctx.getAttachment();
+		ServiceException se = null;
+		Error error = null;
+
+		if (ServiceException.class.isAssignableFrom(throwable.getClass()))
+		{
+			se = (ServiceException) throwable;
+		}
+		else
+		{
+			se = exceptionMap.getExceptionFor(throwable);
+		}
+
+		if (se != null)
+		{
+			context.getResponse().setResponseStatus(se.getHttpStatus());
+			error = new Error(se.getMessage());
+		}
+		else
+		{
+			context.getResponse().setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+			error = new Error(throwable.getMessage());
+		}
+
+		context.getResponse().setBody(error);
 		notifyException(event.getCause(), context);
-		serializeException(event.getCause(), context);
+		serializeResponse(context);
 		writeResponse(ctx, context);
 		notifyComplete(context);
 	}
@@ -333,37 +358,6 @@ implements PreprocessorAware, PostprocessorAware
 		String contentType = (context.getContentType() == null ? TEXT_PLAIN : context.getContentType());
 		context.getResponse().addHeader(CONTENT_TYPE, contentType);
 	}
-
-	private void serializeException(Throwable throwable, MessageContext context)
-	{
-		ServiceException se = null;
-		Error error = null;
-
-		if (ServiceException.class.isAssignableFrom(throwable.getClass()))
-		{
-			se = (ServiceException) throwable;
-		}
-		else
-		{
-			se = exceptionMap.getExceptionFor(throwable);
-		}
-
-		if (se != null)
-		{
-			context.getResponse().setResponseStatus(se.getHttpStatus());
-			error = new Error(se.getMessage());
-		}
-		else
-		{
-			context.getResponse().setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
-			error = new Error(throwable.getMessage());
-		}
-		
-		context.getResponse().setBody(error);
-		serializeResponse(context);
-	}
-	
-	
 
 //	private void yada()
 //	{
