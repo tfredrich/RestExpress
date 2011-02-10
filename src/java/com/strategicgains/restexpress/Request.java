@@ -67,10 +67,12 @@ public class Request
 		this.httpRequest = request;
 		this.realMethod = request.getMethod();
 		this.urlRouter = routes;
-		handleMethodTunneling(addQueryStringParametersAsHeaders());
+		parseRequestedFormatToHeader(request);
+		handleMethodTunneling(addQueryStringParametersAsHeaders(request));
 		createCorrelationId();
 	}
-	
+
+
 	// SECTION: ACCESSORS/MUTATORS
 
 	/**
@@ -299,14 +301,31 @@ public class Request
 		
 		return header.trim().equalsIgnoreCase(value.trim());
 	}
+
+	/**
+     * @param request
+     */
+    private void parseRequestedFormatToHeader(HttpRequest request)
+    {
+    	String uri = getUri(request);
+		int queryDelimiterIndex = uri.indexOf('?');
+		String path = (queryDelimiterIndex > 0 ? uri.substring(0, queryDelimiterIndex) : uri);
+    	int formatDelimiterIndex = path.indexOf('.');
+    	String format = (formatDelimiterIndex > 0 ? path.substring(formatDelimiterIndex + 1) : null);
+    	
+    	if (format != null)
+    	{
+    		request.addHeader(FORMAT_HEADER_NAME, format);
+    	}
+    }
 	
 	/**
 	 * Add the query string parameters to the request as headers.
 	 */
-	private Map<String, String> addQueryStringParametersAsHeaders()
+	private Map<String, String> addQueryStringParametersAsHeaders(HttpRequest request)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
-		String uri = getUri(httpRequest);
+		String uri = getUri(request);
 		int x = uri.indexOf('?');
 		String queryString = (x >= 0 ? uri.substring(x + 1) : null);
 		
@@ -320,12 +339,12 @@ public class Request
 				
 				if (keyValue.length == 1)
 				{
-					httpRequest.addHeader(keyValue[0], "");
+					request.addHeader(keyValue[0], "");
 					parameters.put(keyValue[0], "");
 				}
 				else
 				{
-					httpRequest.addHeader(keyValue[0], keyValue[1]);
+					request.addHeader(keyValue[0], keyValue[1]);
 					parameters.put(keyValue[0], keyValue[1]);
 				}
 			}
