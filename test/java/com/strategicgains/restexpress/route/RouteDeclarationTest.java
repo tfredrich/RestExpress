@@ -19,34 +19,29 @@ import com.strategicgains.restexpress.Response;
  * @author toddf
  * @since Sep 27, 2010
  */
-public class RouteMappingTest
+public class RouteDeclarationTest
 {
     private static final String RAH_ROUTE_NAME = "POST_ONLY";
-	private static RouteMapping routes;
+	private static RouteDeclaration routeDeclarations;
+    private static RouteMapping routeMapping;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
 	{
-		routes = new Routes();
-		routes.initialize();
+		routeDeclarations = new Routes();
+		routeMapping = routeDeclarations.createRouteMapping();
 	}
 	
-	@Test (expected=NullPointerException.class)
-	public void shouldThrowNullPointerExceptionOnDoubleInitialization()
-	{
-		routes.initialize();
-	}
-
 	@Test
 	public void testGetRoutesForNullMethod()
 	{
-		routes.getRoutesFor(null);
+		routeMapping.getRoutesFor(null);
 	}
 	
 	@Test
 	public void testGetRoutesForGetMethod()
 	{
-		List<Route> r = routes.getRoutesFor(HttpMethod.GET);
+		List<Route> r = routeMapping.getRoutesFor(HttpMethod.GET);
 		assertNotNull(r);
 		assertFalse(r.isEmpty());
 		assertEquals(4, r.size());
@@ -55,7 +50,7 @@ public class RouteMappingTest
 	@Test
 	public void testGetRoutesForPutMethod()
 	{
-		List<Route> r = routes.getRoutesFor(HttpMethod.PUT);
+		List<Route> r = routeMapping.getRoutesFor(HttpMethod.PUT);
 		assertNotNull(r);
 		assertFalse(r.isEmpty());
 		assertEquals(1, r.size());
@@ -64,7 +59,7 @@ public class RouteMappingTest
 	@Test
 	public void testGetRoutesForPostMethod()
 	{
-		List<Route> r = routes.getRoutesFor(HttpMethod.POST);
+		List<Route> r = routeMapping.getRoutesFor(HttpMethod.POST);
 		assertNotNull(r);
 		assertFalse(r.isEmpty());
 		assertEquals(3, r.size());
@@ -73,7 +68,7 @@ public class RouteMappingTest
 	@Test
 	public void testGetRoutesForDeleteMethod()
 	{
-		List<Route> r = routes.getRoutesFor(HttpMethod.DELETE);
+		List<Route> r = routeMapping.getRoutesFor(HttpMethod.DELETE);
 		assertNotNull(r);
 		assertFalse(r.isEmpty());
 		assertEquals(1, r.size());
@@ -82,7 +77,7 @@ public class RouteMappingTest
 	@Test
 	public void testGetRoutesForHeadMethod()
 	{
-		List<Route> r = routes.getRoutesFor(HttpMethod.HEAD);
+		List<Route> r = routeMapping.getRoutesFor(HttpMethod.HEAD);
 		assertNotNull(r);
 		assertTrue(r.isEmpty());
 	}
@@ -90,21 +85,21 @@ public class RouteMappingTest
 	@Test
 	public void testGetNullNamedRoute()
 	{
-		Route r = routes.getNamedRoute(null, HttpMethod.GET);
+		Route r = routeMapping.getNamedRoute(null, HttpMethod.GET);
 		assertNull(r);
 	}
 
 	@Test
 	public void shouldReturnNullForNamedRouteWithWrongMethod()
 	{
-		Route r = routes.getNamedRoute(RAH_ROUTE_NAME, HttpMethod.GET);
+		Route r = routeMapping.getNamedRoute(RAH_ROUTE_NAME, HttpMethod.GET);
 		assertNull(r);
 	}
 
 	@Test
 	public void shouldGetReplyToNamedRoute()
 	{
-		Route r = routes.getNamedRoute(RAH_ROUTE_NAME, HttpMethod.POST);
+		Route r = routeMapping.getNamedRoute(RAH_ROUTE_NAME, HttpMethod.POST);
 		assertNotNull(r);
 		assertEquals(RAH_ROUTE_NAME, r.getName());
 		assertEquals("createRah", r.getAction().getName());
@@ -113,7 +108,7 @@ public class RouteMappingTest
 	@Test
 	public void shouldGetCRUDReadNamedRoute()
 	{
-		Route r = routes.getNamedRoute("CRUD_ROUTE", HttpMethod.GET);
+		Route r = routeMapping.getNamedRoute("CRUD_ROUTE", HttpMethod.GET);
 		assertNotNull(r);
 		assertEquals("CRUD_ROUTE", r.getName());
 		assertEquals("read", r.getAction().getName());
@@ -122,7 +117,7 @@ public class RouteMappingTest
 	@Test
 	public void shouldGetCRUDCreateNamedRoute()
 	{
-		Route r = routes.getNamedRoute("CRUD_ROUTE", HttpMethod.POST);
+		Route r = routeMapping.getNamedRoute("CRUD_ROUTE", HttpMethod.POST);
 		assertNotNull(r);
 		assertEquals("CRUD_ROUTE", r.getName());
 		assertEquals("create", r.getAction().getName());
@@ -131,7 +126,7 @@ public class RouteMappingTest
 	@Test
 	public void shouldGetCRUDUpdateNamedRoute()
 	{
-		Route r = routes.getNamedRoute("CRUD_ROUTE", HttpMethod.PUT);
+		Route r = routeMapping.getNamedRoute("CRUD_ROUTE", HttpMethod.PUT);
 		assertNotNull(r);
 		assertEquals("CRUD_ROUTE", r.getName());
 		assertEquals("update", r.getAction().getName());
@@ -140,14 +135,14 @@ public class RouteMappingTest
 	@Test
 	public void shouldGetCRUDDeleteNamedRoute()
 	{
-		Route r = routes.getNamedRoute("CRUD_ROUTE", HttpMethod.DELETE);
+		Route r = routeMapping.getNamedRoute("CRUD_ROUTE", HttpMethod.DELETE);
 		assertNotNull(r);
 		assertEquals("CRUD_ROUTE", r.getName());
 		assertEquals("delete", r.getAction().getName());
 	}
 	
 	private static class Routes
-	extends RouteMapping
+	extends RouteDeclaration
 	{
 		private InnerService service;
 		

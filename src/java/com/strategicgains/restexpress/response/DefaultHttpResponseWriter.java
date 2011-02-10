@@ -15,9 +15,9 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 
+import com.strategicgains.restexpress.ContentType;
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
-import com.strategicgains.restexpress.RestExpress;
 
 /**
  * @author toddf
@@ -29,7 +29,7 @@ implements HttpResponseWriter
 	@Override
 	public void write(ChannelHandlerContext ctx, Request request, Response response)
 	{
-		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getStatus());
+		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getResponseStatus());
 		addHeaders(response, httpResponse);
 		
 		if (response.hasBody())
@@ -37,7 +37,7 @@ implements HttpResponseWriter
 			StringBuilder builder = new StringBuilder(response.getBody().toString());
 			builder.append("\r\n");
 
-			httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), Charset.forName(RestExpress.ENCODING)));
+			httpResponse.setContent(ChannelBuffers.copiedBuffer(builder.toString(), Charset.forName(ContentType.ENCODING)));
 		}
 
 		if (request.isKeepAlive())

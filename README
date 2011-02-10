@@ -2,9 +2,9 @@ RestExpress is a thin wrapper on the JBOSS Netty HTTP stack to provide a simple 
 RESTful services in Java.
 
 Born to be simple, only three things are required to wire up a service:
-1) The main class which looks just like the JBOSS Netty examples.
-2) A RouteMapping extender (much like routes.rb in a Rails app), which contains DSL for the
-   supported URLs and HTTP methods of the service(s).
+1) The main class which utilizes the RestExpress DSL to create a server instance.
+2) A RouteDeclaration extender (much like routes.rb in a Rails app), which contains DSL for the
+   supported URLs and HTTP methods of the service(s) in its defineRoutes() method.
 3) Service implementation(s), which is/are a simple POJO--no interface or super class implementation.
 
 See: examples/kickstart directory to get started (there is a README there).
@@ -28,6 +28,25 @@ before returning to set the response HTTP status code to 204 (no content).
 On successful creation, call response.setResponseCreated() to set the returning HTTP status code to 201.
 
 Change History/Release Notes:
+===================================================================================================
+Release 0.6.0
+* Routes now defined in descendant of RouteDeclaration.
+* Refactored everything into RestExpress object, using builder pattern for configuration.
+* Implemented RestExpress DSL to declare REST server in main().
+* Added supported formats and default format to RouteBuilder.
+* Added JSEND-style response wrapping (now default).  Call RestExpress.useWrappedResponses() to use.
+* Add ability to support raw response return.  Call RestExpress.useRawResponses() to use.
+* Implemented /console/routes.{format} route which return metadata about the routes in this
+  service suite. To use, call RestExpress.supportConsoleRoutes().
+* Exceptions occurring now return in the requested format with the message wrapped and using the
+  appropriate mime type (e.g. application/json or application/xml).
+* Kickstart application has complete build with 'dist' target that builds a runnable jar file and
+  'run' target that will run the services from the command line.
+* Kickstart application now handles JVM shutdown correctly using JVM shutdown hooks.  The method
+  RestExpress.awaitShutdown() uses the DefaultShutdownHook class.  RestExpress.shutdown() allows
+  programs to use their own shutdown hooks, calling RestExpress.shutdown() upon shudown to release
+  all resource.
+
 ===================================================================================================
 Release 0.5.6
 * Upgraded to Netty 3.2.3 final.

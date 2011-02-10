@@ -12,20 +12,23 @@
 	<property name="dir.dist" value="${basedir}/dist"/>
 	<property name="dir.test.results" value="${dir.build}/junit"/>
 	<property name="dir.test.report" value="${dir.test.results}/report"/>
+	<property name="project.name" value="${ant.project.name}-${version}"/>
 
-	<path id="compile.classpath">
-		<pathelement location="${dir.compile}"/>
-		<fileset dir="${dir.lib}">
-			<include name="**/*.jar"/>
-		</fileset>
-    </path>
-
-	<path id="runtime.classpath">
-		<pathelement location="${dir.compile}"/>
+	<path id="lib.classpath">
 		<fileset dir="${dir.lib}">
 			<include name="**/*.jar"/>
 			<exclude name="**/sources/*"/>
 		</fileset>
+	</path>
+
+	<path id="compile.classpath">
+		<pathelement location="${dir.compile}"/>
+		<path refid="lib.classpath"/>
+    </path>
+
+	<path id="runtime.classpath">
+		<pathelement location="${dir.compile}"/>
+		<path refid="lib.classpath"/>
     </path>
 
 	<path id="unit_test.classpath">
@@ -115,12 +118,38 @@
           target: release
          ====================================================================== -->
     <target name="release" depends="_init, compile" description="Release a distro">
-		<jar destfile="${dir.dist}/${ant.project.name}-${version}.jar">
+		<manifestclasspath property="jar.classpath" jarfile="${dir.dist}/${ant.project.name}deps.jar">
+			<classpath refid="lib.classpath" />
+		</manifestclasspath>
+		<jar destfile="${dir.dist}/${project.name}.jar">
+			<manifest>
+				<attribute name="Main-Class" value="com.kickstart.Main"/>
+				<attribute name="Class-Path" value="${jar.classpath}"/>
+			</manifest>
     		<fileset dir="${dir.compile}"/>
     	</jar>
-		<jar destfile="${dir.dist}/${ant.project.name}-${version}-src.jar">
+		<jar destfile="${dir.dist}/${project.name}-src.jar">
     		<fileset dir="${dir.src.java}"/>
     	</jar>
+    	<zip destfile="${dir.dist}/${project.name}.zip">
+    		<zipfileset dir="${dir.dist}" prefix="${project.name}/bin" includes="${project.name}.jar"/>
+			<zipfileset dir="${dir.lib}" prefix="${project.name}/lib">
+				<exclude name="sources/**"/>
+				<include name="*.jar"/>
+			</zipfileset>
+    	</zip>
+    </target>
+	
+	<!-- ====================================================================== 
+          target: run              
+         ====================================================================== -->
+    <target name="run" depends="_init, compile" description="Run the project from the command line">
+        <java fork="true" classname="com.kickstart.Main">
+            <classpath>
+                    <path refid="runtime.classpath"/>
+            </classpath>
+            <!-- arg value="${runtime.environment}"/ -->
+        </java>
     </target>
 
 </project>

@@ -1,5 +1,5 @@
 /*
-    Copyright 2010, Strategic Gains, Inc.
+    Copyright 2011, Strategic Gains, Inc.
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -13,21 +13,28 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-package com.strategicgains.restexpress.serialization.text;
+package com.strategicgains.restexpress.util;
 
-import com.strategicgains.restexpress.ContentType;
-import com.strategicgains.restexpress.serialization.Serializer;
+import com.strategicgains.restexpress.RestExpress;
 
 /**
  * @author toddf
- * @since Dec 22, 2010
+ * @since Feb 1, 2011
  */
-public abstract class TextSerializer
-implements Serializer
+public class DefaultShutdownHook
+extends Thread
 {
-	@Override
-	public String getResultingContentType()
+	private RestExpress server;
+	
+	public DefaultShutdownHook(RestExpress server)
 	{
-		return ContentType.TEXT_PLAIN;
+		super();
+		this.server = server;
+	}
+
+	public void run()
+	{
+		System.out.println(server.getName() + " server detected JVM shutdown...");
+		server.shutdown();
 	}
 }

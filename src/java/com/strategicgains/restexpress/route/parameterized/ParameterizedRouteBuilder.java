@@ -16,6 +16,7 @@
 package com.strategicgains.restexpress.route.parameterized;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
@@ -42,7 +43,8 @@ extends RouteBuilder
 
     @Override
     protected Route newRoute(String pattern, Object controller, Method action,
-        HttpMethod method, boolean shouldSerializeResponse, String name)
+        HttpMethod method, boolean shouldSerializeResponse, String name,
+        List<String> supportedFormats, String defaultFormat)
     {
     	return new ParameterizedRoute(pattern, controller, action, method, shouldSerializeResponse, name);
     }

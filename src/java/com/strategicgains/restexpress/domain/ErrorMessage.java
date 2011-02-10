@@ -12,46 +12,31 @@
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
-*/
+ */
 package com.strategicgains.restexpress.domain;
-
-import com.strategicgains.restexpress.exception.ServiceException;
 
 /**
  * @author toddf
- * @since Jan 11, 2011
+ * @since Feb 8, 2011
  */
-public class Result
+public class ErrorMessage
 {
-	private int responseCode;
 	private String message;
-	private Object data;
 
-	public Result(ServiceException exception)
-	{
-		this(exception.getHttpStatus().getCode(), exception.getHttpStatus().getReasonPhrase(), null);
-	}
-
-	public Result(int responseCode, String message, Object data)
+	public ErrorMessage(String message)
 	{
 		super();
-		this.responseCode = responseCode;
 		this.message = message;
-		this.data = data;
 	}
 
-	public int getResponseCode()
-    {
-    	return responseCode;
-    }
-
 	public String getMessage()
-    {
-    	return message;
-    }
-
-	public Object getData()
-    {
-    	return data;
-    }
+	{
+		return message;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getMessage();
+	}
 }

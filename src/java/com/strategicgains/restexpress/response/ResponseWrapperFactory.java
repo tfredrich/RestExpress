@@ -1,5 +1,5 @@
 /*
-    Copyright 2010, Strategic Gains, Inc.
+    Copyright 2011, Strategic Gains, Inc.
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -13,21 +13,15 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-package com.strategicgains.restexpress.serialization.text;
+package com.strategicgains.restexpress.response;
 
-import com.strategicgains.restexpress.ContentType;
-import com.strategicgains.restexpress.serialization.Serializer;
+import com.strategicgains.restexpress.Response;
 
 /**
  * @author toddf
- * @since Dec 22, 2010
+ * @since Feb 10, 2011
  */
-public abstract class TextSerializer
-implements Serializer
+public interface ResponseWrapperFactory
 {
-	@Override
-	public String getResultingContentType()
-	{
-		return ContentType.TEXT_PLAIN;
-	}
+	public Object wrap(Response response);
 }
