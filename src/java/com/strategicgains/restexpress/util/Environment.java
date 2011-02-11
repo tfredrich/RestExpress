@@ -23,11 +23,20 @@ import java.util.Properties;
 
 /**
  * @author kevwil
+ * @author toddf
  * @since Dec 16, 2010
  */
 public abstract class Environment
 {
-//	private static final Logger log = LoggerFactory.getLogger(Environment.class);
+	private static final String ENVIRONMENT_DIR = "config/";
+	private static final String PROPERTIES_FILENAME = "/environment.properties";
+	private static final String DEFAULT_ENVIRONMENT = "dev";
+
+	public static <T extends Environment> T fromDefault(Class<T> type)
+	throws FileNotFoundException, IOException
+	{
+		return from(DEFAULT_ENVIRONMENT, type);
+	}
 
 	public static <T extends Environment> T from(String environmentName, Class<T> type)
 	throws FileNotFoundException, IOException
@@ -36,17 +45,17 @@ public abstract class Environment
 
 		if (environmentName != null)
 		{
-			instance.load("config/" + environmentName + "/environment.properties");
+			instance.load(ENVIRONMENT_DIR + environmentName + PROPERTIES_FILENAME);
 		}
 
 		return instance;
 	}
 
-	protected void load(String environmentFile)
+	protected void load(String filename)
 	throws FileNotFoundException, IOException
 	{
 //		log.debug("loading environment properties from " + environmentFile);
-		Properties p = readProperties(environmentFile);
+		Properties p = readProperties(filename);
 		fillValues(p);
 	}
 	
