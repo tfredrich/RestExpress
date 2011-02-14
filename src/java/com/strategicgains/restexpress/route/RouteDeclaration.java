@@ -87,7 +87,7 @@ public abstract class RouteDeclaration
 			}
 		}
 
-		routeBuilders.clear();
+		unDefineRoutes();
 		return results;
 	}
 
@@ -105,15 +105,19 @@ public abstract class RouteDeclaration
     public List<RouteMetadata> asMetadata()
     {
     	defineRoutes();
-    	List<RouteMetadata> routes = new ArrayList<RouteMetadata>();
+    	List<RouteMetadata> metadata = new ArrayList<RouteMetadata>();
     	
     	for (RouteBuilder builder : routeBuilders)
     	{
-    		builder.build();
-    		routes.add(builder.asMetadata());
+    		metadata.add(builder.asMetadata());
     	}
 
-    	routeBuilders.clear();
-    	return routes;
+    	unDefineRoutes();
+    	return metadata;
+    }
+
+	private void unDefineRoutes()
+    {
+	    routeBuilders.clear();
     }
 }

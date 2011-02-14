@@ -123,6 +123,11 @@ public abstract class Route
 	{
 		return urlMatcher.match(url);
 	}
+	
+	public List<String> getUrlParameters()
+	{
+		return urlMatcher.getParameterNames();
+	}
 
 	public Object invoke(Request request, Response response)
 	{

@@ -47,6 +47,8 @@ Release 0.6.0.1
              default (JSON).  Now serializes to the requested format, if applicable.
 * Issue #11 - Feature enhancement for Kickstart.  Now utilizes Rails-inspired configuration
               environements (e.g. dev, testing, prod, etc.).
+* Issue #12 - Parse URL parameter names out of the URL pattern and include them in the route
+              metadata output.
 
 ===================================================================================================
 Release 0.6.0
