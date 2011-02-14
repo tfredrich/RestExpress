@@ -123,7 +123,7 @@
     		<fileset dir="${dir.src.java}"/>
     	</jar>
 		<zip destfile="${dir.dist}/${ant.project.name}-${version}-kickstart.zip">
-    		<zipfileset dir="${dir.src.kickstart}" prefix="kickstart"/>
+    		<zipfileset dir="${dir.src.kickstart}" excludes=".gitignore" prefix="kickstart"/>
     		<zipfileset dir="${dir.lib}" prefix="kickstart/lib"/>
     		<zipfileset dir="${dir.dist}" includes="*.jar" excludes="*-src.jar" prefix="kickstart/lib"/>
     	</zip>
