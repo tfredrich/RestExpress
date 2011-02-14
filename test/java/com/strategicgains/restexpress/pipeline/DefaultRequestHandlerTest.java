@@ -176,8 +176,11 @@ public class DefaultRequestHandlerTest
 		assertEquals(0, observer.getSuccessCount());
 		assertEquals(1, observer.getExceptionCount());
 //		System.out.println(httpResponse.toString());
-		// TODO should return response in XML
-		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Unresolvable URL: http://null/xyzt.xml\"}", httpResponse.toString());
+		assertTrue(httpResponse.toString().startsWith("<response>"));
+		assertTrue(httpResponse.toString().contains("<code>404</code>"));
+		assertTrue(httpResponse.toString().contains("<status>error</status>"));
+		assertTrue(httpResponse.toString().contains("<message>Unresolvable URL: http://null/xyzt.xml</message>"));
+		assertTrue(httpResponse.toString().endsWith("</response>"));
 	}
 
 	@Test

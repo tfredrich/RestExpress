@@ -152,7 +152,7 @@ implements PreprocessorAware, PostprocessorAware
 		MessageContext context = (MessageContext) ctx.getAttachment();
 		Throwable rootCause = mapServiceException(cause);
 		
-		if (rootCause != null)
+		if (rootCause != null) // is a ServiceException
 		{
 			context.setHttpStatus(((ServiceException) rootCause).getHttpStatus());
 		}

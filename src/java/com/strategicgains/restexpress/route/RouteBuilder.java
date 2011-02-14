@@ -19,6 +19,7 @@ import org.jboss.netty.handler.codec.http.HttpMethod;
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.domain.console.RouteMetadata;
+import com.strategicgains.restexpress.domain.console.UriMetadata;
 import com.strategicgains.restexpress.exception.ConfigurationException;
 
 /**
@@ -217,19 +218,27 @@ public abstract class RouteBuilder
 	
 	public RouteMetadata asMetadata()
 	{
-		RouteMetadata route = new RouteMetadata();
-		route.setName(name);
-		route.setUri(uri);
-		route.setSerialized(shouldSerializeResponse);
-		route.setDefaultFormat(defaultFormat);
-		route.addAllSupportedFormats(supportedFormats);
+		RouteMetadata metadata = new RouteMetadata();
+		metadata.setName(name);
+		metadata.setSerialized(shouldSerializeResponse);
+		metadata.setDefaultFormat(defaultFormat);
+		metadata.addAllSupportedFormats(supportedFormats);
 		
 		for (HttpMethod method : methods)
 		{
-			route.addMethod(method.getName());
+			metadata.addMethod(method.getName());
+		}
+		
+		UriMetadata uriMeta = new UriMetadata(uri);
+		List<Route> routes = build();
+
+		for (Route route : routes)
+		{
+			uriMeta.addAllParameters(route.getUrlParameters());
 		}
 
-		return route;
+		metadata.setUri(uriMeta);
+		return metadata;
 	}
 
 	

@@ -26,7 +26,7 @@ import java.util.List;
 public class RouteMetadata
 {
 	private String name;
-	private String uri;
+	private UriMetadata uri;
 	private List<String> supportedFormats;
 	private String defaultFormat;
 	private List<String> methods = new ArrayList<String>();
@@ -42,12 +42,12 @@ public class RouteMetadata
 		this.name = name;
 	}
 
-	public String getUri()
+	public UriMetadata getUri()
 	{
 		return uri;
 	}
 
-	public void setUri(String uri)
+	public void setUri(UriMetadata uri)
 	{
 		this.uri = uri;
 	}

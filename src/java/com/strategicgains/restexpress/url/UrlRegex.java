@@ -16,6 +16,7 @@
 package com.strategicgains.restexpress.url;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,6 +52,12 @@ implements UrlMatcher
 	{
 		this.pattern = pattern;
 	}
+
+    @Override
+    public List<String> getParameterNames()
+    {
+	    return null;
+    }
 
 	@Override
 	public boolean matches(String url)

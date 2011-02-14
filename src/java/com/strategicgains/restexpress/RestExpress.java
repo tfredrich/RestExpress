@@ -64,8 +64,8 @@ public class RestExpress
 {
 	private static final ChannelGroup allChannels = new DefaultChannelGroup("RestExpress");
 
-	private static final int DEFAULT_PORT = 8081;
-	private static final String DEFAULT_NAME = "RestExpress";
+	public static final int DEFAULT_PORT = 8081;
+	public static final String DEFAULT_NAME = "RestExpress";
 	private static final String DEFAULT_CONSOLE_PREFIX = "/console";
 
 	private ServerBootstrap bootstrap;
@@ -592,7 +592,7 @@ public class RestExpress
 		ConsoleController controller = new ConsoleController(metadata);
 		routes.uri(prefix + "/routes.{format}", controller)
 			.action("getRoutes", HttpMethod.GET);
-		// routes.uri(prefix + "/console.html", controller)
+		// routes.uri(prefix + "/index.html", controller)
 		// .action("getConsole", HttpMethod.GET)
 		// .format(Format.HTML)
 		// .noSerialization();
