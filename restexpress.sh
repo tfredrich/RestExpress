@@ -15,7 +15,8 @@ cp $RESTEXPRESS_HOME/.project $1
 cd $1
 
 # Update build.xml & Eclipse project
-sed -i .orig s/[Kk]ick[Ss]tart/$1/g build.xml
+sed -i .orig s/KickStart/$1/g build.xml
+sed -i .orig s/kickstart/$NAME_LWR/g build.xml
 sed -i .orig s/[Kk]ick[Ss]tart/$1/g .project
 
 # Rename the 'kickstart' directories
