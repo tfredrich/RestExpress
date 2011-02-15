@@ -1,6 +1,14 @@
 #! /bin/bash
 #
-
+# This script utilizes the RestExpress kickstart application
+# to create a new RestExpress project that has your own name.
+#
+# To leverage this tool:
+# 1) Unzip the latest RestExpress Kickstart release to a known location (e.g. ~/local/RestExpress/).
+# 2) Set the RESTEXPRESS_HOME environment variable.  Not needed if you chose ~/local/RestExpress/.
+# 3) Copy the RestExpress/restexpress.sh (this file) into a location on your path (e.g. ~/bin/).
+# 4) Run it:  ~/bin/restexpress.sh <project name>  (e.g. restexpress.sh MyCoolProject)
+#
 if [ -z "$RESTEXPRESS_HOME" ]; then
 	RESTEXPRESS_HOME=~/local/RestExpress
 fi
