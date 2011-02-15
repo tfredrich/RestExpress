@@ -23,16 +23,16 @@ cp $RESTEXPRESS_HOME/.project $1
 cd $1
 
 # Update build.xml & Eclipse project
-sed -i .orig s/KickStart/$1/g build.xml
-sed -i .orig s/kickstart/$NAME_LWR/g build.xml
-sed -i .orig s/[Kk]ick[Ss]tart/$1/g .project
+sed -i.orig s/KickStart/$1/g build.xml
+sed -i.orig s/kickstart/$NAME_LWR/g build.xml
+sed -i.orig s/[Kk]ick[Ss]tart/$1/g .project
 
 # Rename the 'kickstart' directories
 mv src/java/com/kickstart/ src/java/com/$NAME_LWR/
 # packages
-find src/java/com/$NAME_LWR -name '*.java' | xargs grep -l kickstart | xargs sed -i .orig s/kickstart/$NAME_LWR/g
+find src/java/com/$NAME_LWR -name '*.java' | xargs grep -l kickstart | xargs sed -i.orig s/kickstart/$NAME_LWR/g
 # class names
-find src/java/com/$NAME_LWR -name '*.java' | xargs grep -li kickstart | xargs sed -i .orig s/[Kk]ick[Ss]tart/$1/g
+find src/java/com/$NAME_LWR -name '*.java' | xargs grep -li kickstart | xargs sed -i.orig s/[Kk]ick[Ss]tart/$1/g
 # file names
 mv src/java/com/$NAME_LWR/KickstartEnvironment.java src/java/com/$NAME_LWR/$1Environment.java
 mv src/java/com/$NAME_LWR/service/KickStartController.java src/java/com/$NAME_LWR/service/$1Controller.java
