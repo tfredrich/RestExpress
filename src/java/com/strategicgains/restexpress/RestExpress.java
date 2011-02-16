@@ -33,6 +33,8 @@ import org.jboss.netty.handler.codec.http.HttpMethod;
 import com.strategicgains.restexpress.controller.ConsoleController;
 import com.strategicgains.restexpress.domain.console.RouteMetadata;
 import com.strategicgains.restexpress.domain.console.ServerMetadata;
+import com.strategicgains.restexpress.exception.ExceptionMapping;
+import com.strategicgains.restexpress.exception.ServiceException;
 import com.strategicgains.restexpress.pipeline.DefaultRequestHandler;
 import com.strategicgains.restexpress.pipeline.MessageObserver;
 import com.strategicgains.restexpress.pipeline.PipelineBuilder;
@@ -84,6 +86,7 @@ public class RestExpress
 	private List<Postprocessor> postprocessors = new ArrayList<Postprocessor>();
 	private Map<String, Class<?>> xmlAliases = new HashMap<String, Class<?>>();
 	private Resolver<SerializationProcessor> serializationResolver;
+	private ExceptionMapping exceptionMap = new ExceptionMapping();
 
 	/**
 	 * Create a new RestExpress service. By default, RestExpress uses port 8081.
@@ -490,6 +493,18 @@ public class RestExpress
 		responseWrapperFactory = new RawResponseWrapper();
 		return this;
 	}
+	
+	public <T extends Exception, U extends ServiceException> RestExpress mapException(Class<T> from, Class<U> to)
+	{
+		exceptionMap.map(from, to);
+		return this;
+	}
+
+	public RestExpress setExceptionMap(ExceptionMapping mapping)
+	{
+		this.exceptionMap = mapping;
+		return this;
+	}
 
 	/**
 	 * The last call in the building of a RestExpress server, bind() causes
@@ -509,6 +524,8 @@ public class RestExpress
 
 		// Add MessageObservers to the request handler here, if desired...
 		requestHandler.addMessageObserver(messageObservers.toArray(new MessageObserver[0]));
+		
+		requestHandler.setExceptionMap(exceptionMap);
 
 		// Add pre/post processors to the request handler here...
 		addPreprocessors(requestHandler);
