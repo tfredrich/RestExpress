@@ -6,9 +6,11 @@ import java.io.IOException;
 import com.blogging.serialization.BlogJsonProcessor;
 import com.blogging.serialization.BlogXmlProcessor;
 import com.strategicgains.repoexpress.exception.ItemNotFoundException;
+import com.strategicgains.repoexpress.exception.DuplicateItemException;
 import com.strategicgains.restexpress.Format;
 import com.strategicgains.restexpress.RestExpress;
 import com.strategicgains.restexpress.exception.BadRequestException;
+import com.strategicgains.restexpress.exception.ConflictException;
 import com.strategicgains.restexpress.exception.NotFoundException;
 import com.strategicgains.restexpress.pipeline.SimpleMessageObserver;
 import com.strategicgains.restexpress.util.Environment;
@@ -49,6 +51,7 @@ public class Main
     {
     	server
     	.mapException(ItemNotFoundException.class, NotFoundException.class)
+    	.mapException(DuplicateItemException.class, ConflictException.class)
     	.mapException(ValidationException.class, BadRequestException.class);
     }
 
