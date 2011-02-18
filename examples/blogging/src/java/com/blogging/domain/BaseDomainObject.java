@@ -6,12 +6,12 @@ import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
-import com.strategicgains.repoexpress.domain.TimestampedIndentifiable;
+import com.strategicgains.repoexpress.domain.TimestampedIdentifiable;
 import com.strategicgains.syntaxe.AbstractValidatable;
 
 public abstract class BaseDomainObject
 extends AbstractValidatable
-implements TimestampedIndentifiable
+implements TimestampedIdentifiable
 {
 	@Id
 	private ObjectId id;

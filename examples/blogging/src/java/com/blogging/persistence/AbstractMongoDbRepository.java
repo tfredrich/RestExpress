@@ -17,9 +17,8 @@ package com.blogging.persistence;
 
 import java.util.List;
 
-import com.blogging.domain.BaseDomainObject;
-import com.blogging.domain.Blog;
 import com.mongodb.ServerAddress;
+import com.strategicgains.repoexpress.domain.TimestampedIdentifiable;
 import com.strategicgains.repoexpress.event.DefaultTimestampedIdentifiableRepositoryObserver;
 import com.strategicgains.repoexpress.mongodb.MongodbRepository;
 import com.strategicgains.repoexpress.mongodb.ObjectIdAdapter;
@@ -28,7 +27,7 @@ import com.strategicgains.repoexpress.mongodb.ObjectIdAdapter;
  * @author toddf
  * @since Feb 17, 2011
  */
-public abstract class AbstractMongoDbRepository<T extends BaseDomainObject>
+public abstract class AbstractMongoDbRepository<T extends TimestampedIdentifiable>
 extends MongodbRepository<T>
 {
 	private static final String DATABASE_NAME = "blogging";
@@ -41,9 +40,8 @@ extends MongodbRepository<T>
 	    setIdentifierAdapter(new ObjectIdAdapter());
     }
 
-    private void initializeObservers()
+    protected void initializeObservers()
     {
-    	addObserver(new DefaultTimestampedIdentifiableRepositoryObserver<Blog>());
+		addObserver(new DefaultTimestampedIdentifiableRepositoryObserver<T>());
     }
-
 }
