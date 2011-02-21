@@ -150,6 +150,28 @@ public class Request
 		}
 	}
 
+	/**
+	 * Attempts to deserialize the request body into an instance of the given type.
+	 * If the serialization process returns null, throws BadResquestExcption using
+	 * the message.
+	 * 
+	 * @param type the resulting type.
+	 * @param message the message for the BadRequestException if serialization returns null.
+	 * @return an instance of the requested type.
+	 * @throws BadRequestException if serialization fails.
+	 */
+	public <T> T getBodyAs(Class<T> type, String message)
+	{
+		T instance = getBodyAs(type);
+
+		if (instance == null)
+		{
+			throw new BadRequestException(message);
+		}
+		
+		return instance;
+	}
+
 	public SerializationProcessor getSerializationProcessor()
     {
     	return serializationProcessor;
@@ -173,6 +195,18 @@ public class Request
 	public String getHeader(String name)
 	{
 		return httpRequest.getHeader(name);
+	}
+
+	public String getHeader(String name, String message)
+	{
+		String value = getHeader(name);
+		
+		if (value == null)
+		{
+			throw new BadRequestException(message);
+		}
+
+		return value;
 	}
 	
 	public void addHeader(String name, String value)

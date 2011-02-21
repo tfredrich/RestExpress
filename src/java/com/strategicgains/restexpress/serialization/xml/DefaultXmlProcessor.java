@@ -26,10 +26,11 @@ import org.jboss.netty.buffer.ChannelBufferInputStream;
 
 import com.strategicgains.restexpress.ContentType;
 import com.strategicgains.restexpress.domain.ErrorMessage;
-import com.strategicgains.restexpress.domain.Link;
 import com.strategicgains.restexpress.domain.JsendResult;
+import com.strategicgains.restexpress.domain.Link;
 import com.strategicgains.restexpress.serialization.AliasingSerializationProcessor;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.SingleValueConverter;
 
 /**
  * @author toddf
@@ -66,6 +67,11 @@ implements AliasingSerializationProcessor
 	public void alias(String name, Class<?> type)
 	{
 		xstream.alias(name, type);
+	}
+	
+	public void registerConverter(SingleValueConverter converter)
+	{
+		xstream.registerConverter(converter);
 	}
 
 

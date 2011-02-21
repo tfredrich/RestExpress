@@ -97,10 +97,16 @@ implements PreprocessorAware, PostprocessorAware
 			}
 		}
 	}
-	
+
 	public <T extends Exception, U extends ServiceException> DefaultRequestHandler mapException(Class<T> from, Class<U> to)
 	{
 		exceptionMap.map(from, to);
+		return this;
+	}
+	
+	public DefaultRequestHandler setExceptionMap(ExceptionMapping map)
+	{
+		this.exceptionMap = map;
 		return this;
 	}
 

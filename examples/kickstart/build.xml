@@ -9,6 +9,7 @@
 	<property name="dir.compile" value="${dir.build}/classes/main"/>
 	<property name="dir.compile.test" value="${dir.build}/classes/test"/>
 	<property name="dir.lib" value="${basedir}/lib"/>
+	<property name="dir.config" value="${basedir}/config"/>
 	<property name="dir.dist" value="${basedir}/dist"/>
 	<property name="dir.test.results" value="${dir.build}/junit"/>
 	<property name="dir.test.report" value="${dir.test.results}/report"/>
@@ -133,6 +134,7 @@
     	</jar>
     	<zip destfile="${dir.dist}/${project.name}.zip">
     		<zipfileset dir="${dir.dist}" prefix="${project.name}/bin" includes="${project.name}.jar"/>
+    		<zipfileset dir="${dir.config}" prefix="${project.name}/config" includes="**/*.properties"/>
 			<zipfileset dir="${dir.lib}" prefix="${project.name}/lib">
 				<exclude name="sources/**"/>
 				<include name="*.jar"/>
