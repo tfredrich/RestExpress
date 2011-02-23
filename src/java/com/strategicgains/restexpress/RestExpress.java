@@ -29,7 +29,7 @@ import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.ChannelGroupFuture;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.handler.codec.http.HttpMethod;
-
+import org.jboss.netty.handler.logging.LoggingHandler;
 import com.strategicgains.restexpress.controller.ConsoleController;
 import com.strategicgains.restexpress.domain.console.RouteMetadata;
 import com.strategicgains.restexpress.domain.console.ServerMetadata;
@@ -53,6 +53,7 @@ import com.strategicgains.restexpress.serialization.text.DefaultTxtProcessor;
 import com.strategicgains.restexpress.serialization.xml.DefaultXmlProcessor;
 import com.strategicgains.restexpress.util.Bootstraps;
 import com.strategicgains.restexpress.util.DefaultShutdownHook;
+import com.strategicgains.restexpress.util.LogLevel;
 import com.strategicgains.restexpress.util.Resolver;
 
 /**
@@ -75,6 +76,13 @@ public class RestExpress
 	private int port;
 	private RouteDeclaration routeDeclarations;
 	private String defaultFormat;
+	private boolean useTcpNoDelay = true;
+	private boolean useKeepAlive = true;
+	private boolean reuseAddress = true;
+	private int soLinger = -1; // disabled by default
+	private int receiveBufferSize = 262140; // Java default
+	private int connectTimeoutMillis = 10000; // netty default
+	private LogLevel logLevel = LogLevel.DEBUG; // Netty default
 	private boolean useSystemOut;
 	private boolean useConsoleRoutes;
 	private String consoleUrlPrefix;
@@ -441,6 +449,83 @@ public class RestExpress
 		return this;
 	}
 
+	public boolean isUseTcpNoDelay()
+	{
+		return useTcpNoDelay;
+	}
+
+	public RestExpress setUseTcpNoDelay(boolean useTcpNoDelay)
+	{
+		this.useTcpNoDelay = useTcpNoDelay;
+		return this;
+	}
+
+	public boolean isUseKeepAlive()
+	{
+		return useKeepAlive;
+	}
+
+	public RestExpress setUseKeepAlive(boolean useKeepAlive)
+	{
+		this.useKeepAlive = useKeepAlive;
+		return this;
+	}
+
+	public LogLevel getLogLevel()
+	{
+		return logLevel;
+	}
+
+	public RestExpress setLogLevel(LogLevel logLevel)
+	{
+		this.logLevel = logLevel;
+		return this;
+	}
+
+	public boolean isReuseAddress()
+	{
+		return reuseAddress;
+	}
+
+	public RestExpress setReuseAddress(boolean reuseAddress)
+	{
+		this.reuseAddress = reuseAddress;
+		return this;
+	}
+
+	public int getSoLinger()
+	{
+		return soLinger;
+	}
+
+	public RestExpress setSoLinger(int soLinger)
+	{
+		this.soLinger = soLinger;
+		return this;
+	}
+
+	public int getReceiveBufferSize()
+	{
+		return receiveBufferSize;
+	}
+
+	public RestExpress setReceiveBufferSize(int receiveBufferSize)
+	{
+		this.receiveBufferSize = receiveBufferSize;
+		return this;
+	}
+
+	public int getConnectTimeoutMillis()
+	{
+		return connectTimeoutMillis;
+	}
+
+	public RestExpress setConnectTimeoutMillis(int connectTimeoutMillis)
+	{
+		this.connectTimeoutMillis = connectTimeoutMillis;
+		return this;
+	}
+
 	/**
 	 * 
 	 * @param elementName
@@ -532,12 +617,16 @@ public class RestExpress
 		addPostprocessors(requestHandler);
 
 		PipelineBuilder pf = new PipelineBuilder()
+			.addRequestHandler(new LoggingHandler( getLogLevel().getNettyLogLevel() ))
 		    .addRequestHandler(requestHandler);
 		bootstrap.setPipelineFactory(pf);
 
-		// TODO: make these configurable via DSL.
-		bootstrap.setOption("child.tcpNoDelay", true);
-		bootstrap.setOption("child.keepAlive", true);
+		bootstrap.setOption("child.tcpNoDelay", isUseTcpNoDelay());
+		bootstrap.setOption("child.keepAlive", isUseKeepAlive());
+		bootstrap.setOption("reuseAddress", isReuseAddress());
+		bootstrap.setOption("child.soLinger", getSoLinger());
+		bootstrap.setOption("connectTimeoutMillis", getConnectTimeoutMillis());
+		bootstrap.setOption("receiveBufferSize", getReceiveBufferSize());
 
 		// Bind and start to accept incoming connections.
 		if (shouldUseSystemOut())
