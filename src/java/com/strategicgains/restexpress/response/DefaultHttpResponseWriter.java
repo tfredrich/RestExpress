@@ -44,7 +44,7 @@ implements HttpResponseWriter
 	  	{
 	  		// Add 'Content-Length' header only for a keep-alive connection.
 	  		httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(httpResponse.getContent().readableBytes()));
-	  		ctx.getChannel().write(httpResponse);
+	  		ctx.getChannel().write(httpResponse).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
 	  	}
 		else
 		{
