@@ -187,7 +187,9 @@ implements PreprocessorAware, PostprocessorAware
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent event)
 	throws Exception
 	{
-		event.getCause().printStackTrace();
+		MessageContext messageContext = (MessageContext) ctx.getAttachment();
+		messageContext.setException(event.getCause());
+		notifyException(messageContext);
 		event.getChannel().close();
 	}
 
