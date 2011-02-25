@@ -133,6 +133,9 @@ implements PreprocessorAware, PostprocessorAware
 	throws Exception
 	{
 		MessageContext context = createInitialContext(ctx, event);
+		
+		try
+		{
 		notifyReceived(context);
 		resolveRoute(context);
 		invokePreprocessors(context.getRequest());
@@ -147,14 +150,20 @@ implements PreprocessorAware, PostprocessorAware
 		serializeResponse(context);
 		writeResponse(ctx, context);
 		notifySuccess(context);
-		notifyComplete(context);
+		}
+		catch(Throwable t)
+		{
+			handleRestExpressException(ctx, t);
+		}
+		finally
+		{
+			notifyComplete(context);
+		}
 	}
 
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent event)
+	private void handleRestExpressException(ChannelHandlerContext ctx, Throwable cause)
 	throws Exception
 	{
-		Throwable cause = event.getCause();
 		MessageContext context = (MessageContext) ctx.getAttachment();
 		Throwable rootCause = mapServiceException(cause);
 		
@@ -172,7 +181,14 @@ implements PreprocessorAware, PostprocessorAware
 		notifyException(context);
 		serializeResponse(context);
 		writeResponse(ctx, context);
-		notifyComplete(context);
+	}
+
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent event)
+	throws Exception
+	{
+		event.getCause().printStackTrace();
+		event.getChannel().close();
 	}
 
 	private MessageContext createInitialContext(ChannelHandlerContext ctx, MessageEvent event)
