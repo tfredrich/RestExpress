@@ -155,8 +155,9 @@ implements PreprocessorAware, PostprocessorAware
 				}
 				else
 				{
-					response.setBody(serializeResult(result, p, request));
+					response.setBody(optionallyWrapInJsonp(serializeResult(result, p), request, p));
 				}
+
 				response.addHeader(CONTENT_TYPE, p.getResultingContentType());
 			}
 			else
@@ -269,36 +270,28 @@ implements PreprocessorAware, PostprocessorAware
 		return (serializationResolver != null);
 	}
 
-	/**
-	 * Handles the JSONP case, wrapping the serialized JSON string in the callback function, if applicable.
-	 * If there is a JSONP header value and the serialization processor returns application/json, then
-	 * the serialization results are wrapped in the JSONP method call.
-	 * 
-	 * @param result
-	 * @param procesor
-	 * @param request
-	 * @return
-	 */
-	private Object serializeResult(Object result, SerializationProcessor processor, Request request)
+	private String serializeResult(Object result, SerializationProcessor processor)
 	{
-		String serialized = processor.serialize(result);
+		if (result == null)
+		{
+			return null;
+		}
+		
+		return processor.serialize(result);
+	}
+	
+	private String optionallyWrapInJsonp(String content, Request request, SerializationProcessor processor)
+	{
 		String callback = getJsonpCallback(request, processor);
 		
 		if (callback != null)
 		{
         	StringBuilder sb = new StringBuilder();
-        	sb.append(callback).append("(").append(serialized).append(")");
-        	return sb.toString();			
+        	sb.append(callback).append("(").append(content).append(")");
+        	return sb.toString();
 		}
-		else
-		{
-			if (result == null)
-			{
-				return null;
-			}
-		}
-
-		return serialized;
+		
+		return content;
 	}
 
 	/**
