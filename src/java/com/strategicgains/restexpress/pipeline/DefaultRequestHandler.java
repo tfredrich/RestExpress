@@ -51,11 +51,6 @@ public class DefaultRequestHandler
 extends SimpleChannelUpstreamHandler
 implements PreprocessorAware, PostprocessorAware
 {
-	// SECTION: CONSTANTS
-
-	private static final String JSONP_CALLBACK = "jsonp";
-
-	
 	// SECTION: INSTANCE VARIABLES
 
 	private RouteResolver routeResolver;
@@ -136,20 +131,20 @@ implements PreprocessorAware, PostprocessorAware
 		
 		try
 		{
-		notifyReceived(context);
-		resolveRoute(context);
-		invokePreprocessors(context.getRequest());
-		Object result = context.getAction().invoke(context.getRequest(), context.getResponse());
-
-		if (result != null)
-		{
-			context.getResponse().setBody(result);
-		}
-
-		invokePostprocessors(context.getRequest(), context.getResponse());
-		serializeResponse(context);
-		writeResponse(ctx, context);
-		notifySuccess(context);
+			notifyReceived(context);
+			resolveRoute(context);
+			invokePreprocessors(context.getRequest());
+			Object result = context.getAction().invoke(context.getRequest(), context.getResponse());
+	
+			if (result != null)
+			{
+				context.getResponse().setBody(result);
+			}
+	
+			invokePostprocessors(context.getRequest(), context.getResponse());
+			serializeResponse(context);
+			writeResponse(ctx, context);
+			notifySuccess(context);
 		}
 		catch(Throwable t)
 		{
@@ -263,37 +258,6 @@ implements PreprocessorAware, PostprocessorAware
     		observer.onSuccess(context.getRequest(), context.getResponse());
     	}
     }
-
-	private boolean hasSerializationResolver()
-	{
-		return (serializationResolver != null);
-	}
-
-	/**
-	 * Handles the JSONP case, wrapping the serialized JSON string in the callback function, if applicable.
-	 * If there is a JSONP header value and the serialization processor returns application/json, then
-	 * the serialization results are wrapped in the JSONP method call.
-	 * 
-	 * @param result
-	 * @param procesor
-	 * @param request
-	 * @return
-	 */
-	private Object serializeResult(Object result, SerializationProcessor processor, Request request)
-	{
-		String serialized = processor.serialize(result);
-		String callback = request.getHeader(JSONP_CALLBACK);
-		
-		if (callback != null 
-			&& processor.getResultingContentType().toLowerCase().contains("json"))
-		{
-        	StringBuilder sb = new StringBuilder();
-        	sb.append(callback).append("(").append(serialized).append(")");
-        	return sb.toString();			
-		}
-		
-		return serialized;
-	}
 	
 	public void addPreprocessor(Preprocessor handler)
 	{
@@ -407,16 +371,63 @@ implements PreprocessorAware, PostprocessorAware
 
 	private void serializeResponse(MessageContext context)
 	{
-		if (context.shouldSerializeResponse() && hasSerializationResolver())
+		if (shouldSerialize(context.getAction()))
 		{
 			SerializationProcessor sp = context.getSerializationProcessor();
 			Request request = context.getRequest();
 			Response response = context.getResponse();
 			response.setBody(responseWrapperFactory.wrap(response));
-			response.setBody(serializeResult(response.getBody(), sp, request));
+			response.setBody(optionallyWrapInJsonp(serializeResult(response.getBody(), sp), request, sp));
 		}
 
 		String contentType = (context.getContentType() == null ? TEXT_PLAIN : context.getContentType());
 		context.getResponse().addHeader(CONTENT_TYPE, contentType);
 	}
+
+    private boolean shouldSerialize(Action action)
+    {
+        return action.shouldSerializeResponse() && (serializationResolver != null);
+    }
+
+	private String serializeResult(Object result, SerializationProcessor processor)
+	{
+		if (result == null)
+		{
+			return null;
+		}
+		
+		return processor.serialize(result);
+	}
+	
+	private String optionallyWrapInJsonp(String content, Request request, SerializationProcessor processor)
+	{
+		String callback = getJsonpCallback(request, processor);
+		
+		if (callback != null)
+		{
+        	StringBuilder sb = new StringBuilder();
+        	sb.append(callback).append("(").append(content).append(")");
+        	return sb.toString();
+		}
+		
+		return content;
+	}
+
+	/**
+	 * If JSONP header is set and the resulting type of the serialization processor includes JSON,
+	 * then returns the JSONP header string.  Otherwise, returns null.
+	 * 
+     * @param request
+     * @param processor
+     * @return  jsonp header string value, or null.
+     */
+    private String getJsonpCallback(Request request, SerializationProcessor processor)
+    {
+    	if (processor.getResultingContentType().toLowerCase().contains("json"))
+		{
+    		return request.getJsonpHeader();
+		}
+    	
+    	return null;
+    }
 }

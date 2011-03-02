@@ -44,6 +44,7 @@ public class Request
 
 	private static final String METHOD_QUERY_PARAMETER = "_method";
 	private static final String FORMAT_HEADER_NAME = "format";
+	private static final String JSONP_CALLBACK_HEADER_NAME = "jsonp";
 	private static final String DEFAULT_PROTOCOL = "http";
 	
 	private static long nextCorrelationId = 0;
@@ -292,6 +293,16 @@ public class Request
 	public String getHost()
 	{
 		return HttpHeaders.getHost(httpRequest);
+	}
+	
+	public String getJsonpHeader()
+	{
+		return getHeader(JSONP_CALLBACK_HEADER_NAME);
+	}
+	
+	public boolean hasJsonpHeader()
+	{
+		return (getJsonpHeader() != null);
 	}
 
 	/**
