@@ -245,6 +245,16 @@ public class Request
 	{
 		return HttpHeaders.getHost(httpRequest);
 	}
+	
+	public String getJsonpHeader()
+	{
+		return getHeader(RestExpress.JSONP_CALLBACK);
+	}
+	
+	public boolean hasJsonpHeader()
+	{
+		return (getJsonpHeader() != null);
+	}
 
 	/**
 	 * Get the protocol of the request.  RESTExpress currently only supports 'http'
