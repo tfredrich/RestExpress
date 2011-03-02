@@ -29,6 +29,13 @@ On successful creation, call response.setResponseCreated() to set the returning 
 
 Change History/Release Notes:
 ===================================================================================================
+Release 0.5.6.1
+* Patch release to fix issue with HTTP response status of 204 (No Content) and 304 (Not Modified)
+  where they would return a body of an empty string and content length of 2 ('\r\n').  No longer
+  serializes for 204 or 304.  Also no longer serializes for null body response unless a JSONP header
+  is passed in on the query string.
+
+===================================================================================================
 Release 0.5.6
 * Upgraded to Netty 3.2.3 final.
 * Added getProtocol(), getHost(), getPath() to Request
