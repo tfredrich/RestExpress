@@ -66,7 +66,7 @@ public class Response
 
 	public boolean hasBody()
 	{
-		return (getBody() != null);
+		return (getBody() != null && (getBody().toString().length() > 0));
 	}
 
 	public void setBody(Object body)
