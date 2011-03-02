@@ -26,6 +26,8 @@ public class RestExpress
 	public static final String TXT_FORMAT = "txt";
 	public static final String XML_FORMAT = "xml";
 	public static final String ENCODING = "UTF-8";
+	public static final String JSONP_CALLBACK = "jsonp";
+
 	
 
 	// CONTENT TYPES
