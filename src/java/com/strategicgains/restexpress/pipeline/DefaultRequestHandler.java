@@ -40,6 +40,7 @@ import com.strategicgains.restexpress.response.ResponseWrapperFactory;
 import com.strategicgains.restexpress.route.Action;
 import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
+import com.strategicgains.restexpress.util.HttpSpecification;
 import com.strategicgains.restexpress.util.Resolver;
 
 /**
@@ -143,6 +144,7 @@ implements PreprocessorAware, PostprocessorAware
 	
 			invokePostprocessors(context.getRequest(), context.getResponse());
 			serializeResponse(context);
+			enforceHttpSpecification(context);
 			writeResponse(ctx, context);
 			notifySuccess(context);
 		}
@@ -155,6 +157,14 @@ implements PreprocessorAware, PostprocessorAware
 			notifyComplete(context);
 		}
 	}
+
+	/**
+     * @param context
+     */
+    private void enforceHttpSpecification(MessageContext context)
+    {
+    	HttpSpecification.enforce(context.getResponse());
+    }
 
 	private void handleRestExpressException(ChannelHandlerContext ctx, Throwable cause)
 	throws Exception
@@ -371,43 +381,52 @@ implements PreprocessorAware, PostprocessorAware
 
 	private void serializeResponse(MessageContext context)
 	{
-		if (shouldSerialize(context.getAction()))
+		Response response = context.getResponse();
+
+		if (shouldSerialize(context))
 		{
 			SerializationProcessor sp = context.getSerializationProcessor();
 			Request request = context.getRequest();
-			Response response = context.getResponse();
 			response.setBody(responseWrapperFactory.wrap(response));
-			response.setBody(optionallyWrapInJsonp(serializeResult(response.getBody(), sp), request, sp));
+			response.setBody(serializeResult(response.getBody(), sp, request));
 		}
 
-		String contentType = (context.getContentType() == null ? TEXT_PLAIN : context.getContentType());
-		context.getResponse().addHeader(CONTENT_TYPE, contentType);
+		if (HttpSpecification.isContentTypeAllowed(response))
+		{
+			String contentType = (context.getContentType() == null ? TEXT_PLAIN : context.getContentType());
+			context.getResponse().addHeader(CONTENT_TYPE, contentType);
+		}
 	}
 
-    private boolean shouldSerialize(Action action)
+    private boolean shouldSerialize(MessageContext context)
     {
-        return action.shouldSerializeResponse() && (serializationResolver != null);
+    	
+        return (context.shouldSerializeResponse() && (serializationResolver != null));
     }
 
-	private String serializeResult(Object result, SerializationProcessor processor)
-	{
-		if (result == null)
-		{
-			return null;
-		}
-		
-		return processor.serialize(result);
-	}
-	
-	private String optionallyWrapInJsonp(String content, Request request, SerializationProcessor processor)
+    /**
+     * Depending on the result, the return value is serialized and, optionally, wrapped in a jsonp callback.
+     * Note that a null result is not serialized unless it should be wrapped in jsonp.
+     * 
+     * @param result object to serialize.
+     * @param processor the serialization processor that will do the serializing.
+     * @param request the current request.
+     * @return a serialized result, or null if the result is null and not wrapped in jsonp callback.
+     */
+	private String serializeResult(Object result, SerializationProcessor processor, Request request)
 	{
 		String callback = getJsonpCallback(request, processor);
-		
-		if (callback != null)
+		String content = processor.serialize(result);
+
+		if (callback != null) // must wrap in jsonp callback--serialization necessary.
 		{
         	StringBuilder sb = new StringBuilder();
         	sb.append(callback).append("(").append(content).append(")");
-        	return sb.toString();
+        	content = sb.toString();
+		}
+		else if (result == null) // not jsonp and null result requires no serialization.
+		{
+			content = null;
 		}
 		
 		return content;

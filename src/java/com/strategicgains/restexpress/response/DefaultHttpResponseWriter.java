@@ -18,6 +18,7 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
 import com.strategicgains.restexpress.ContentType;
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
+import com.strategicgains.restexpress.util.HttpSpecification;
 
 /**
  * @author toddf
@@ -30,9 +31,9 @@ implements HttpResponseWriter
 	public void write(ChannelHandlerContext ctx, Request request, Response response)
 	{
 		HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, response.getResponseStatus());
-		addHeaders(response, httpResponse);
-		
-		if (response.hasBody())
+		addHeaders(response, httpResponse);		
+
+		if (response.hasBody() && HttpSpecification.isContentAllowed(response))
 		{
 			StringBuilder builder = new StringBuilder(response.getBody().toString());
 			builder.append("\r\n");
@@ -43,7 +44,11 @@ implements HttpResponseWriter
 		if (request.isKeepAlive())
 	  	{
 	  		// Add 'Content-Length' header only for a keep-alive connection.
-	  		httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(httpResponse.getContent().readableBytes()));
+			if (HttpSpecification.isContentLengthAllowed(response))
+	  		{
+				httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(httpResponse.getContent().readableBytes()));
+	  		}
+
 	  		ctx.getChannel().write(httpResponse).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
 	  	}
 		else

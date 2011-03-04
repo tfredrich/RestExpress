@@ -413,6 +413,41 @@ public class RawWrappedResponseTest
 		assertEquals("<string>Unresolvable URL: http://null/xyzt?format=xml</string>", httpResponse.toString());
 	}
 
+	@Test
+	public void shouldDeleteWithoutContent()
+	{
+		sendEvent(HttpMethod.DELETE, "/no_content_delete.json", null);
+		assertEquals(1, observer.getReceivedCount());
+		assertEquals(1, observer.getCompleteCount());
+		assertEquals(1, observer.getSuccessCount());
+		assertEquals(0, observer.getExceptionCount());
+//		System.out.println(httpResponse.toString());
+		assertEquals("null", httpResponse.toString());
+	}
+
+	@Test
+	public void shouldThrowExceptionOnDeleteNoContentContainingBody()
+	{
+		sendEvent(HttpMethod.DELETE, "/no_content_with_body_delete.json", null);
+		assertEquals(1, observer.getReceivedCount());
+		assertEquals(1, observer.getCompleteCount());
+		assertEquals(0, observer.getSuccessCount());
+		assertEquals(1, observer.getExceptionCount());
+//		System.out.println(httpResponse.toString());
+	}
+
+	@Test
+	public void shouldDeleteWrappingInJsonp()
+	{
+		sendEvent(HttpMethod.DELETE, "/normal_delete.json?jsonp=jsonp_callback", null);
+		assertEquals(1, observer.getReceivedCount());
+		assertEquals(1, observer.getCompleteCount());
+		assertEquals(1, observer.getSuccessCount());
+		assertEquals(0, observer.getExceptionCount());
+//		System.out.println(httpResponse.toString());
+		assertEquals("jsonp_callback(\"Normal DELETE action\")", httpResponse.toString());
+	}
+
 	private void sendEvent(HttpMethod method, String path, String body)
     {
 		HttpRequest request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, path);
@@ -447,6 +482,12 @@ public class RawWrappedResponseTest
 
         	uri("/normal_delete.{format}", controller)
     		.action("normalDeleteAction", HttpMethod.DELETE);
+
+        	uri("/no_content_delete.{format}", controller)
+    		.action("noContentDeleteAction", HttpMethod.DELETE);
+
+        	uri("/no_content_with_body_delete.{format}", controller)
+    		.action("noContentWithBodyDeleteAction", HttpMethod.DELETE);
 
         	uri("/not_found.{format}", controller)
         		.action("notFoundAction", HttpMethod.GET);

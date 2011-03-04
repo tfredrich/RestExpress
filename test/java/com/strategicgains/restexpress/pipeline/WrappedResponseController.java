@@ -39,10 +39,21 @@ public class WrappedResponseController
 	{
 		return "Normal POST action";
 	}
-	
+
 	public Object normalDeleteAction(Request request, Response response)
 	{
 		return "Normal DELETE action";
+	}
+
+	public void noContentDeleteAction(Request request, Response response)
+	{
+		response.setResponseNoContent();
+	}
+
+	public void noContentWithBodyDeleteAction(Request request, Response response)
+	{
+		response.setBody("Body with no content response");
+		response.setResponseNoContent();
 	}
 
 	public void notFoundAction(Request request, Response response)

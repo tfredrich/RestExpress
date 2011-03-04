@@ -48,6 +48,9 @@ Release 0.6.0.2
 * Made socket-level settings externally configurable:  tcpNoDelay, KeepAlive, reuseAddress,
   soLinger, connectTimeoutMillis, receiveBufferSize.
 * Merged in 0.5.6.1 path release changes.
+* Added enforcement of some HTTP 1.1 specification rules: Content-Type, Content-Length and body
+  content for 1xx, 204, 304 are not allow.  Now throws HttpSpecificationException if spec. is
+  not honored.
 
 ===================================================================================================
 Release 0.6.0.1
