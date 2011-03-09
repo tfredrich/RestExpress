@@ -346,6 +346,16 @@ public class Request
 		
 		return header.trim().equalsIgnoreCase(value.trim());
 	}
+	
+	public boolean isFlagged(String flag)
+	{
+		return resolvedRoute.isFlagged(flag);
+	}
+	
+	public String getParameter(String name)
+	{
+		return resolvedRoute.getParameter(name);
+	}
 
 	/**
      * @param request

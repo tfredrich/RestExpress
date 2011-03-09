@@ -11,8 +11,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
@@ -63,6 +65,9 @@ public abstract class RouteBuilder
 	private Object controller;
 	private boolean shouldSerializeResponse = true;
 	private String name;
+	private Set<String> flags = new HashSet<String>();
+	private Map<String, String> parameters = new HashMap<String, String>();
+	private boolean shouldUseWrappedResponse = true;
 	
 	/**
 	 * Create a RouteBuilder instance for the given URI pattern. URIs that match the pattern
@@ -142,7 +147,19 @@ public abstract class RouteBuilder
 		this.shouldSerializeResponse = true;
 		return this;
 	}
-	
+
+	public RouteBuilder useRawResponse()
+	{
+		this.shouldUseWrappedResponse = false;
+		return this;
+	}
+
+	public RouteBuilder useWrappedResponse()
+	{
+		this.shouldUseWrappedResponse = false;
+		return this;
+	}
+
 	/**
 	 * Give the route a known name to facilitate retrieving the route by name.  This facilitates
 	 * using the route URI pattern to create Link instances via LinkUtils.asLinks().
@@ -171,6 +188,18 @@ public abstract class RouteBuilder
 	public RouteBuilder defaultFormat(String format)
 	{
 		this.defaultFormat = format;
+		return this;
+	}
+	
+	public RouteBuilder flag(String flagValue)
+	{
+		flags.add(flagValue);
+		return this;
+	}
+	
+	public RouteBuilder parameter(String name, String value)
+	{
+		parameters.put(name, value);
 		return this;
 	}
 	
@@ -207,7 +236,7 @@ public abstract class RouteBuilder
 			}
 			
 			Method action = determineActionMethod(controller, actionName);
-			routes.add(newRoute(pattern, controller, action, method, shouldSerializeResponse, name, supportedFormats, defaultFormat));
+			routes.add(newRoute(pattern, controller, action, method, shouldSerializeResponse, shouldUseWrappedResponse, name, supportedFormats, defaultFormat, flags, parameters));
 		}
 		
 		return routes;
@@ -253,10 +282,14 @@ public abstract class RouteBuilder
      * @param name
 	 * @param supportedFormats 
 	 * @param defaultFormat
+	 * @param flags
+	 * @param parameters
      * @return
      */
     protected abstract Route newRoute(String pattern, Object controller, Method action,
-    	HttpMethod method, boolean shouldSerializeResponse, String name, List<String> supportedFormats, String defaultFormat);
+    	HttpMethod method, boolean shouldSerializeResponse, boolean shouldUseWrappedResponse,
+    	String name, List<String> supportedFormats, String defaultFormat, Set<String> flags,
+    	Map<String, String> parameters);
 
 
 	// SECTION: UTILITY - PRIVATE

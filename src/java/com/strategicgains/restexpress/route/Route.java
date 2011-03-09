@@ -18,7 +18,11 @@ package com.strategicgains.restexpress.route;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
@@ -45,9 +49,12 @@ public abstract class Route
 	private Method action;
 	private HttpMethod method;
 	private boolean shouldSerializeResponse = true;
+	private boolean shouldUseWrappedResponse = true;
 	private String name;
 	private List<String> supportedFormats = new ArrayList<String>();
 	private String defaultFormat;
+	private Set<String> flags = new HashSet<String>();
+	private Map<String, String> parameters = new HashMap<String, String>();
 
 	// SECTION: CONSTRUCTORS
 
@@ -55,7 +62,8 @@ public abstract class Route
 	 * @param urlMatcher
 	 * @param controller
 	 */
-	public Route(UrlMatcher urlMatcher, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse, String name)
+	public Route(UrlMatcher urlMatcher, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse,
+		boolean shouldUseWrappedResponse, String name, Set<String> flags, Map<String, String> parameters)
 	{
 		super();
 		this.urlMatcher = urlMatcher;
@@ -63,7 +71,25 @@ public abstract class Route
 		this.action = action;
 		this.method = method;
 		this.shouldSerializeResponse = shouldSerializeResponse;
+		this.shouldUseWrappedResponse = shouldUseWrappedResponse;
 		this.name = name;
+		this.flags.addAll(flags);
+		this.parameters.putAll(parameters);
+	}
+	
+	public boolean isFlagged(String flag)
+	{
+		return flags.contains(flag);
+	}
+	
+	public boolean hasParameter(String name)
+	{
+		return (getParameter(name) != null);
+	}
+
+	public String getParameter(String name)
+	{
+		return parameters.get(name);
 	}
 	
 	public Method getAction()
@@ -99,6 +125,11 @@ public abstract class Route
 	public boolean shouldSerializeResponse()
 	{
 		return shouldSerializeResponse;
+	}
+	
+	public boolean shouldUseWrappedResponse()
+	{
+		return shouldUseWrappedResponse;
 	}
 	
 	public void addSupportedFormat(String format)
@@ -137,7 +168,16 @@ public abstract class Route
         }
 		catch (InvocationTargetException e)
 		{
-			throw (RuntimeException) e.getCause();
+			Throwable cause = e.getCause();
+			
+			if (RuntimeException.class.isAssignableFrom(cause.getClass()))
+			{
+				throw (RuntimeException) e.getCause();
+			}
+			else
+			{
+				throw new RuntimeException(cause);
+			}
 		}
         catch (Exception e)
         {

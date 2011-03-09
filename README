@@ -51,6 +51,12 @@ Release 0.6.0.2
 * Added enforcement of some HTTP 1.1 specification rules: Content-Type, Content-Length and body
   content for 1xx, 204, 304 are not allow.  Now throws HttpSpecificationException if spec. is
   not honored.
+* Added ability to add 'flags' and 'parameters' to routes, in that, uri().flag("name") on Route
+  makes test request.isFlagged("name") return true. Also, uri().parameter("name", "value")
+  makes request.getParamater("name") return "value". Not returned/marshaled in the response.
+  Useful for setting internal values/flags for preprocessors, controllers, etc.
+* Added .useRawResponse() and .useWrappedResponse() to fluent route DSL.  Causes that particular
+  route to wrap the response or not, independent of global response wrap settings.
 
 ===================================================================================================
 Release 0.6.0.1
