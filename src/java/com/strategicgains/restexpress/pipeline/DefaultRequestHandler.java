@@ -155,7 +155,7 @@ implements PreprocessorAware, PostprocessorAware
 				}
 				else
 				{
-					response.setBody(optionallyWrapInJsonp(serializeResult(result, p), request, p));
+					response.setBody(serializeResult(result, p, request));
 				}
 
 				response.addHeader(CONTENT_TYPE, p.getResultingContentType());
@@ -270,25 +270,29 @@ implements PreprocessorAware, PostprocessorAware
 		return (serializationResolver != null);
 	}
 
-	private String serializeResult(Object result, SerializationProcessor processor)
-	{
-		if (result == null)
-		{
-			return null;
-		}
-		
-		return processor.serialize(result);
-	}
-	
-	private String optionallyWrapInJsonp(String content, Request request, SerializationProcessor processor)
+    /**
+     * Depending on the result, the return value is serialized and, optionally, wrapped in a jsonp callback.
+     * Note that a null result is not serialized unless it should be wrapped in jsonp.
+     * 
+     * @param result object to serialize.
+     * @param processor the serialization processor that will do the serializing.
+     * @param request the current request.
+     * @return a serialized result, or null if the result is null and not wrapped in jsonp callback.
+     */
+	private String serializeResult(Object result, SerializationProcessor processor, Request request)
 	{
 		String callback = getJsonpCallback(request, processor);
-		
-		if (callback != null)
+		String content = processor.serialize(result);
+
+		if (callback != null) // must wrap in jsonp callback--serialization necessary.
 		{
         	StringBuilder sb = new StringBuilder();
         	sb.append(callback).append("(").append(content).append(")");
-        	return sb.toString();
+        	content = sb.toString();
+		}
+		else if (result == null) // not jsonp and null result requires no serialization.
+		{
+			content = null;
 		}
 		
 		return content;
