@@ -11,7 +11,7 @@
 	<classpathentry kind="lib" path="lib/gson-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/mongo-2.3.jar"/>
 	<classpathentry kind="lib" path="lib/morphia-0.98.jar"/>
-	<classpathentry kind="lib" path="lib/Syntaxe-0.2.jar" sourcepath="lib/sources/Syntaxe-0.2-src.jar"/>
+	<classpathentry kind="lib" path="lib/Syntaxe-0.3.jar" sourcepath="lib/sources/Syntaxe-0.3-src.jar"/>
 	<classpathentry kind="lib" path="lib/RepoExpress-0.2.1.jar" sourcepath="lib/sources/RepoExpress-0.2.1-src.jar"/>
 	<classpathentry kind="lib" path="lib/jbel-0.9.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>

@@ -16,7 +16,7 @@
 package com.blogging.domain;
 
 import com.google.code.morphia.annotations.Entity;
-import com.strategicgains.syntaxe.annotation.Validate;
+import com.strategicgains.syntaxe.annotation.StringValidation;
 
 /**
  * @author toddf
@@ -26,11 +26,11 @@ import com.strategicgains.syntaxe.annotation.Validate;
 public class Blog
 extends BaseDomainObject
 {
-	@Validate(name = "Blog Title", required = true)
+	@StringValidation(name = "Blog Title", required = true)
 	private String title;
 	private String description;
 	
-	@Validate(name = "Blog Author", required=true)
+	@StringValidation(name = "Blog Author", required=true)
 	private String author;
 
 	public String getTitle()

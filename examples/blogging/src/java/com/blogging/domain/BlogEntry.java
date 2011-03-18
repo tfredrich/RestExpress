@@ -4,24 +4,24 @@ import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Indexed;
-import com.strategicgains.syntaxe.annotation.Validate;
+import com.strategicgains.syntaxe.annotation.StringValidation;
 
 @Entity("blog_entries")
 public class BlogEntry
 extends BaseDomainObject
 {
 	@Indexed
-	@Validate(name="Blog ID", required=true)
+	@StringValidation(name="Blog ID", required=true)
 	private ObjectId blogId;
 
-	@Validate(name="Title", required=true)
+	@StringValidation(name="Title", required=true)
 	private String title;
 	
-	@Validate(name="Entry Content", required=true)
+	@StringValidation(name="Entry Content", required=true)
 	private String content;
 	
 	@Indexed
-	@Validate(name="Author", required=true)
+	@StringValidation(name="Author", required=true)
 	private String author;
 //	private List<Comment> comments = new ArrayList<Comment>();
 
