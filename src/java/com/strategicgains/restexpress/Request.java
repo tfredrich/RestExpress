@@ -219,7 +219,7 @@ public class Request
 	{
     	for (Entry<String, String> entry : headers)
     	{
-    		addHeader(entry.getKey(), entry.getValue());
+    		addHeader(entry.getKey(), urlDecode(entry.getValue()));
     	}
 	}
 
@@ -391,16 +391,18 @@ public class Request
 			for (String pair : params)
 			{
 				String[] keyValue = pair.split("=");
+				String key = urlDecode(keyValue[0]);
 				
 				if (keyValue.length == 1)
 				{
-					request.addHeader(keyValue[0], "");
-					parameters.put(keyValue[0], "");
+					request.addHeader(key, "");
+					parameters.put(key, "");
 				}
 				else
 				{
-					request.addHeader(keyValue[0], keyValue[1]);
-					parameters.put(keyValue[0], keyValue[1]);
+					String value = urlDecode(keyValue[1]);
+					request.addHeader(key, value);
+					parameters.put(key, value);
 				}
 			}
 		}
@@ -410,9 +412,14 @@ public class Request
 
 	private String getUri(HttpRequest request)
 	{
+        return urlDecode(request.getUri());
+	}
+	
+	private String urlDecode(String value)
+	{
         try
         {
-	        return URLDecoder.decode(request.getUri(), ContentType.ENCODING);
+	        return URLDecoder.decode(value, ContentType.ENCODING);
         }
         catch (UnsupportedEncodingException e)
         {
@@ -421,6 +428,7 @@ public class Request
         
         return "";
 	}
+
 	/**
 	 * If the request HTTP method is post, allow a query string parameter to determine
 	 * the request HTTP method of the post (e.g. _method=DELETE or _method=PUT).  This
