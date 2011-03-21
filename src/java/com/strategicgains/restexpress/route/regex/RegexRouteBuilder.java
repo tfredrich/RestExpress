@@ -16,6 +16,9 @@
 package com.strategicgains.restexpress.route.regex;
 
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
@@ -39,10 +42,15 @@ extends RouteBuilder
 		super(uri, controller);
 	}
 
+	/* (non-Javadoc)
+     * @see com.strategicgains.restexpress.route.RouteBuilder#newRoute(java.lang.String, java.lang.Object, java.lang.reflect.Method, org.jboss.netty.handler.codec.http.HttpMethod, boolean, java.lang.String, java.util.List, java.lang.String)
+     */
     @Override
     protected Route newRoute(String pattern, Object controller, Method action,
-        HttpMethod method, boolean shouldSerializeResponse, String name)
+        HttpMethod method, boolean shouldSerializeResponse, boolean shouldUseWrappedResponse,
+        String name, List<String> supportedFormats, String defaultFormat, Set<String> flags,
+        Map<String, String> parameters)
     {
-    	return new RegexRoute(pattern, controller, action, method, shouldSerializeResponse, name);
+    	return new RegexRoute(pattern, controller, action, method, shouldSerializeResponse, shouldUseWrappedResponse, name, flags, parameters);
     }
 }

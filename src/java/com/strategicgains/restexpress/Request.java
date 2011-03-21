@@ -19,6 +19,7 @@ package com.strategicgains.restexpress;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,7 +33,6 @@ import com.strategicgains.restexpress.exception.BadRequestException;
 import com.strategicgains.restexpress.route.Route;
 import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
-import com.strategicgains.restexpress.util.Resolver;
 
 /**
  * @author toddf
@@ -44,6 +44,7 @@ public class Request
 
 	private static final String METHOD_QUERY_PARAMETER = "_method";
 	private static final String FORMAT_HEADER_NAME = "format";
+	private static final String JSONP_CALLBACK_HEADER_NAME = "jsonp";
 	private static final String DEFAULT_PROTOCOL = "http";
 	
 	private static long nextCorrelationId = 0;
@@ -52,7 +53,7 @@ public class Request
 	// SECTION: INSTANCE VARIABLES
 
 	private HttpRequest httpRequest;
-	private Resolver<SerializationProcessor> serializationResolver;
+	private SerializationProcessor serializationProcessor;
 	private RouteResolver urlRouter;
 	private HttpMethod realMethod;
 	private Route resolvedRoute;
@@ -61,17 +62,18 @@ public class Request
 	
 	// SECTION: CONSTRUCTOR
 
-	public Request(HttpRequest request, Resolver<SerializationProcessor> serializationResolver, RouteResolver routes)
+	public Request(HttpRequest request, RouteResolver routes)
 	{
 		super();
 		this.httpRequest = request;
 		this.realMethod = request.getMethod();
-		this.serializationResolver = serializationResolver;
 		this.urlRouter = routes;
-		handleMethodTunneling(addQueryStringParametersAsHeaders());
+		parseRequestedFormatToHeader(request);
+		handleMethodTunneling(addQueryStringParametersAsHeaders(request));
 		createCorrelationId();
 	}
-	
+
+
 	// SECTION: ACCESSORS/MUTATORS
 
 	/**
@@ -131,28 +133,55 @@ public class Request
     }
 	
 	/**
-	 * Attempts to deserialize the request body into an instance of the given type.  If no serialization
-	 * resolver is present in the request, null is returned.
+	 * Attempts to deserialize the request body into an instance of the given type.
 	 * 
 	 * @param type the resulting type
-	 * @return an instance of the requested type, or null (if no serialization resolver in request).
+	 * @return an instance of the requested type.
 	 * @throws BadRequestException if the deserialization fails.
 	 */
 	public <T> T getBodyAs(Class<T> type)
 	{
-		if (serializationResolver == null) return null;
-
-		SerializationProcessor processor = serializationResolver.resolve(this);
-		
 		try
 		{
-			return processor.deserialize(getBody(), type);
+			return serializationProcessor.deserialize(getBody(), type);
 		}
 		catch(Exception e)
 		{
 			throw new BadRequestException(e);
 		}
 	}
+
+	/**
+	 * Attempts to deserialize the request body into an instance of the given type.
+	 * If the serialization process returns null, throws BadResquestExcption using
+	 * the message.
+	 * 
+	 * @param type the resulting type.
+	 * @param message the message for the BadRequestException if serialization returns null.
+	 * @return an instance of the requested type.
+	 * @throws BadRequestException if serialization fails.
+	 */
+	public <T> T getBodyAs(Class<T> type, String message)
+	{
+		T instance = getBodyAs(type);
+
+		if (instance == null)
+		{
+			throw new BadRequestException(message);
+		}
+		
+		return instance;
+	}
+
+	public SerializationProcessor getSerializationProcessor()
+    {
+    	return serializationProcessor;
+    }
+
+	public void setSerializationProcessor(SerializationProcessor serializationProcessor)
+    {
+    	this.serializationProcessor = serializationProcessor;
+    }
 
 	public void setBody(ChannelBuffer body)
     {
@@ -168,12 +197,32 @@ public class Request
 	{
 		return httpRequest.getHeader(name);
 	}
+
+	public String getHeader(String name, String message)
+	{
+		String value = getHeader(name);
+		
+		if (value == null)
+		{
+			throw new BadRequestException(message);
+		}
+
+		return value;
+	}
 	
 	public void addHeader(String name, String value)
     {
 		httpRequest.addHeader(name, value);
     }
 	
+	public void addAllHeaders(Collection<Entry<String, String>> headers)
+	{
+    	for (Entry<String, String> entry : headers)
+    	{
+    		addHeader(entry.getKey(), urlDecode(entry.getValue()));
+    	}
+	}
+
 	public Route getResolvedRoute()
 	{
 		return resolvedRoute;
@@ -248,7 +297,7 @@ public class Request
 	
 	public String getJsonpHeader()
 	{
-		return getHeader(RestExpress.JSONP_CALLBACK);
+		return getHeader(JSONP_CALLBACK_HEADER_NAME);
 	}
 	
 	public boolean hasJsonpHeader()
@@ -298,13 +347,40 @@ public class Request
 		return header.trim().equalsIgnoreCase(value.trim());
 	}
 	
+	public boolean isFlagged(String flag)
+	{
+		return resolvedRoute.isFlagged(flag);
+	}
+	
+	public String getParameter(String name)
+	{
+		return resolvedRoute.getParameter(name);
+	}
+
+	/**
+     * @param request
+     */
+    private void parseRequestedFormatToHeader(HttpRequest request)
+    {
+    	String uri = getUri(request);
+		int queryDelimiterIndex = uri.indexOf('?');
+		String path = (queryDelimiterIndex > 0 ? uri.substring(0, queryDelimiterIndex) : uri);
+    	int formatDelimiterIndex = path.indexOf('.');
+    	String format = (formatDelimiterIndex > 0 ? path.substring(formatDelimiterIndex + 1) : null);
+    	
+    	if (format != null)
+    	{
+    		request.addHeader(FORMAT_HEADER_NAME, format);
+    	}
+    }
+	
 	/**
 	 * Add the query string parameters to the request as headers.
 	 */
-	private Map<String, String> addQueryStringParametersAsHeaders()
+	private Map<String, String> addQueryStringParametersAsHeaders(HttpRequest request)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
-		String uri = getUri(httpRequest);
+		String uri = getUri(request);
 		int x = uri.indexOf('?');
 		String queryString = (x >= 0 ? uri.substring(x + 1) : null);
 		
@@ -315,16 +391,18 @@ public class Request
 			for (String pair : params)
 			{
 				String[] keyValue = pair.split("=");
+				String key = urlDecode(keyValue[0]);
 				
 				if (keyValue.length == 1)
 				{
-					httpRequest.addHeader(keyValue[0], "");
-					parameters.put(keyValue[0], "");
+					request.addHeader(key, "");
+					parameters.put(key, "");
 				}
 				else
 				{
-					httpRequest.addHeader(keyValue[0], keyValue[1]);
-					parameters.put(keyValue[0], keyValue[1]);
+					String value = urlDecode(keyValue[1]);
+					request.addHeader(key, value);
+					parameters.put(key, value);
 				}
 			}
 		}
@@ -334,9 +412,14 @@ public class Request
 
 	private String getUri(HttpRequest request)
 	{
+        return urlDecode(request.getUri());
+	}
+	
+	private String urlDecode(String value)
+	{
         try
         {
-	        return URLDecoder.decode(request.getUri(), RestExpress.ENCODING);
+	        return URLDecoder.decode(value, ContentType.ENCODING);
         }
         catch (UnsupportedEncodingException e)
         {
@@ -345,6 +428,7 @@ public class Request
         
         return "";
 	}
+
 	/**
 	 * If the request HTTP method is post, allow a query string parameter to determine
 	 * the request HTTP method of the post (e.g. _method=DELETE or _method=PUT).  This

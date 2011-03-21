@@ -1,16 +1,24 @@
-RestExpress is a thin wrapper on the JBOSS Netty HTTP stack to provide a simple and easy way to create
-RESTful services in Java.
+RestExpress is a thin wrapper on the JBOSS Netty HTTP stack to provide a simple and easy way to
+create RESTful services in Java that support massive Internet Scale and performance.
 
 Born to be simple, only three things are required to wire up a service:
-1) The main class which looks just like the JBOSS Netty examples.
-2) A RouteMapping extender (much like routes.rb in a Rails app), which contains DSL for the
-   supported URLs and HTTP methods of the service(s).
-3) Service implementation(s), which is/are a simple POJO--no interface or super class implementation.
+1) The main class which utilizes the RestExpress DSL to create a server instance.
+2) A RouteDeclaration extender (much like routes.rb in a Rails app), which uses a DSL for the
+   declaration of supported URLs and HTTP methods of the service(s) in its defineRoutes() method.
+3) Service implementation(s), which is/are a simple POJO--no interface or super class
+   implementation.
 
 See: examples/kickstart directory to get started (there is a README there).
 
+RestExpress supports both JSEND-style and raw responses.  Meaning that it can wrap responses so
+AJAX clients can always process the responses easily.  Or it can simply marshal the service return
+value directly into JSON or XML.  For more information on JSEND-style responses, see:
+http://labs.omniti.com/labs/jsend
+
 ===================================================================================================
 A quick tutorial:
+
+Please see the Kickstart application in examples/kickstart for a complete, running example.
 
 * HTTP Methods, if not changed in the DSL, map to the following:
 1) GET --> read(Request, Response)
@@ -18,16 +26,68 @@ A quick tutorial:
 3) POST --> create(Request, Response)
 4) DELETE --> delete(Request, Response)
 
-You can choose to return objects from the methods, if desired, which will be returned to the client as
-body of the response.  The object will be marshaled into JSON or XML, depending on the default or based on the
-format on the request.
+You can choose to return objects from the methods, if desired, which will be returned to the client
+as body of the response.  The object will be marshaled into JSON or XML, depending on the default or
+based on the format in the request (e.g. '.xml' or '?format=xml').
 
-If you choose to not return a value from the method (void methods), then call response.setResponseNoContent()
-before returning to set the response HTTP status code to 204 (no content).
+If you choose to not return a value from the method (void methods) and using raw responses, then
+call response.setResponseNoContent() before returning to set the response HTTP status code to 204
+(no content).  Wrapped responses (JSEND style) are the default.  So if you're using wrapped
+responses, there will always be a response returned to the client--therefore, you don't need to set
+the response.setResponseNoContent().  Just return your objects--or not.  RestExpress will handle
+things on your behalf!
 
-On successful creation, call response.setResponseCreated() to set the returning HTTP status code to 201.
+On successful creation, call response.setResponseCreated() to set the returning HTTP status code to
+201.
 
 Change History/Release Notes:
+===================================================================================================
+Release 0.6.0.2
+* Fixed issue with 'connection reset by peer' causing unresponsive behavior.
+* Utilized Netty logging behavior to add logging capabilities to RestExpress.
+* Made socket-level settings externally configurable:  tcpNoDelay, KeepAlive, reuseAddress,
+  soLinger, connectTimeoutMillis, receiveBufferSize.
+* Merged in 0.5.6.1 path release changes.
+* Added enforcement of some HTTP 1.1 specification rules: Content-Type, Content-Length and body
+  content for 1xx, 204, 304 are not allow.  Now throws HttpSpecificationException if spec. is
+  not honored.
+* Added ability to add 'flags' and 'parameters' to routes, in that, uri().flag("name") on Route
+  makes test request.isFlagged("name") return true. Also, uri().parameter("name", "value")
+  makes request.getParamater("name") return "value". Not returned/marshaled in the response.
+  Useful for setting internal values/flags for preprocessors, controllers, etc.
+* Added .useRawResponse() and .useWrappedResponse() to fluent route DSL.  Causes that particular
+  route to wrap the response or not, independent of global response wrap settings.
+* Parameters parsed from the URL and query string arguments are URL decoded before being placed
+  as Request headers.
+
+===================================================================================================
+Release 0.6.0.1
+* Issue #7 - Fixed issue with invalid URL requested where serialization always occurred to the
+             default (JSON).  Now serializes to the requested format, if applicable.
+* Issue #11 - Feature enhancement for Kickstart.  Now utilizes Rails-inspired configuration
+              environements (e.g. dev, testing, prod, etc.).
+* Issue #12 - Parse URL parameter names out of the URL pattern and include them in the route
+              metadata output.
+
+===================================================================================================
+Release 0.6.0
+* Routes now defined in descendant of RouteDeclaration.
+* Refactored everything into RestExpress object, using builder pattern for configuration.
+* Implemented RestExpress DSL to declare REST server in main().
+* Added supported formats and default format to RouteBuilder.
+* Added JSEND-style response wrapping (now default).  Call RestExpress.useWrappedResponses() to use.
+* Add ability to support raw response return.  Call RestExpress.useRawResponses() to use.
+* Implemented /console/routes.{format} route which return metadata about the routes in this
+  service suite. To use, call RestExpress.supportConsoleRoutes().
+* Exceptions occurring now return in the requested format with the message wrapped and using the
+  appropriate mime type (e.g. application/json or application/xml).
+* Kickstart application has complete build with 'dist' target that builds a runnable jar file and
+  'run' target that will run the services from the command line.
+* Kickstart application now handles JVM shutdown correctly using JVM shutdown hooks.  The method
+  RestExpress.awaitShutdown() uses the DefaultShutdownHook class.  RestExpress.shutdown() allows
+  programs to use their own shutdown hooks, calling RestExpress.shutdown() upon shudown to release
+  all resource.
+
 ===================================================================================================
 Release 0.5.6.1
 * Patch release to fix issue with HTTP response status of 204 (No Content) and 304 (Not Modified)

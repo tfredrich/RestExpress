@@ -3,6 +3,9 @@
  */
 package com.strategicgains.restexpress.pipeline;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.netty.channel.ChannelHandler;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
@@ -29,11 +32,10 @@ implements ChannelPipelineFactory
 	
 	// SECTION: INSTANCE VARIABLES
 
-	private boolean shouldUseSsl = false;
 	private boolean shouldHandleChunked = false;
 	private boolean shouldUseCompression = false;
 	private int maxChunkSize = DEFAULT_MAX_CHUNK_SIZE;
-	private ChannelHandler requestHandler;
+	private List<ChannelHandler> requestHandlers = new ArrayList<ChannelHandler>();
 
 	
 	// SECTION: CONSTRUCTORS
@@ -45,18 +47,6 @@ implements ChannelPipelineFactory
 
 	
 	// SECTION: BUILDER METHODS
-	
-	public PipelineBuilder useSsl()
-	{
-		this.shouldUseSsl = true;
-		return this;
-	}
-	
-	public PipelineBuilder noSsl()
-	{
-		this.shouldUseSsl = false;
-		return this;
-	}
 	
 	public PipelineBuilder useCompression()
 	{
@@ -88,9 +78,13 @@ implements ChannelPipelineFactory
 		return this;
 	}
 	
-	public PipelineBuilder setRequestHandler(ChannelHandler handler)
+	public PipelineBuilder addRequestHandler(ChannelHandler handler)
 	{
-		this.requestHandler = handler;
+		if (!requestHandlers.contains(handler))
+		{
+			requestHandlers.add(handler);
+		}
+
 		return this;
 	}
 
@@ -102,13 +96,6 @@ implements ChannelPipelineFactory
 	throws Exception
 	{
 		ChannelPipeline pipeline = Channels.pipeline();
-
-		if (shouldUseSsl)
-		{
-//			SSLEngine engine = SecureChatSslContextFactory.getServerContext().createSSLEngine();
-//			engine.setUseClientMode(false);
-//			pipeline.addLast("ssl", new SslHandler(engine));
-		}
 
 		pipeline.addLast("decoder", new HttpRequestDecoder());
 
@@ -125,7 +112,10 @@ implements ChannelPipelineFactory
 			pipeline.addLast("inflater", new HttpContentDecompressor());
 		}
 
-		pipeline.addLast("router", requestHandler);
+		for (ChannelHandler handler : requestHandlers)
+		{
+			pipeline.addLast(handler.getClass().getSimpleName(), handler);
+		}
 
 		return pipeline;
 	}

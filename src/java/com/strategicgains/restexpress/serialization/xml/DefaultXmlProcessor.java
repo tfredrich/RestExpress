@@ -24,17 +24,20 @@ import java.util.Map;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBufferInputStream;
 
-import com.strategicgains.restexpress.RestExpress;
+import com.strategicgains.restexpress.ContentType;
+import com.strategicgains.restexpress.domain.ErrorMessage;
+import com.strategicgains.restexpress.domain.JsendResult;
 import com.strategicgains.restexpress.domain.Link;
-import com.strategicgains.restexpress.serialization.SerializationProcessor;
+import com.strategicgains.restexpress.serialization.AliasingSerializationProcessor;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.SingleValueConverter;
 
 /**
  * @author toddf
  * @since Mar 16, 2010
  */
 public class DefaultXmlProcessor
-implements SerializationProcessor
+implements AliasingSerializationProcessor
 {
 	private XStream xstream;
 	private Map<Class<?>, String> aliases = new HashMap<Class<?>, String>();
@@ -45,7 +48,9 @@ implements SerializationProcessor
 		this(new XStream());
 		xstream.registerConverter(new XstreamTimestampConverter());
 		xstream.alias("link", Link.class);
+		xstream.alias("error", ErrorMessage.class);
 		xstream.alias("list", Collections.EMPTY_LIST.getClass());
+		xstream.alias("response", JsendResult.class);
 	}
 	
 	public DefaultXmlProcessor(XStream xstream)
@@ -58,9 +63,15 @@ implements SerializationProcessor
 	
 	// SECTION: XML NAME ALIASING
 
+	@Override
 	public void alias(String name, Class<?> type)
 	{
 		xstream.alias(name, type);
+	}
+	
+	public void registerConverter(SingleValueConverter converter)
+	{
+		xstream.registerConverter(converter);
 	}
 
 
@@ -94,7 +105,7 @@ implements SerializationProcessor
 	@Override
 	public String getResultingContentType()
 	{
-		return RestExpress.CONTENT_TYPE_XML;
+		return ContentType.XML;
 	}
 
 	private void addAliasIfNecessary(Class<?> type)

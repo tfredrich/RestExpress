@@ -16,6 +16,7 @@
 package com.strategicgains.restexpress.url;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,6 +119,11 @@ implements UrlMatcher
     private void setUrlPattern(String pattern)
     {
     	this.urlPattern = pattern;
+    }
+    
+    public List<String> getParameterNames()
+    {
+    	return Collections.unmodifiableList(parameterNames);
     }
     
     

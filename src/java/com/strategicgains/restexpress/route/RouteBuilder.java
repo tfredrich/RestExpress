@@ -11,13 +11,17 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
+import com.strategicgains.restexpress.domain.console.RouteMetadata;
+import com.strategicgains.restexpress.domain.console.UriMetadata;
 import com.strategicgains.restexpress.exception.ConfigurationException;
 
 /**
@@ -55,10 +59,15 @@ public abstract class RouteBuilder
 
 	private String uri;
 	private List<HttpMethod> methods = new ArrayList<HttpMethod>();
+	private List<String> supportedFormats = new ArrayList<String>();
+	private String defaultFormat = null;
 	private Map<HttpMethod, String> actionNames = new HashMap<HttpMethod, String>();
 	private Object controller;
 	private boolean shouldSerializeResponse = true;
 	private String name;
+	private Set<String> flags = new HashSet<String>();
+	private Map<String, String> parameters = new HashMap<String, String>();
+	private boolean shouldUseWrappedResponse = true;
 	
 	/**
 	 * Create a RouteBuilder instance for the given URI pattern. URIs that match the pattern
@@ -138,7 +147,19 @@ public abstract class RouteBuilder
 		this.shouldSerializeResponse = true;
 		return this;
 	}
-	
+
+	public RouteBuilder useRawResponse()
+	{
+		this.shouldUseWrappedResponse = false;
+		return this;
+	}
+
+	public RouteBuilder useWrappedResponse()
+	{
+		this.shouldUseWrappedResponse = false;
+		return this;
+	}
+
 	/**
 	 * Give the route a known name to facilitate retrieving the route by name.  This facilitates
 	 * using the route URI pattern to create Link instances via LinkUtils.asLinks().
@@ -153,6 +174,37 @@ public abstract class RouteBuilder
 		this.name = name;
 		return this;
 	}
+	
+	public RouteBuilder format(String format)
+	{
+		if (!supportedFormats.contains(format))
+		{
+			supportedFormats.add(format);
+		}
+		
+		return this;
+	}
+	
+	public RouteBuilder defaultFormat(String format)
+	{
+		this.defaultFormat = format;
+		return this;
+	}
+	
+	public RouteBuilder flag(String flagValue)
+	{
+		flags.add(flagValue);
+		return this;
+	}
+	
+	public RouteBuilder parameter(String name, String value)
+	{
+		parameters.put(name, value);
+		return this;
+	}
+	
+	
+	// SECTION - BUILDER
 
 	/**
 	 * Build the Route instances.  The last step in the Builder process.
@@ -184,10 +236,38 @@ public abstract class RouteBuilder
 			}
 			
 			Method action = determineActionMethod(controller, actionName);
-			routes.add(newRoute(pattern, controller, action, method, shouldSerializeResponse, name));
+			routes.add(newRoute(pattern, controller, action, method, shouldSerializeResponse, shouldUseWrappedResponse, name, supportedFormats, defaultFormat, flags, parameters));
 		}
 		
 		return routes;
+	}
+	
+	
+	// SECTION: CONSOLE
+	
+	public RouteMetadata asMetadata()
+	{
+		RouteMetadata metadata = new RouteMetadata();
+		metadata.setName(name);
+		metadata.setSerialized(shouldSerializeResponse);
+		metadata.setDefaultFormat(defaultFormat);
+		metadata.addAllSupportedFormats(supportedFormats);
+		
+		for (HttpMethod method : methods)
+		{
+			metadata.addMethod(method.getName());
+		}
+		
+		UriMetadata uriMeta = new UriMetadata(uri);
+		List<Route> routes = build();
+
+		for (Route route : routes)
+		{
+			uriMeta.addAllParameters(route.getUrlParameters());
+		}
+
+		metadata.setUri(uriMeta);
+		return metadata;
 	}
 
 	
@@ -200,10 +280,16 @@ public abstract class RouteBuilder
      * @param method
      * @param shouldSerializeResponse
      * @param name
+	 * @param supportedFormats 
+	 * @param defaultFormat
+	 * @param flags
+	 * @param parameters
      * @return
      */
     protected abstract Route newRoute(String pattern, Object controller, Method action,
-    	HttpMethod method, boolean shouldSerializeResponse, String name);
+    	HttpMethod method, boolean shouldSerializeResponse, boolean shouldUseWrappedResponse,
+    	String name, List<String> supportedFormats, String defaultFormat, Set<String> flags,
+    	Map<String, String> parameters);
 
 
 	// SECTION: UTILITY - PRIVATE

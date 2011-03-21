@@ -15,7 +15,7 @@
 */
 package com.strategicgains.restexpress.serialization.text;
 
-import com.strategicgains.restexpress.RestExpress;
+import com.strategicgains.restexpress.ContentType;
 import com.strategicgains.restexpress.serialization.Serializer;
 
 /**
@@ -28,6 +28,6 @@ implements Serializer
 	@Override
 	public String getResultingContentType()
 	{
-		return RestExpress.CONTENT_TYPE_TEXT_PLAIN;
+		return ContentType.TEXT_PLAIN;
 	}
 }

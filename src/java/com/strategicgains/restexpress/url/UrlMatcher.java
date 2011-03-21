@@ -15,6 +15,8 @@
 */
 package com.strategicgains.restexpress.url;
 
+import java.util.List;
+
 
 /**
  * @author toddf
@@ -25,4 +27,5 @@ public interface UrlMatcher
 	public boolean matches(String url);
 	public UrlMatch match(String url);
 	public String getPattern();
+    public List<String> getParameterNames();
 }

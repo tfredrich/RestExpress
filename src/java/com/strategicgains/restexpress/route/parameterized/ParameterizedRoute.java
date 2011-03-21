@@ -16,6 +16,8 @@
 package com.strategicgains.restexpress.route.parameterized;
 
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
@@ -38,9 +40,10 @@ extends Route
      * @param shouldSerializeResponse
      * @param name
      */
-    public ParameterizedRoute(UrlPattern urlMatcher, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse, String name)
+    public ParameterizedRoute(UrlPattern urlMatcher, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse,
+    	boolean shouldUseWrappedResponse, String name, Set<String> flags, Map<String, String> parameters)
     {
-	    super(urlMatcher, controller, action, method, shouldSerializeResponse, name);
+	    super(urlMatcher, controller, action, method, shouldSerializeResponse, shouldUseWrappedResponse, name, flags, parameters);
     }
 
     /**
@@ -51,8 +54,9 @@ extends Route
      * @param shouldSerializeResponse
      * @param name
      */
-    public ParameterizedRoute(String urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse, String name)
+    public ParameterizedRoute(String urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse,
+    	boolean shouldUseWrappedResponse, String name, Set<String> flags, Map<String, String> parameters)
     {
-	    this(new UrlPattern(urlPattern), controller, action, method, shouldSerializeResponse, name);
+	    this(new UrlPattern(urlPattern), controller, action, method, shouldSerializeResponse, shouldUseWrappedResponse, name, flags, parameters);
     }
 }

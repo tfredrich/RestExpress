@@ -47,7 +47,11 @@ extends MessageObserver
 	@Override
     protected void onException(Throwable exception, Request request, Response response)
     {
-		System.out.println(request.getRealMethod().toString() + " " + request.getUrl() + " responded with " + response.getStatus().toString());
+		System.out.println(request.getRealMethod().toString() 
+			+ " " 
+			+ request.getUrl()
+			+ " threw exception: "
+			+ exception.getClass().getSimpleName());
 		exception.printStackTrace();
     }
 
@@ -60,16 +64,27 @@ extends MessageObserver
     protected void onComplete(Request request, Response response)
     {
 		Timer timer = timers.remove(request.getCorrelationId());
+		if (timer != null) timer.stop();
+
+		StringBuffer sb = new StringBuffer(request.getRealMethod().toString());
+		sb.append(" ");
+		sb.append(request.getUrl());
 		
 		if (timer != null)
 		{
-			timer.stop();
-			System.out.println(request.getRealMethod().toString() + " " + request.getUrl() + " responded in " + timer.toString());
+			sb.append(" responded with ");
+			sb.append(response.getResponseStatus().toString());
+			sb.append(" in ");
+			sb.append(timer.toString());
 		}
 		else
 		{
-			System.out.println(request.getRealMethod().toString() + " " + request.getUrl() + " with correlation ID " + request.getCorrelationId() + " had no timer.");			
+			sb.append(" responded with ");
+			sb.append(response.getResponseStatus().toString());
+			sb.append(" (no timer found)");
 		}
+		
+		System.out.println(sb.toString());
     }
 	
 	
