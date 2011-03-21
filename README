@@ -20,7 +20,7 @@ A quick tutorial:
 
 Please see the Kickstart application in examples/kickstart for a complete, running example.
 
-* HTTP Methods, if not changed in the DSL, map to the following:
+* HTTP Methods, if not changed in the fluent (DSL) interface, map to the following:
 1) GET --> read(Request, Response)
 2) PUT --> update(Request, Response)
 3) POST --> create(Request, Response)
