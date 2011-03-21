@@ -57,6 +57,8 @@ Release 0.6.0.2
   Useful for setting internal values/flags for preprocessors, controllers, etc.
 * Added .useRawResponse() and .useWrappedResponse() to fluent route DSL.  Causes that particular
   route to wrap the response or not, independent of global response wrap settings.
+* Parameters parsed from the URL and query string arguments are URL decoded before being placed
+  as Request headers.
 
 ===================================================================================================
 Release 0.6.0.1
