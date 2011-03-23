@@ -19,7 +19,11 @@ import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.ServiceException;
 
 /**
- * Generic JSEND-style wrapper for responses.
+ * Generic JSEND-style wrapper for responses.  Differs from the JSEND recommendation as follows:</br>
+ * <p/>
+ * 1. Always includes the HTTP response status code.<br/>
+ * 2. Error status illustrates a non-2xx and non-500 response (e.g. validation errors causing a 400, Bad Request).</br>
+ * 3. Fail status is essentially a 500 (internal server) error.<br/>
  * 
  * @author toddf
  * @since Jan 11, 2011
