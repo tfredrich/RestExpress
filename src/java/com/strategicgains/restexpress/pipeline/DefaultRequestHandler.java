@@ -50,7 +50,6 @@ import com.strategicgains.restexpress.util.Resolver;
 @Sharable
 public class DefaultRequestHandler
 extends SimpleChannelUpstreamHandler
-implements PreprocessorAware, PostprocessorAware
 {
 	// SECTION: INSTANCE VARIABLES
 
@@ -285,11 +284,7 @@ implements PreprocessorAware, PostprocessorAware
 		}
 	}
 
-	/**
-     * @param request
-     */
-	@Override
-    public void invokePreprocessors(Request request)
+    private void invokePreprocessors(Request request)
     {
 		for (Preprocessor handler : preprocessors)
 		{
@@ -299,12 +294,7 @@ implements PreprocessorAware, PostprocessorAware
 		request.getBody().resetReaderIndex();
     }
 
-	/**
-     * @param request
-     * @param response
-     */
-	@Override
-    public void invokePostprocessors(Request request, Response response)
+    private void invokePostprocessors(Request request, Response response)
     {
 		for (Postprocessor handler : postprocessors)
 		{
