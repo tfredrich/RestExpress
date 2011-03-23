@@ -26,7 +26,7 @@ import org.jboss.netty.buffer.ChannelBufferInputStream;
 
 import com.strategicgains.restexpress.ContentType;
 import com.strategicgains.restexpress.domain.Link;
-import com.strategicgains.restexpress.domain.WrappedResult;
+import com.strategicgains.restexpress.domain.ResultWrapper;
 import com.strategicgains.restexpress.serialization.AliasingSerializationProcessor;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
@@ -48,7 +48,7 @@ implements AliasingSerializationProcessor
 		xstream.registerConverter(new XstreamTimestampConverter());
 		xstream.alias("link", Link.class);
 		xstream.alias("list", Collections.EMPTY_LIST.getClass());
-		xstream.alias("response", WrappedResult.class);
+		xstream.alias("response", ResultWrapper.class);
 	}
 	
 	public DefaultXmlProcessor(XStream xstream)

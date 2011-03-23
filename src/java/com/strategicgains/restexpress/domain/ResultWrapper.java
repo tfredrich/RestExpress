@@ -24,7 +24,7 @@ import com.strategicgains.restexpress.exception.ServiceException;
  * @author toddf
  * @since Jan 11, 2011
  */
-public class WrappedResult
+public class ResultWrapper
 {
 	private static final String STATUS_SUCCESS = "success";
 	private static final String STATUS_ERROR = "error";
@@ -35,7 +35,7 @@ public class WrappedResult
 	private String message;
 	private Object data;
 
-	public WrappedResult(int httpResponseCode, String status, String errorMessage, Object data)
+	public ResultWrapper(int httpResponseCode, String status, String errorMessage, Object data)
 	{
 		super();
 		this.code = httpResponseCode;
@@ -68,20 +68,20 @@ public class WrappedResult
 	// SECTION: FACTORY
 	
 
-	public static WrappedResult fromResponse(Response response)
+	public static ResultWrapper fromResponse(Response response)
 	{
 		if (!response.hasException())
 		{
-			return new WrappedResult(response.getResponseStatus().getCode(), STATUS_SUCCESS, null, response.getBody());
+			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_SUCCESS, null, response.getBody());
 		}
 		
 		Throwable exception = response.getException();
 
 		if (ServiceException.isAssignableFrom(exception))
 		{
-			return new WrappedResult(response.getResponseStatus().getCode(), STATUS_ERROR, exception.getMessage(), null);
+			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_ERROR, exception.getMessage(), null);
 		}
 		
-		return new WrappedResult(response.getResponseStatus().getCode(), STATUS_FAIL, exception.getMessage(), null);
+		return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_FAIL, exception.getMessage(), null);
 	}
 }

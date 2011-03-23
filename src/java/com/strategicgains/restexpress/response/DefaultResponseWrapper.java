@@ -16,7 +16,7 @@
 package com.strategicgains.restexpress.response;
 
 import com.strategicgains.restexpress.Response;
-import com.strategicgains.restexpress.domain.WrappedResult;
+import com.strategicgains.restexpress.domain.ResultWrapper;
 
 /**
  * Wraps the out bound Response body in a JSEND-style object.
@@ -30,6 +30,6 @@ implements ResponseWrapperFactory
 	@Override
 	public Object wrap(Response response)
 	{
-		return WrappedResult.fromResponse(response);
+		return ResultWrapper.fromResponse(response);
 	}
 }
