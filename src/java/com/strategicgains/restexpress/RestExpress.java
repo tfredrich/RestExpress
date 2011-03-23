@@ -40,7 +40,7 @@ import com.strategicgains.restexpress.pipeline.MessageObserver;
 import com.strategicgains.restexpress.pipeline.PipelineBuilder;
 import com.strategicgains.restexpress.pipeline.Postprocessor;
 import com.strategicgains.restexpress.pipeline.Preprocessor;
-import com.strategicgains.restexpress.response.JsendResponseWrapper;
+import com.strategicgains.restexpress.response.DefaultResponseWrapper;
 import com.strategicgains.restexpress.response.RawResponseWrapper;
 import com.strategicgains.restexpress.response.ResponseWrapperFactory;
 import com.strategicgains.restexpress.route.RouteDeclaration;
@@ -569,7 +569,7 @@ public class RestExpress
 
 	public RestExpress useWrappedResponses()
 	{
-		responseWrapperFactory = new JsendResponseWrapper();
+		responseWrapperFactory = new DefaultResponseWrapper();
 		return this;
 	}
 	

@@ -16,7 +16,7 @@
 package com.strategicgains.restexpress.response;
 
 import com.strategicgains.restexpress.Response;
-import com.strategicgains.restexpress.domain.JsendResult;
+import com.strategicgains.restexpress.domain.WrappedResult;
 
 /**
  * Wraps the out bound Response body in a JSEND-style object.
@@ -24,12 +24,12 @@ import com.strategicgains.restexpress.domain.JsendResult;
  * @author toddf
  * @since Feb 10, 2011
  */
-public class JsendResponseWrapper
+public class DefaultResponseWrapper
 implements ResponseWrapperFactory
 {
 	@Override
 	public Object wrap(Response response)
 	{
-		return JsendResult.fromResponse(response);
+		return WrappedResult.fromResponse(response);
 	}
 }
