@@ -89,7 +89,7 @@ public class RestExpress
 	private ResponseWrapperFactory responseWrapperFactory;
 	private boolean shouldUseCompression = true;
 	private boolean shouldHandleChunking = true;
-	private Integer chunkSize = null;
+	private Integer maxChunkSize = null;
 
 	Map<String, SerializationProcessor> serializationProcessors = new HashMap<String, SerializationProcessor>();
 	private List<MessageObserver> messageObservers = new ArrayList<MessageObserver>();
@@ -330,6 +330,36 @@ public class RestExpress
 	public RestExpress noXml()
 	{
 		serializationProcessors.remove(Format.XML);
+		return this;
+	}
+	
+	public RestExpress supportChunking()
+	{
+		shouldHandleChunking = true;
+		return this;
+	}
+
+	public RestExpress noChunkingSupport()
+	{
+		shouldHandleChunking = false;
+		return this;
+	}
+
+	public RestExpress setMaxChunkSize(int size)
+	{
+		this.maxChunkSize = Integer.valueOf(size);
+		return this;
+	}
+	
+	public RestExpress supportCompression()
+	{
+		shouldUseCompression = true;
+		return this;
+	}
+	
+	public RestExpress noCompression()
+	{
+		shouldUseCompression = false;
 		return this;
 	}
 
@@ -627,9 +657,9 @@ public class RestExpress
 		{
 			pf.handleChunked();
 			
-			if (chunkSize != null)
+			if (maxChunkSize != null)
 			{
-				pf.maxChunkSize(chunkSize.intValue());
+				pf.maxChunkSize(maxChunkSize.intValue());
 			}
 		}
 		
