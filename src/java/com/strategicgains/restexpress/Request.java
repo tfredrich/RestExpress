@@ -191,16 +191,33 @@ public class Request
 	{
 		httpRequest.clearHeaders();
 	}
+	
+	public String getRawHeader(String name)
+	{
+		return httpRequest.getHeader(name);
+	}
+	
+	public String getRawHeader(String name, String message)
+	{
+		String value = getRawHeader(name);
+		
+		if (value == null)
+		{
+			throw new BadRequestException(message);
+		}
 
-	public String getHeader(String name)
+		return value;
+	}
+
+	public String getUrlDecodedHeader(String name)
 	{
 		String value = httpRequest.getHeader(name);
 		return (value != null ? urlDecode(value) : null);
 	}
 	
-	public String getHeader(String name, String message)
+	public String getUrlDecodedHeader(String name, String message)
 	{
-		String value = getHeader(name);
+		String value = getRawHeader(name);
 		
 		if (value == null)
 		{
@@ -282,7 +299,7 @@ public class Request
 	 */
 	public String getFormat()
 	{
-		return getHeader(FORMAT_HEADER_NAME);
+		return getRawHeader(FORMAT_HEADER_NAME);
 	}
 	
 	/**
@@ -297,7 +314,7 @@ public class Request
 	
 	public String getJsonpHeader()
 	{
-		return getHeader(JSONP_CALLBACK_HEADER_NAME);
+		return getRawHeader(JSONP_CALLBACK_HEADER_NAME);
 	}
 	
 	public boolean hasJsonpHeader()
@@ -330,8 +347,8 @@ public class Request
 	
 	/**
 	 * Checks the value of the given header against the given value.
-	 * Ignores case.  If the header value or given value is null or has a trimmed length
-	 * of zero, returns false.
+	 * Ignores case and attempts to URLDecode the header.  If the header
+	 * value or given value is null or has a trimmed length of zero, returns false.
 	 * 
 	 * @param name the name of a header to check.
 	 * @param value the expected value.
@@ -339,8 +356,8 @@ public class Request
 	 */
 	public boolean isHeaderEqual(String name, String value)
 	{
-		String header = getHeader(name);
-		
+		String header = getUrlDecodedHeader(name);
+
 		if (header == null || header.trim().length() == 0 || value == null || value.trim().length() == 0)
 			return false;
 		

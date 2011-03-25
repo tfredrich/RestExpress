@@ -132,7 +132,7 @@ public class DefaultRequestHandlerTest
 		assertEquals(1, observer.getExceptionCount());
 		assertEquals(0, observer.getSuccessCount());
 //		System.out.println(httpResponse.toString());
-		assertEquals("{\"code\":400,\"status\":\"error\",\"message\":\"java.lang.IllegalArgumentException: URLDecoder: Illegal hex characters in escape (%) pattern - For input string: \\\"ta\\\"\"}", httpResponse.toString());
+		assertEquals("{\"code\":400,\"status\":\"error\",\"message\":\"foobar'd\"}", httpResponse.toString());
 	}
 
 	@Test

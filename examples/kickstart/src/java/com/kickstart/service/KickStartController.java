@@ -18,7 +18,7 @@ public class KickStartController
 
 	public Object read(Request request, Response response)
 	{
-		String id = request.getHeader("orderId");
+		String id = request.getUrlDecodedHeader("orderId");
 		throw new NotFoundException("The order ID you requested was not found: " + id);
 	}
 
