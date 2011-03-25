@@ -32,6 +32,7 @@ import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
+import com.strategicgains.restexpress.exception.BadRequestException;
 import com.strategicgains.restexpress.exception.ExceptionMapping;
 import com.strategicgains.restexpress.exception.ServiceException;
 import com.strategicgains.restexpress.response.DefaultHttpResponseWriter;
@@ -40,8 +41,8 @@ import com.strategicgains.restexpress.response.ResponseWrapperFactory;
 import com.strategicgains.restexpress.route.Action;
 import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
+import com.strategicgains.restexpress.serialization.SerializationResolver;
 import com.strategicgains.restexpress.util.HttpSpecification;
-import com.strategicgains.restexpress.util.Resolver;
 
 /**
  * @author toddf
@@ -54,7 +55,7 @@ extends SimpleChannelUpstreamHandler
 	// SECTION: INSTANCE VARIABLES
 
 	private RouteResolver routeResolver;
-	private Resolver<SerializationProcessor> serializationResolver;
+	private SerializationResolver serializationResolver;
 	private HttpResponseWriter responseWriter;
 	private List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
 	private List<Postprocessor> postprocessors = new ArrayList<Postprocessor>();
@@ -65,12 +66,12 @@ extends SimpleChannelUpstreamHandler
 
 	// SECTION: CONSTRUCTORS
 
-	public DefaultRequestHandler(RouteResolver routeResolver, Resolver<SerializationProcessor> serializationResolver)
+	public DefaultRequestHandler(RouteResolver routeResolver, SerializationResolver serializationResolver)
 	{
 		this(routeResolver, serializationResolver, new DefaultHttpResponseWriter());
 	}
 
-	public DefaultRequestHandler(RouteResolver routeResolver, Resolver<SerializationProcessor> serializationResolver,
+	public DefaultRequestHandler(RouteResolver routeResolver, SerializationResolver serializationResolver,
 		HttpResponseWriter responseWriter)
 	{
 		super();
@@ -128,10 +129,11 @@ extends SimpleChannelUpstreamHandler
 	throws Exception
 	{
 		MessageContext context = createInitialContext(ctx, event);
-		
+
 		try
 		{
 			notifyReceived(context);
+			resolveSerializationProcessor(context);
 			resolveRoute(context);
 			invokePreprocessors(context.getRequest());
 			Object result = context.getAction().invoke(context.getRequest(), context.getResponse());
@@ -202,9 +204,21 @@ extends SimpleChannelUpstreamHandler
 		Request request = createRequest((HttpRequest) event.getMessage(), ctx);
 		Response response = createResponse(request);
 		MessageContext context = new MessageContext(request, response);
-		context.setSerializationProcessor(serializationResolver.resolve(context.getRequest()));
+		context.setSerializationProcessor(serializationResolver.getDefault());
 		ctx.setAttachment(context);
 		return context;
+	}
+
+	private void resolveSerializationProcessor(MessageContext context)
+	{
+		try
+		{
+			context.setSerializationProcessor(serializationResolver.resolve(context.getRequest()));
+		}
+		catch(IllegalArgumentException e)
+		{
+			throw new BadRequestException(e);
+		}
 	}
 
 	private void resolveRoute(MessageContext context)

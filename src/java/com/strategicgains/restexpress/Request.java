@@ -20,8 +20,6 @@ package com.strategicgains.restexpress;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -69,7 +67,8 @@ public class Request
 		this.realMethod = request.getMethod();
 		this.urlRouter = routes;
 		parseRequestedFormatToHeader(request);
-		handleMethodTunneling(addQueryStringParametersAsHeaders(request));
+		addQueryStringParametersAsHeaders(request);
+		handleMethodTunneling(request);
 		createCorrelationId();
 	}
 
@@ -195,9 +194,10 @@ public class Request
 
 	public String getHeader(String name)
 	{
-		return httpRequest.getHeader(name);
+		String value = httpRequest.getHeader(name);
+		return (value != null ? urlDecode(value) : null);
 	}
-
+	
 	public String getHeader(String name, String message)
 	{
 		String value = getHeader(name);
@@ -219,7 +219,7 @@ public class Request
 	{
     	for (Entry<String, String> entry : headers)
     	{
-    		addHeader(entry.getKey(), urlDecode(entry.getValue()));
+    		addHeader(entry.getKey(), entry.getValue());
     	}
 	}
 
@@ -362,7 +362,7 @@ public class Request
      */
     private void parseRequestedFormatToHeader(HttpRequest request)
     {
-    	String uri = getUri(request);
+    	String uri = request.getUri();
 		int queryDelimiterIndex = uri.indexOf('?');
 		String path = (queryDelimiterIndex > 0 ? uri.substring(0, queryDelimiterIndex) : uri);
     	int formatDelimiterIndex = path.indexOf('.');
@@ -377,10 +377,9 @@ public class Request
 	/**
 	 * Add the query string parameters to the request as headers.
 	 */
-	private Map<String, String> addQueryStringParametersAsHeaders(HttpRequest request)
+	private void addQueryStringParametersAsHeaders(HttpRequest request)
 	{
-		Map<String, String> parameters = new HashMap<String, String>();
-		String uri = getUri(request);
+		String uri = request.getUri();
 		int x = uri.indexOf('?');
 		String queryString = (x >= 0 ? uri.substring(x + 1) : null);
 		
@@ -391,30 +390,44 @@ public class Request
 			for (String pair : params)
 			{
 				String[] keyValue = pair.split("=");
-				String key = urlDecode(keyValue[0]);
+				String key = keyValue[0];
 				
 				if (keyValue.length == 1)
 				{
 					request.addHeader(key, "");
-					parameters.put(key, "");
 				}
 				else
 				{
-					String value = urlDecode(keyValue[1]);
-					request.addHeader(key, value);
-					parameters.put(key, value);
+					request.addHeader(key, keyValue[1]);
 				}
 			}
 		}
-		
-		return parameters;
 	}
 
-	private String getUri(HttpRequest request)
+	/**
+	 * If the request HTTP method is post, allow a query string parameter to determine
+	 * the request HTTP method of the post (e.g. _method=DELETE or _method=PUT).  This
+	 * supports DELETE and PUT from the browser.
+	 * 
+	 * @param parameters
+	 */
+	private void handleMethodTunneling(HttpRequest request)
 	{
-        return urlDecode(request.getUri());
+		if (! HttpMethod.POST.equals(request.getMethod())) return;
+
+		String methodString = request.getHeader(METHOD_QUERY_PARAMETER);
+
+		if (METHOD_QUERY_PARAMETER.equalsIgnoreCase(methodString))
+		{
+			realMethod = HttpMethod.valueOf(methodString.toUpperCase());
+		}
 	}
 	
+	private void createCorrelationId()
+	{
+		this.correlationId = String.valueOf(++nextCorrelationId);
+	}
+
 	private String urlDecode(String value)
 	{
         try
@@ -427,32 +440,5 @@ public class Request
         }
         
         return "";
-	}
-
-	/**
-	 * If the request HTTP method is post, allow a query string parameter to determine
-	 * the request HTTP method of the post (e.g. _method=DELETE or _method=PUT).  This
-	 * supports DELETE and PUT from the browser.
-	 * 
-	 * @param parameters
-	 */
-	private void handleMethodTunneling(Map<String, String> parameters)
-	{
-		if (! HttpMethod.POST.equals(getMethod()))
-			return;
-
-		for (Entry<String, String> entry : parameters.entrySet())
-		{
-			if (METHOD_QUERY_PARAMETER.equalsIgnoreCase(entry.getKey()))
-			{
-				realMethod = HttpMethod.valueOf(entry.getValue().toUpperCase());
-				break;
-			}
-		}
-	}
-	
-	private void createCorrelationId()
-	{
-		this.correlationId = String.valueOf(++nextCorrelationId);
 	}
 }
