@@ -53,7 +53,7 @@ public class Request
 	private HttpRequest httpRequest;
 	private SerializationProcessor serializationProcessor;
 	private RouteResolver urlRouter;
-	private HttpMethod realMethod;
+	private HttpMethod effectiveHttpMethod;
 	private Route resolvedRoute;
 	private String correlationId;
 
@@ -64,11 +64,11 @@ public class Request
 	{
 		super();
 		this.httpRequest = request;
-		this.realMethod = request.getMethod();
+		this.effectiveHttpMethod = request.getMethod();
 		this.urlRouter = routes;
 		parseRequestedFormatToHeader(request);
 		addQueryStringParametersAsHeaders(request);
-		handleMethodTunneling(request);
+		determineEffectiveHttpMethod(request);
 		createCorrelationId();
 	}
 
@@ -101,29 +101,29 @@ public class Request
 	 * 
 	 * @return the requested HttpMethod.
 	 */
-	public HttpMethod getRealMethod()
+	public HttpMethod getEffectiveHttpMethod()
 	{
-		return realMethod;
+		return effectiveHttpMethod;
 	}
 
 	public boolean isMethodGet()
 	{
-		return getRealMethod().equals(HttpMethod.GET);
+		return getEffectiveHttpMethod().equals(HttpMethod.GET);
 	}
 
 	public boolean isMethodDelete()
 	{
-		return getRealMethod().equals(HttpMethod.DELETE);
+		return getEffectiveHttpMethod().equals(HttpMethod.DELETE);
 	}
 
 	public boolean isMethodPost()
 	{
-		return getRealMethod().equals(HttpMethod.POST);
+		return getEffectiveHttpMethod().equals(HttpMethod.POST);
 	}
 
 	public boolean isMethodPut()
 	{
-		return getRealMethod().equals(HttpMethod.PUT);
+		return getEffectiveHttpMethod().equals(HttpMethod.PUT);
 	}
 
 	public ChannelBuffer getBody()
@@ -456,15 +456,15 @@ public class Request
 	 * 
 	 * @param parameters
 	 */
-	private void handleMethodTunneling(HttpRequest request)
+	private void determineEffectiveHttpMethod(HttpRequest request)
 	{
-		if (! HttpMethod.POST.equals(request.getMethod())) return;
+		if (!HttpMethod.POST.equals(request.getMethod())) return;
 
 		String methodString = request.getHeader(METHOD_QUERY_PARAMETER);
 
 		if (METHOD_QUERY_PARAMETER.equalsIgnoreCase(methodString))
 		{
-			realMethod = HttpMethod.valueOf(methodString.toUpperCase());
+			effectiveHttpMethod = HttpMethod.valueOf(methodString.toUpperCase());
 		}
 	}
 	

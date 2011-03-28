@@ -45,7 +45,7 @@ implements Resolver<Action>
 	@Override
 	public Action resolve(Request request)
 	{
-		for (Route route : routeMapping.getRoutesFor(request.getRealMethod()))
+		for (Route route : routeMapping.getRoutesFor(request.getEffectiveHttpMethod()))
 		{
 			UrlMatch match = route.match(request.getPath());
 
