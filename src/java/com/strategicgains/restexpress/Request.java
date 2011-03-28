@@ -192,11 +192,25 @@ public class Request
 		httpRequest.clearHeaders();
 	}
 	
+	/**
+	 * Gets the named header as it came in on the request (without URL decoding it).
+	 * Returns null if the header is not present.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public String getRawHeader(String name)
 	{
 		return httpRequest.getHeader(name);
 	}
 	
+	/**
+	 * Gets the named header as it came in on the request (without URL decoding it).
+	 * Throws BadRequestException(message) if the header is not present.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public String getRawHeader(String name, String message)
 	{
 		String value = getRawHeader(name);
@@ -208,13 +222,27 @@ public class Request
 
 		return value;
 	}
-
+	
+	/**
+	 * Gets the named header, URL decoding it before returning it.
+	 * Returns null if the header is not present.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public String getUrlDecodedHeader(String name)
 	{
 		String value = httpRequest.getHeader(name);
 		return (value != null ? urlDecode(value) : null);
 	}
 	
+	/**
+	 * Gets the named header, URL decoding it before returning it.
+	 * Throws BadRequestException(message) if the header is not present.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public String getUrlDecodedHeader(String name, String message)
 	{
 		String value = getRawHeader(name);
