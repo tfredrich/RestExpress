@@ -28,6 +28,7 @@ import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
 import com.strategicgains.restexpress.exception.BadRequestException;
+import com.strategicgains.restexpress.exception.ServiceException;
 import com.strategicgains.restexpress.route.Route;
 import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
@@ -462,7 +463,7 @@ public class Request
 
 		String methodString = request.getHeader(METHOD_QUERY_PARAMETER);
 
-		if (METHOD_QUERY_PARAMETER.equalsIgnoreCase(methodString))
+		if ("PUT".equalsIgnoreCase(methodString) || "DELETE".equalsIgnoreCase(methodString))
 		{
 			effectiveHttpMethod = HttpMethod.valueOf(methodString.toUpperCase());
 		}
@@ -481,9 +482,11 @@ public class Request
         }
         catch (UnsupportedEncodingException e)
         {
-        	// UGH!
+        	throw new ServiceException(e);
         }
-        
-        return "";
+        catch(IllegalArgumentException iae)
+        {
+        	throw new BadRequestException(iae);
+        }
 	}
 }
