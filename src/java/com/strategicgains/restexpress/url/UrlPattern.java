@@ -61,10 +61,10 @@ implements UrlMatcher
 	private static final Pattern URL_PARAM_PATTERN = Pattern.compile(URL_PARAM_REGEX);
 
 	// Finds the format portion of the URL pattern string.
-	private static final String URL_FORMAT_REGEX = "(?:\\.\\{(\\w+)\\})$";
+	private static final String URL_FORMAT_REGEX = "(?:\\.\\{(\\S+)\\})$";
 	
 	// Replaces the format parameter name in the URL pattern string before compilation to match URLs.
-	private static final String URL_FORMAT_MATCH_REGEX = "(?:\\\\.\\(\\\\w+?\\))?";
+	private static final String URL_FORMAT_MATCH_REGEX = "(?:\\\\.\\(\\\\S+?\\))?";
 	
 	// Finds the query string in a URL.
 	private static final String URL_QUERY_STRING_REGEX = "(?:\\?.+?)?$";

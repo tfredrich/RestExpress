@@ -47,7 +47,7 @@ extends MessageObserver
 	@Override
     protected void onException(Throwable exception, Request request, Response response)
     {
-		System.out.println(request.getRealMethod().toString() 
+		System.out.println(request.getEffectiveHttpMethod().toString() 
 			+ " " 
 			+ request.getUrl()
 			+ " threw exception: "
@@ -66,7 +66,7 @@ extends MessageObserver
 		Timer timer = timers.remove(request.getCorrelationId());
 		if (timer != null) timer.stop();
 
-		StringBuffer sb = new StringBuffer(request.getRealMethod().toString());
+		StringBuffer sb = new StringBuffer(request.getEffectiveHttpMethod().toString());
 		sb.append(" ");
 		sb.append(request.getUrl());
 		

@@ -40,6 +40,9 @@ public class UrlPatternTest
 		assertTrue(pFormat.matches("/xxx/v1_0_1/yyy/yada"));
 		assertTrue(pFormat.matches("/xxx/v1_0_1/yyy/yada.json"));
 		assertTrue(pFormat.matches("/xxx/v1_0_1/yyy/yada.json?x=y&a=b"));
+		assertTrue(pFormat.matches("/xxx/toddf/yyy/jose.js%20on"));
+		assertTrue(pFormat.matches("/xxx/toddf/yyy/jose.%20json"));
+		assertTrue(pFormat.matches("/xxx/toddf/yyy/jose.%json"));
 	}
 
 	@Test

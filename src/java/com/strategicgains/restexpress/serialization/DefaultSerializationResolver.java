@@ -24,14 +24,13 @@ import java.util.Map;
 
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.exception.BadRequestException;
-import com.strategicgains.restexpress.util.Resolver;
 
 /**
  * @author toddf
  * @since Nov 20, 2009
  */
 public class DefaultSerializationResolver
-implements Resolver<SerializationProcessor>
+implements SerializationResolver
 {
 	private Map<String, SerializationProcessor> processors = new HashMap<String, SerializationProcessor>();
 	private String defaultFormat;
@@ -77,7 +76,7 @@ implements Resolver<SerializationProcessor>
 			return processor;
 		}
 
-		processor = resolveViaDefaultFormat();
+		processor = getDefault();
 		
 		if (processor == null)
 		{
@@ -86,6 +85,12 @@ implements Resolver<SerializationProcessor>
 		
 		return processor;
 	}
+
+    @Override
+    public SerializationProcessor getDefault()
+    {
+		return resolveViaSpecifiedFormat(defaultFormat);
+    }
 
 	private SerializationProcessor resolveViaRequestFormat(Request request)
 	{
@@ -108,11 +113,6 @@ implements Resolver<SerializationProcessor>
 		}
 		
 		return processor;
-	}
-	
-	private SerializationProcessor resolveViaDefaultFormat()
-	{
-		return resolveViaSpecifiedFormat(defaultFormat);
 	}
 	
 	private SerializationProcessor resolveViaSpecifiedFormat(String format)

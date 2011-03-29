@@ -110,6 +110,45 @@ public class DefaultRequestHandlerTest
 	}
 
 	@Test
+	public void shouldHandleUrlDecodeErrorInQueryString()
+	throws Exception
+	{
+		sendGetEvent("/bar?value=%target");
+		assertEquals(1, observer.getReceivedCount());
+		assertEquals(1, observer.getCompleteCount());
+		assertEquals(1, observer.getExceptionCount());
+		assertEquals(0, observer.getSuccessCount());
+//		System.out.println(httpResponse.toString());
+		assertEquals("{\"code\":400,\"status\":\"error\",\"message\":\"foobar'd\"}", httpResponse.toString());
+	}
+
+	@Test
+	public void shouldHandleUrlDecodeErrorInFormat()
+	throws Exception
+	{
+		sendGetEvent("/bar.%target");
+		assertEquals(1, observer.getReceivedCount());
+		assertEquals(1, observer.getCompleteCount());
+		assertEquals(1, observer.getExceptionCount());
+		assertEquals(0, observer.getSuccessCount());
+//		System.out.println(httpResponse.toString());
+		assertEquals("{\"code\":400,\"status\":\"error\",\"message\":\"foobar'd\"}", httpResponse.toString());
+	}
+
+	@Test
+	public void shouldHandleUrlDecodeErrorInUrl()
+	throws Exception
+	{
+		sendGetEvent("/%bar");
+		assertEquals(1, observer.getReceivedCount());
+		assertEquals(1, observer.getCompleteCount());
+		assertEquals(1, observer.getExceptionCount());
+		assertEquals(0, observer.getSuccessCount());
+//		System.out.println(httpResponse.toString());
+		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Unresolvable URL: http://null/%bar\"}", httpResponse.toString());
+	}
+
+	@Test
 	public void shouldParseTimepointJson()
 	{
 		sendGetEvent("/date.json", "{\"at\":\"2010-12-17T120000Z\"}");
