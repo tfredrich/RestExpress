@@ -15,6 +15,7 @@ import org.jboss.netty.handler.codec.http.HttpContentCompressor;
 import org.jboss.netty.handler.codec.http.HttpContentDecompressor;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
+import org.jboss.netty.handler.stream.ChunkedWriteHandler;
 
 /**
  * Provides a tiny DSL to define the pipeline features.
@@ -102,6 +103,7 @@ implements ChannelPipelineFactory
 		if(shouldHandleChunked)
 		{
 			pipeline.addLast("aggregator", new HttpChunkAggregator(maxChunkSize));
+			pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());			
 		}
 
 		pipeline.addLast("encoder", new HttpResponseEncoder());

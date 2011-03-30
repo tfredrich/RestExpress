@@ -42,6 +42,13 @@ On successful creation, call response.setResponseCreated() to set the returning 
 
 Change History/Release Notes:
 ===================================================================================================
+Release 0.7.0
+* Added gzip request/response handling. On by default. Disable it via call to
+  RestExpress.noCompression() and supportCompression().
+* Added chunked message handling. On by default. Chunking settings are managed via
+  RestExpress.noChunkingSupport(), supportChunking(), and setMaxChunkSize(int).
+
+===================================================================================================
 Release 0.6.1
 * Stability release.
 * Fixed issue when unable to URL Decode query string parameters or URL.

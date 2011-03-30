@@ -89,6 +89,9 @@ public class RestExpress
 	private boolean useConsoleRoutes;
 	private String consoleUrlPrefix;
 	private ResponseWrapperFactory responseWrapperFactory;
+	private boolean shouldUseCompression = true;
+	private boolean shouldHandleChunking = true;
+	private Integer maxChunkSize = null;
 
 	Map<String, SerializationProcessor> serializationProcessors = new HashMap<String, SerializationProcessor>();
 	private List<MessageObserver> messageObservers = new ArrayList<MessageObserver>();
@@ -328,6 +331,36 @@ public class RestExpress
 	public RestExpress noXml()
 	{
 		serializationProcessors.remove(Format.XML);
+		return this;
+	}
+	
+	public RestExpress supportChunking()
+	{
+		shouldHandleChunking = true;
+		return this;
+	}
+
+	public RestExpress noChunkingSupport()
+	{
+		shouldHandleChunking = false;
+		return this;
+	}
+
+	public RestExpress setMaxChunkSize(int size)
+	{
+		this.maxChunkSize = Integer.valueOf(size);
+		return this;
+	}
+	
+	public RestExpress supportCompression()
+	{
+		shouldUseCompression = true;
+		return this;
+	}
+	
+	public RestExpress noCompression()
+	{
+		shouldUseCompression = false;
 		return this;
 	}
 
@@ -620,14 +653,24 @@ public class RestExpress
 		PipelineBuilder pf = new PipelineBuilder()
 			.addRequestHandler(new LoggingHandler( getLogLevel().getNettyLogLevel() ))
 		    .addRequestHandler(requestHandler);
-		bootstrap.setPipelineFactory(pf);
+		
+		if (shouldHandleChunking)
+		{
+			pf.handleChunked();
+			
+			if (maxChunkSize != null)
+			{
+				pf.maxChunkSize(maxChunkSize.intValue());
+			}
+		}
+		
+		if (shouldUseCompression)
+		{
+			pf.useCompression();
+		}
 
-		bootstrap.setOption("child.tcpNoDelay", isUseTcpNoDelay());
-		bootstrap.setOption("child.keepAlive", isUseKeepAlive());
-		bootstrap.setOption("reuseAddress", isReuseAddress());
-		bootstrap.setOption("child.soLinger", getSoLinger());
-		bootstrap.setOption("connectTimeoutMillis", getConnectTimeoutMillis());
-		bootstrap.setOption("receiveBufferSize", getReceiveBufferSize());
+		bootstrap.setPipelineFactory(pf);
+		setBootstrapOptions();
 
 		// Bind and start to accept incoming connections.
 		if (shouldUseSystemOut())
@@ -639,6 +682,16 @@ public class RestExpress
 		allChannels.add(channel);
 		return channel;
 	}
+
+	private void setBootstrapOptions()
+    {
+	    bootstrap.setOption("child.tcpNoDelay", isUseTcpNoDelay());
+		bootstrap.setOption("child.keepAlive", isUseKeepAlive());
+		bootstrap.setOption("reuseAddress", isReuseAddress());
+		bootstrap.setOption("child.soLinger", getSoLinger());
+		bootstrap.setOption("connectTimeoutMillis", getConnectTimeoutMillis());
+		bootstrap.setOption("receiveBufferSize", getReceiveBufferSize());
+    }
 	
 	/**
 	 * Used in main() to install a default JVM shutdown hook and shut down the server cleanly.
@@ -648,6 +701,7 @@ public class RestExpress
 	public void awaitShutdown()
 	{
 		Runtime.getRuntime().addShutdownHook(new DefaultShutdownHook(this));
+		boolean interrupted = false;
 
 		do
 		{
@@ -657,9 +711,10 @@ public class RestExpress
 	        }
 	        catch (InterruptedException e)
 	        {
+	        	interrupted = true;
 	        }
 		}
-		while(true);
+		while(!interrupted);
 	}
 
 	/**
