@@ -42,6 +42,20 @@ On successful creation, call response.setResponseCreated() to set the returning 
 
 Change History/Release Notes:
 ===================================================================================================
+Release 0.6.1
+* Stability release.
+* Fixed issue when unable to URL Decode query string parameters or URL.
+* Introduced SerializationResolver that defines a getDefault() method. Implemented
+  SerializationResolver in DefaultSerializationResolver.
+* Changed UrlPattern to match format based on non-whitespace vs. word characters.
+* Refactored Request.getHeader() into getRawHeader(String) and getUrlDecodedHeader(String), along
+  with corresponding getRawHeader(String,String) and getUrlDecodedHeader(String,String).
+* Renamed realMethod property to effectiveHttpMethod, along with appropriate accessor/mutator.
+* Removed Request from Response constructor signature.
+* Added FieldNamingPolicy to DefaultJsonProcessor (using LOWER_CASE_WITH_UNDERSCORES).
+* getUrlDecodedHeader(String) throws BadRequestException if URL decoding fails.
+
+===================================================================================================
 Release 0.6.0.2
 * Fixed issue with 'connection reset by peer' causing unresponsive behavior.
 * Utilized Netty logging behavior to add logging capabilities to RestExpress.
