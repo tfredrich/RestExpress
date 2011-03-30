@@ -33,7 +33,7 @@ public class BlogEntryController
 
 	public BlogEntry read(Request request, Response response)
 	{
-		String id = request.getHeader(Constants.ENTRY_ID_HEADER, "Blog entry ID not provided.");
+		String id = request.getUrlDecodedHeader(Constants.ENTRY_ID_HEADER, "Blog entry ID not provided.");
 		return repo.read(id);
 	}
 
@@ -46,13 +46,13 @@ public class BlogEntryController
 
 	public void delete(Request request, Response response)
 	{
-		String id = request.getHeader(Constants.ENTRY_ID_HEADER, "Blog entry ID not provided.");
+		String id = request.getUrlDecodedHeader(Constants.ENTRY_ID_HEADER, "Blog entry ID not provided.");
 		repo.delete(id);
 	}
 
 	public List<BlogEntry> list(Request request, Response response)
 	{
-		String blogId = request.getHeader(Constants.BLOG_ID_HEADER, "Blog ID not provided.");
+		String blogId = request.getUrlDecodedHeader(Constants.BLOG_ID_HEADER, "Blog ID not provided.");
 		return repo.readAll(blogId);
 	}
 }
