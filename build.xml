@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build-all" name="RestExpress">
 
+	<buildnumber/>
 	<property environment="env"/>
 	<property file="build.properties"/>
 	<property name="dir.src.java" value="${basedir}/src/java"/>
@@ -116,13 +117,13 @@
           target: release
          ====================================================================== -->
     <target name="release" depends="_init, compile" description="Release a distro">
-		<jar destfile="${dir.dist}/${ant.project.name}-${version}.jar">
+		<jar destfile="${dir.dist}/${ant.project.name}-${version}-${build.number}.jar">
     		<fileset dir="${dir.compile}"/>
     	</jar>
-		<jar destfile="${dir.dist}/${ant.project.name}-${version}-src.jar">
+		<jar destfile="${dir.dist}/${ant.project.name}-${version}-${build.number}-src.jar">
     		<fileset dir="${dir.src.java}"/>
     	</jar>
-		<zip destfile="${dir.dist}/${ant.project.name}-${version}-kickstart.zip">
+		<zip destfile="${dir.dist}/${ant.project.name}-${version}-${build.number}-kickstart.zip">
     		<zipfileset dir="${dir.src.kickstart}" excludes=".gitignore" prefix="kickstart"/>
     		<zipfileset dir="${dir.lib}" prefix="kickstart/lib"/>
     		<zipfileset dir="${dir.dist}" includes="*.jar" excludes="*-src.jar" prefix="kickstart/lib"/>
