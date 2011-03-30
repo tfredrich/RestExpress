@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build-all" name="RestExpress">
 
-	<buildnumber/>
 	<property environment="env"/>
 	<property file="build.properties"/>
 	<property name="dir.src.java" value="${basedir}/src/java"/>
@@ -117,6 +116,7 @@
           target: release
          ====================================================================== -->
     <target name="release" depends="_init, compile" description="Release a distro">
+		<buildnumber/>
 		<jar destfile="${dir.dist}/${ant.project.name}-${version}-${build.number}.jar">
     		<fileset dir="${dir.compile}"/>
     	</jar>
