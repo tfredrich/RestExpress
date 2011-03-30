@@ -54,7 +54,7 @@ public abstract class Route
 	private List<String> supportedFormats = new ArrayList<String>();
 	private String defaultFormat;
 	private Set<String> flags = new HashSet<String>();
-	private Map<String, String> parameters = new HashMap<String, String>();
+	private Map<String, Object> parameters = new HashMap<String, Object>();
 
 	// SECTION: CONSTRUCTORS
 
@@ -63,7 +63,7 @@ public abstract class Route
 	 * @param controller
 	 */
 	public Route(UrlMatcher urlMatcher, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse,
-		boolean shouldUseWrappedResponse, String name, Set<String> flags, Map<String, String> parameters)
+		boolean shouldUseWrappedResponse, String name, Set<String> flags, Map<String, Object> parameters)
 	{
 		super();
 		this.urlMatcher = urlMatcher;
@@ -87,7 +87,7 @@ public abstract class Route
 		return (getParameter(name) != null);
 	}
 
-	public String getParameter(String name)
+	public Object getParameter(String name)
 	{
 		return parameters.get(name);
 	}

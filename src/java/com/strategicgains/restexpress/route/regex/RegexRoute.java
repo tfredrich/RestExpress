@@ -40,7 +40,7 @@ extends Route
      * @param name
      */
     public RegexRoute(UrlRegex urlMatcher, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse,
-    	boolean shouldUseWrappedResponse, String name, Set<String> flags, Map<String, String> parameters)
+    	boolean shouldUseWrappedResponse, String name, Set<String> flags, Map<String, Object> parameters)
     {
 	    super(urlMatcher, controller, action, method, shouldSerializeResponse, shouldUseWrappedResponse, name, flags, parameters);
     }
@@ -54,7 +54,7 @@ extends Route
      * @param name
      */
     public RegexRoute(String urlPattern, Object controller, Method action, HttpMethod method, boolean shouldSerializeResponse,
-    	boolean shouldUseWrappedResponse, String name, Set<String> flags, Map<String, String> parameters)
+    	boolean shouldUseWrappedResponse, String name, Set<String> flags, Map<String, Object> parameters)
     {
 	    this(new UrlRegex(urlPattern), controller, action, method, shouldSerializeResponse, shouldUseWrappedResponse, name, flags, parameters);
     }
