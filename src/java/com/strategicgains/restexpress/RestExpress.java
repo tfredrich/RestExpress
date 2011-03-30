@@ -340,7 +340,7 @@ public class RestExpress
 		return this;
 	}
 
-	public RestExpress noChunkingSupport()
+	public RestExpress noChunking()
 	{
 		shouldHandleChunking = false;
 		return this;
