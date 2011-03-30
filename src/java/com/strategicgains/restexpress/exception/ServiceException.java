@@ -98,4 +98,13 @@ extends RuntimeException
 	{
 		this.httpStatus = status;
 	}
+	
+	
+	// CONVENIENCE - STATIC
+
+	public static boolean isAssignableFrom(Throwable exception)
+    {
+	    return ServiceException.class.isAssignableFrom(exception.getClass());
+    }
+
 }

@@ -12,31 +12,17 @@
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
- */
-package com.strategicgains.restexpress.domain;
+*/
+package com.strategicgains.restexpress.serialization;
+
+import com.strategicgains.restexpress.util.Resolver;
 
 /**
  * @author toddf
- * @since Feb 8, 2011
+ * @since Mar 25, 2011
  */
-public class ErrorMessage
+public interface SerializationResolver
+extends Resolver<SerializationProcessor>
 {
-	private String message;
-
-	public ErrorMessage(String message)
-	{
-		super();
-		this.message = message;
-	}
-
-	public String getMessage()
-	{
-		return message;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return getMessage();
-	}
+	public SerializationProcessor getDefault();
 }

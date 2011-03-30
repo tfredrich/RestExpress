@@ -19,12 +19,16 @@ import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.ServiceException;
 
 /**
- * Generic JSEND-style wrapper for responses.
+ * Generic JSEND-style wrapper for responses.  Differs from the JSEND recommendation as follows:</br>
+ * <p/>
+ * 1. Always includes the HTTP response status code.<br/>
+ * 2. Error status illustrates a non-2xx and non-500 response (e.g. validation errors causing a 400, Bad Request).</br>
+ * 3. Fail status is essentially a 500 (internal server) error.<br/>
  * 
  * @author toddf
  * @since Jan 11, 2011
  */
-public class JsendResult
+public class ResultWrapper
 {
 	private static final String STATUS_SUCCESS = "success";
 	private static final String STATUS_ERROR = "error";
@@ -35,7 +39,7 @@ public class JsendResult
 	private String message;
 	private Object data;
 
-	public JsendResult(int httpResponseCode, String status, String errorMessage, Object data)
+	public ResultWrapper(int httpResponseCode, String status, String errorMessage, Object data)
 	{
 		super();
 		this.code = httpResponseCode;
@@ -68,25 +72,20 @@ public class JsendResult
 	// SECTION: FACTORY
 	
 
-	public static JsendResult fromResponse(Response response)
+	public static ResultWrapper fromResponse(Response response)
 	{
 		if (!response.hasException())
 		{
-			return new JsendResult(response.getResponseStatus().getCode(), STATUS_SUCCESS, null, response.getBody());
+			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_SUCCESS, null, response.getBody());
 		}
 		
 		Throwable exception = response.getException();
 
-		if (isServiceException(exception))
+		if (ServiceException.isAssignableFrom(exception))
 		{
-			return new JsendResult(response.getResponseStatus().getCode(), STATUS_ERROR, exception.getMessage(), null);
+			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_ERROR, exception.getMessage(), null);
 		}
 		
-		return new JsendResult(response.getResponseStatus().getCode(), STATUS_FAIL, exception.getMessage(), null);
+		return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_FAIL, exception.getMessage(), null);
 	}
-
-	private static boolean isServiceException(Throwable exception)
-    {
-	    return ServiceException.class.isAssignableFrom(exception.getClass());
-    }
 }

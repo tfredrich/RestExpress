@@ -23,6 +23,7 @@ import java.util.Date;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBufferInputStream;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.strategicgains.restexpress.ContentType;
@@ -48,6 +49,7 @@ implements SerializationProcessor
 			.disableHtmlEscaping()
 			.registerTypeAdapter(Date.class, new GsonTimestampSerializer())
 			.setDateFormat(DateAdapterConstants.TIMESTAMP_OUTPUT_FORMAT)
+			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
 	}
 	

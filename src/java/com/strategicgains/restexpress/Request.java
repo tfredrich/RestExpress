@@ -20,8 +20,6 @@ package com.strategicgains.restexpress;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -30,6 +28,7 @@ import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
 import com.strategicgains.restexpress.exception.BadRequestException;
+import com.strategicgains.restexpress.exception.ServiceException;
 import com.strategicgains.restexpress.route.Route;
 import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
@@ -55,7 +54,7 @@ public class Request
 	private HttpRequest httpRequest;
 	private SerializationProcessor serializationProcessor;
 	private RouteResolver urlRouter;
-	private HttpMethod realMethod;
+	private HttpMethod effectiveHttpMethod;
 	private Route resolvedRoute;
 	private String correlationId;
 
@@ -66,10 +65,11 @@ public class Request
 	{
 		super();
 		this.httpRequest = request;
-		this.realMethod = request.getMethod();
+		this.effectiveHttpMethod = request.getMethod();
 		this.urlRouter = routes;
 		parseRequestedFormatToHeader(request);
-		handleMethodTunneling(addQueryStringParametersAsHeaders(request));
+		addQueryStringParametersAsHeaders(request);
+		determineEffectiveHttpMethod(request);
 		createCorrelationId();
 	}
 
@@ -102,29 +102,29 @@ public class Request
 	 * 
 	 * @return the requested HttpMethod.
 	 */
-	public HttpMethod getRealMethod()
+	public HttpMethod getEffectiveHttpMethod()
 	{
-		return realMethod;
+		return effectiveHttpMethod;
 	}
 
 	public boolean isMethodGet()
 	{
-		return getRealMethod().equals(HttpMethod.GET);
+		return getEffectiveHttpMethod().equals(HttpMethod.GET);
 	}
 
 	public boolean isMethodDelete()
 	{
-		return getRealMethod().equals(HttpMethod.DELETE);
+		return getEffectiveHttpMethod().equals(HttpMethod.DELETE);
 	}
 
 	public boolean isMethodPost()
 	{
-		return getRealMethod().equals(HttpMethod.POST);
+		return getEffectiveHttpMethod().equals(HttpMethod.POST);
 	}
 
 	public boolean isMethodPut()
 	{
-		return getRealMethod().equals(HttpMethod.PUT);
+		return getEffectiveHttpMethod().equals(HttpMethod.PUT);
 	}
 
 	public ChannelBuffer getBody()
@@ -192,15 +192,61 @@ public class Request
 	{
 		httpRequest.clearHeaders();
 	}
-
-	public String getHeader(String name)
+	
+	/**
+	 * Gets the named header as it came in on the request (without URL decoding it).
+	 * Returns null if the header is not present.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public String getRawHeader(String name)
 	{
 		return httpRequest.getHeader(name);
 	}
-
-	public String getHeader(String name, String message)
+	
+	/**
+	 * Gets the named header as it came in on the request (without URL decoding it).
+	 * Throws BadRequestException(message) if the header is not present.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public String getRawHeader(String name, String message)
 	{
-		String value = getHeader(name);
+		String value = getRawHeader(name);
+		
+		if (value == null)
+		{
+			throw new BadRequestException(message);
+		}
+
+		return value;
+	}
+	
+	/**
+	 * Gets the named header, URL decoding it before returning it.
+	 * Returns null if the header is not present.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public String getUrlDecodedHeader(String name)
+	{
+		String value = httpRequest.getHeader(name);
+		return (value != null ? urlDecode(value) : null);
+	}
+	
+	/**
+	 * Gets the named header, URL decoding it before returning it.
+	 * Throws BadRequestException(message) if the header is not present.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public String getUrlDecodedHeader(String name, String message)
+	{
+		String value = getRawHeader(name);
 		
 		if (value == null)
 		{
@@ -219,7 +265,7 @@ public class Request
 	{
     	for (Entry<String, String> entry : headers)
     	{
-    		addHeader(entry.getKey(), urlDecode(entry.getValue()));
+    		addHeader(entry.getKey(), entry.getValue());
     	}
 	}
 
@@ -282,7 +328,7 @@ public class Request
 	 */
 	public String getFormat()
 	{
-		return getHeader(FORMAT_HEADER_NAME);
+		return getRawHeader(FORMAT_HEADER_NAME);
 	}
 	
 	/**
@@ -297,7 +343,7 @@ public class Request
 	
 	public String getJsonpHeader()
 	{
-		return getHeader(JSONP_CALLBACK_HEADER_NAME);
+		return getRawHeader(JSONP_CALLBACK_HEADER_NAME);
 	}
 	
 	public boolean hasJsonpHeader()
@@ -330,8 +376,8 @@ public class Request
 	
 	/**
 	 * Checks the value of the given header against the given value.
-	 * Ignores case.  If the header value or given value is null or has a trimmed length
-	 * of zero, returns false.
+	 * Ignores case and attempts to URLDecode the header.  If the header
+	 * value or given value is null or has a trimmed length of zero, returns false.
 	 * 
 	 * @param name the name of a header to check.
 	 * @param value the expected value.
@@ -339,8 +385,8 @@ public class Request
 	 */
 	public boolean isHeaderEqual(String name, String value)
 	{
-		String header = getHeader(name);
-		
+		String header = getUrlDecodedHeader(name);
+
 		if (header == null || header.trim().length() == 0 || value == null || value.trim().length() == 0)
 			return false;
 		
@@ -362,7 +408,7 @@ public class Request
      */
     private void parseRequestedFormatToHeader(HttpRequest request)
     {
-    	String uri = getUri(request);
+    	String uri = request.getUri();
 		int queryDelimiterIndex = uri.indexOf('?');
 		String path = (queryDelimiterIndex > 0 ? uri.substring(0, queryDelimiterIndex) : uri);
     	int formatDelimiterIndex = path.indexOf('.');
@@ -377,10 +423,9 @@ public class Request
 	/**
 	 * Add the query string parameters to the request as headers.
 	 */
-	private Map<String, String> addQueryStringParametersAsHeaders(HttpRequest request)
+	private void addQueryStringParametersAsHeaders(HttpRequest request)
 	{
-		Map<String, String> parameters = new HashMap<String, String>();
-		String uri = getUri(request);
+		String uri = request.getUri();
 		int x = uri.indexOf('?');
 		String queryString = (x >= 0 ? uri.substring(x + 1) : null);
 		
@@ -391,42 +436,18 @@ public class Request
 			for (String pair : params)
 			{
 				String[] keyValue = pair.split("=");
-				String key = urlDecode(keyValue[0]);
+				String key = keyValue[0];
 				
 				if (keyValue.length == 1)
 				{
 					request.addHeader(key, "");
-					parameters.put(key, "");
 				}
 				else
 				{
-					String value = urlDecode(keyValue[1]);
-					request.addHeader(key, value);
-					parameters.put(key, value);
+					request.addHeader(key, keyValue[1]);
 				}
 			}
 		}
-		
-		return parameters;
-	}
-
-	private String getUri(HttpRequest request)
-	{
-        return urlDecode(request.getUri());
-	}
-	
-	private String urlDecode(String value)
-	{
-        try
-        {
-	        return URLDecoder.decode(value, ContentType.ENCODING);
-        }
-        catch (UnsupportedEncodingException e)
-        {
-        	// UGH!
-        }
-        
-        return "";
 	}
 
 	/**
@@ -436,23 +457,36 @@ public class Request
 	 * 
 	 * @param parameters
 	 */
-	private void handleMethodTunneling(Map<String, String> parameters)
+	private void determineEffectiveHttpMethod(HttpRequest request)
 	{
-		if (! HttpMethod.POST.equals(getMethod()))
-			return;
+		if (!HttpMethod.POST.equals(request.getMethod())) return;
 
-		for (Entry<String, String> entry : parameters.entrySet())
+		String methodString = request.getHeader(METHOD_QUERY_PARAMETER);
+
+		if ("PUT".equalsIgnoreCase(methodString) || "DELETE".equalsIgnoreCase(methodString))
 		{
-			if (METHOD_QUERY_PARAMETER.equalsIgnoreCase(entry.getKey()))
-			{
-				realMethod = HttpMethod.valueOf(entry.getValue().toUpperCase());
-				break;
-			}
+			effectiveHttpMethod = HttpMethod.valueOf(methodString.toUpperCase());
 		}
 	}
 	
 	private void createCorrelationId()
 	{
 		this.correlationId = String.valueOf(++nextCorrelationId);
+	}
+
+	private String urlDecode(String value)
+	{
+        try
+        {
+	        return URLDecoder.decode(value, ContentType.ENCODING);
+        }
+        catch (UnsupportedEncodingException e)
+        {
+        	throw new ServiceException(e);
+        }
+        catch(IllegalArgumentException iae)
+        {
+        	throw new BadRequestException(iae);
+        }
 	}
 }

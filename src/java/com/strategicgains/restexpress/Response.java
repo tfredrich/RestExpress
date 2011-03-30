@@ -44,18 +44,10 @@ public class Response
 	
 	// SECTION: CONSTRUCTORS
 	
-	public Response(Request request)
+	public Response()
 	{
 		super();
-		initializeFrom(request);
 	}
-	
-	/**
-     * @param request
-     */
-    private void initializeFrom(Request request)
-    {
-    }
 
 
 	// SECTION: ACCESSORS/MUTATORS

@@ -18,17 +18,12 @@ package com.strategicgains.restexpress.util;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
 import org.jboss.netty.handler.codec.http.HttpHeaders;
-import org.jboss.netty.handler.codec.http.HttpMethod;
-import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
-import org.jboss.netty.handler.codec.http.HttpVersion;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.strategicgains.restexpress.ContentType;
-import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.HttpSpecificationException;
 
@@ -43,9 +38,7 @@ public class HttpSpecificationTest
 	@Before
 	public void setUp()
 	{
-		HttpRequest httpRequest = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/a/basic/url");
-		Request request = new Request(httpRequest, null);
-		response = new Response(request);
+		response = new Response();
 	}
 
 	@Test

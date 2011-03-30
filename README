@@ -20,7 +20,7 @@ A quick tutorial:
 
 Please see the Kickstart application in examples/kickstart for a complete, running example.
 
-* HTTP Methods, if not changed in the DSL, map to the following:
+* HTTP Methods, if not changed in the fluent (DSL) interface, map to the following:
 1) GET --> read(Request, Response)
 2) PUT --> update(Request, Response)
 3) POST --> create(Request, Response)
@@ -41,6 +41,20 @@ On successful creation, call response.setResponseCreated() to set the returning 
 201.
 
 Change History/Release Notes:
+===================================================================================================
+Release 0.6.1
+* Stability release.
+* Fixed issue when unable to URL Decode query string parameters or URL.
+* Introduced SerializationResolver that defines a getDefault() method. Implemented
+  SerializationResolver in DefaultSerializationResolver.
+* Changed UrlPattern to match format based on non-whitespace vs. word characters.
+* Refactored Request.getHeader() into getRawHeader(String) and getUrlDecodedHeader(String), along
+  with corresponding getRawHeader(String,String) and getUrlDecodedHeader(String,String).
+* Renamed realMethod property to effectiveHttpMethod, along with appropriate accessor/mutator.
+* Removed Request from Response constructor signature.
+* Added FieldNamingPolicy to DefaultJsonProcessor (using LOWER_CASE_WITH_UNDERSCORES).
+* getUrlDecodedHeader(String) throws BadRequestException if URL decoding fails.
+
 ===================================================================================================
 Release 0.6.0.2
 * Fixed issue with 'connection reset by peer' causing unresponsive behavior.

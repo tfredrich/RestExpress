@@ -30,6 +30,7 @@ import org.jboss.netty.channel.group.ChannelGroupFuture;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.logging.LoggingHandler;
+
 import com.strategicgains.restexpress.controller.ConsoleController;
 import com.strategicgains.restexpress.domain.console.RouteMetadata;
 import com.strategicgains.restexpress.domain.console.ServerMetadata;
@@ -40,7 +41,7 @@ import com.strategicgains.restexpress.pipeline.MessageObserver;
 import com.strategicgains.restexpress.pipeline.PipelineBuilder;
 import com.strategicgains.restexpress.pipeline.Postprocessor;
 import com.strategicgains.restexpress.pipeline.Preprocessor;
-import com.strategicgains.restexpress.response.JsendResponseWrapper;
+import com.strategicgains.restexpress.response.DefaultResponseWrapper;
 import com.strategicgains.restexpress.response.RawResponseWrapper;
 import com.strategicgains.restexpress.response.ResponseWrapperFactory;
 import com.strategicgains.restexpress.route.RouteDeclaration;
@@ -48,6 +49,7 @@ import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.serialization.AliasingSerializationProcessor;
 import com.strategicgains.restexpress.serialization.DefaultSerializationResolver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
+import com.strategicgains.restexpress.serialization.SerializationResolver;
 import com.strategicgains.restexpress.serialization.json.DefaultJsonProcessor;
 import com.strategicgains.restexpress.serialization.text.DefaultTxtProcessor;
 import com.strategicgains.restexpress.serialization.xml.DefaultXmlProcessor;
@@ -569,7 +571,7 @@ public class RestExpress
 
 	public RestExpress useWrappedResponses()
 	{
-		responseWrapperFactory = new JsendResponseWrapper();
+		responseWrapperFactory = new DefaultResponseWrapper();
 		return this;
 	}
 	
@@ -723,7 +725,7 @@ public class RestExpress
 	/**
 	 * @return
 	 */
-	private Resolver<SerializationProcessor> createSerializationResolver()
+	private SerializationResolver createSerializationResolver()
 	{
 		DefaultSerializationResolver resolver = new DefaultSerializationResolver();
 		resolver.setDefaultFormat(getDefaultFormat());
