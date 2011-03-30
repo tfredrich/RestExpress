@@ -82,7 +82,7 @@ public class RequestTest
 	@Test
 	public void shouldBeGetRequest()
 	{
-		assertEquals(HttpMethod.GET, request.getMethod());
+		assertEquals(HttpMethod.GET, request.getHttpMethod());
 		assertEquals(HttpMethod.GET, request.getEffectiveHttpMethod());
 	}
 	
@@ -90,7 +90,7 @@ public class RequestTest
 	public void shouldBePostRequest()
 	{
 		Request postRequest = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, "/foo"), null);
-		assertEquals(HttpMethod.POST, postRequest.getMethod());
+		assertEquals(HttpMethod.POST, postRequest.getHttpMethod());
 		assertEquals(HttpMethod.POST, postRequest.getEffectiveHttpMethod());
 	}
 
@@ -98,7 +98,7 @@ public class RequestTest
 	public void shouldBePutRequest()
 	{
 		Request putRequest = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.PUT, "/foo"), null);
-		assertEquals(HttpMethod.PUT, putRequest.getMethod());
+		assertEquals(HttpMethod.PUT, putRequest.getHttpMethod());
 		assertEquals(HttpMethod.PUT, putRequest.getEffectiveHttpMethod());
 	}
 	
@@ -106,7 +106,7 @@ public class RequestTest
 	public void shouldBeDeleteRequest()
 	{
 		Request deleteRequest = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.DELETE, "/foo"), null);
-		assertEquals(HttpMethod.DELETE, deleteRequest.getMethod());
+		assertEquals(HttpMethod.DELETE, deleteRequest.getHttpMethod());
 		assertEquals(HttpMethod.DELETE, deleteRequest.getEffectiveHttpMethod());
 	}
 
@@ -114,7 +114,7 @@ public class RequestTest
 	public void shouldBeEffectivePutRequest()
 	{
 		Request putRequest = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, "/foo?_method=pUt"), null);
-		assertEquals(HttpMethod.POST, putRequest.getMethod());
+		assertEquals(HttpMethod.POST, putRequest.getHttpMethod());
 		assertEquals(HttpMethod.PUT, putRequest.getEffectiveHttpMethod());
 	}
 
@@ -122,7 +122,7 @@ public class RequestTest
 	public void shouldBeEffectiveDeleteRequest()
 	{
 		Request deleteRequest = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, "/foo?_method=DeLeTe"), null);
-		assertEquals(HttpMethod.POST, deleteRequest.getMethod());
+		assertEquals(HttpMethod.POST, deleteRequest.getHttpMethod());
 		assertEquals(HttpMethod.DELETE, deleteRequest.getEffectiveHttpMethod());
 	}
 
@@ -130,7 +130,7 @@ public class RequestTest
 	public void shouldBeEffectivePostRequest()
 	{
 		Request deleteRequest = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, "/foo?_method=xyzt"), null);
-		assertEquals(HttpMethod.POST, deleteRequest.getMethod());
+		assertEquals(HttpMethod.POST, deleteRequest.getHttpMethod());
 		assertEquals(HttpMethod.POST, deleteRequest.getEffectiveHttpMethod());
 	}
 }

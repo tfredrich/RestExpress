@@ -66,7 +66,7 @@ public abstract class RouteBuilder
 	private boolean shouldSerializeResponse = true;
 	private String name;
 	private Set<String> flags = new HashSet<String>();
-	private Map<String, String> parameters = new HashMap<String, String>();
+	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private boolean shouldUseWrappedResponse = true;
 	
 	/**
@@ -190,14 +190,33 @@ public abstract class RouteBuilder
 		this.defaultFormat = format;
 		return this;
 	}
-	
+
+	/**
+	 * Flags are boolean settings that are created at route definition time.
+	 * These flags can be used to pass booleans to preprocessors, controllers, or postprocessors.  An example might be:
+	 * flag(NO_AUTHORIZATION), which might inform an authorization preprocessor to skip authorization for this route.
+	 * 
+	 * @param flagValue the name of the flag.
+	 * @return this RouteBuilder to facilitate method chaining.
+	 */
 	public RouteBuilder flag(String flagValue)
 	{
 		flags.add(flagValue);
 		return this;
 	}
-	
-	public RouteBuilder parameter(String name, String value)
+
+	/**
+	 * Parameters are named settings that are created at route definition time. These parameters
+	 * can be used to pass data to subsequent preprocessors, controllers, or postprocessors.  This is a way to pass data
+	 * from a route definition down to subsequent controllers, etc.  An example might be: setParameter("route", "read_foo")
+	 * setParameter("permission", "view_private_data"), which might inform an authorization preprocessor of what permission
+	 * is being requested on a given resource.
+	 * 
+	 * @param name the name of the parameter.
+	 * @param value an object that is the parameter value.
+	 * @return this RouteBuilder to facilitate method chaining.
+	 */
+	public RouteBuilder parameter(String name, Object value)
 	{
 		parameters.put(name, value);
 		return this;
@@ -289,7 +308,7 @@ public abstract class RouteBuilder
     protected abstract Route newRoute(String pattern, Object controller, Method action,
     	HttpMethod method, boolean shouldSerializeResponse, boolean shouldUseWrappedResponse,
     	String name, List<String> supportedFormats, String defaultFormat, Set<String> flags,
-    	Map<String, String> parameters);
+    	Map<String, Object> parameters);
 
 
 	// SECTION: UTILITY - PRIVATE

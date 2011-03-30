@@ -20,6 +20,8 @@ package com.strategicgains.restexpress;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -57,6 +59,7 @@ public class Request
 	private HttpMethod effectiveHttpMethod;
 	private Route resolvedRoute;
 	private String correlationId;
+	private Map<String, Object> attachments;
 
 	
 	// SECTION: CONSTRUCTOR
@@ -91,7 +94,7 @@ public class Request
 	 * 
 	 * @return HttpMethod of the request.
 	 */
-	public HttpMethod getMethod()
+	public HttpMethod getHttpMethod()
 	{
 		return httpRequest.getMethod();
 	}
@@ -301,7 +304,7 @@ public class Request
 	
 	public String getNamedUrl(String resourceName)
 	{
-		Route route = urlRouter.getNamedRoute(resourceName, getMethod());
+		Route route = urlRouter.getNamedRoute(resourceName, getHttpMethod());
 		
 		if (route != null)
 		{
@@ -393,15 +396,87 @@ public class Request
 		return header.trim().equalsIgnoreCase(value.trim());
 	}
 	
+	/**
+	 * Ask if the request contains the named flag.  Flags are boolean settings that are created at route definition time.
+	 * These flags can be used to pass booleans to preprocessors, controllers, or postprocessors.  An example might be:
+	 * flag(NO_AUTHORIZATION), which might inform an authorization preprocessor to skip authorization for this route.
+	 * 
+	 * @param flag the name of a flag.
+	 * @return true if the request contains the named flag, otherwise false.
+	 */
 	public boolean isFlagged(String flag)
 	{
 		return resolvedRoute.isFlagged(flag);
 	}
 	
-	public String getParameter(String name)
+	/**
+	 * Get a named parameter.  Parameters are named settings that are created at route definition time. These parameters
+	 * can be used to pass data to subsequent preprocessors, controllers, or postprocessors.  This is a way to pass data
+	 * from a route definition down to subsequent controllers, etc.  An example might be: setParameter("route", "read_foo")
+	 * setParameter("permission", "view_private_data"), which might inform an authorization preprocessor of what permission
+	 * is being requested on a given resource.
+	 * 
+	 * @param name the name of a parameter to retrieve.
+	 * @return the named parameter or null, if not present.
+	 */
+	public Object getParameter(String name)
 	{
 		return resolvedRoute.getParameter(name);
 	}
+	
+	/**
+	 * Each request can have many user-defined attachments, perhaps placed via preprocessors, etc.
+	 * These attachments are named and are carried along with the request to subsequent preprocessors,
+	 * controllers, and postprocessors.  Attachments are different than parameters in that, they are set
+	 * on a per request basis, instead of at the route level.  They can be set via preprocessors, controllers,
+	 * postprocessor, as opposed to parameters which are set on the route definition.
+	 * 
+	 * @param name the name of an attachment.
+	 * @return the named attachment, or null if it is not present.
+	 */
+	public Object getAttachment(String name)
+	{
+		if (attachments != null)
+		{
+			return attachments.get(name);
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Determine whether a named attachment is present.
+	 * 
+	 * @param name the name of a parameter.
+	 * @return true if the parameter is present, otherwise false.
+	 */
+	public boolean hasAttachment(String name)
+	{
+		return (getAttachment(name) != null);
+	}
+	
+	/**
+	 * Set an attachment on this request.
+	 * These attachments are named and are carried along with the request to subsequent preprocessors,
+	 * controllers, and postprocessors.  Attachments are different than parameters in that, they are set
+	 * on a per request basis, instead of at the route level.  They can be set via preprocessors, controllers,
+	 * postprocessor, as opposed to parameters which are set on the route definition.
+	 * 
+	 * @param name the name of the attachment.
+	 * @param attachment the attachment to associate with this request.
+	 */
+	public void putAttachment(String name, Object attachment)
+	{
+		if (attachments == null)
+		{
+			attachments = new HashMap<String, Object>();
+		}
+		
+		attachments.put(name, attachment);
+	}
+
+	
+	// SECTION: UTILITY - PRIVATE
 
 	/**
      * @param request

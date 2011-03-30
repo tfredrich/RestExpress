@@ -209,7 +209,7 @@ public class RestExpress
 		return this;
 	}
 
-	public Map<String, SerializationProcessor> getSerializationProcessors()
+	/* package protected */ Map<String, SerializationProcessor> getSerializationProcessors()
 	{
 		return serializationProcessors;
 	}
@@ -219,8 +219,7 @@ public class RestExpress
 		return serializationResolver;
 	}
 
-	public RestExpress setSerializationResolver(
-	    Resolver<SerializationProcessor> serializationResolver)
+	public RestExpress setSerializationResolver(Resolver<SerializationProcessor> serializationResolver)
 	{
 		this.serializationResolver = serializationResolver;
 		return this;
