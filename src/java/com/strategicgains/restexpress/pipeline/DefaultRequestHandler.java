@@ -17,22 +17,17 @@
 package com.strategicgains.restexpress.pipeline;
 
 import static com.strategicgains.restexpress.ContentType.TEXT_PLAIN;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
-import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.netty.channel.ChannelHandler.Sharable;
-import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
-import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 
 import com.strategicgains.restexpress.Request;
@@ -201,15 +196,21 @@ extends SimpleChannelUpstreamHandler
 		try
 		{
 			MessageContext messageContext = (MessageContext) ctx.getAttachment();
-			messageContext.setException(event.getCause());
-			notifyException(messageContext);
+			
+			if (messageContext != null)
+			{
+				messageContext.setException(event.getCause());
+				notifyException(messageContext);
+			}
+		}
+		catch(Throwable t)
+		{
+			System.err.print("DefaultRequestHandler.exceptionCaught() threw an exception.");
+			t.printStackTrace();
 		}
 		finally
 		{
-			HttpResponse httpResponse = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR);
-			httpResponse.setHeader(CONNECTION, "close");
-			event.getChannel().write(httpResponse).addListener(ChannelFutureListener.CLOSE);
-//			event.getChannel().close();
+			event.getChannel().close();
 		}
 	}
 

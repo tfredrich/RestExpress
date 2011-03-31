@@ -50,6 +50,11 @@ Release 0.7.0
 
 ===================================================================================================
 Release 0.6.1
+* Bug fix to patch erroneously writing to already closed channel in
+  DefaultRequestHandler.exceptionCaught().
+
+===================================================================================================
+Release 0.6.1
 * Stability release.
 * Fixed issue when unable to URL Decode query string parameters or URL.
 * Introduced SerializationResolver that defines a getDefault() method. Implemented
