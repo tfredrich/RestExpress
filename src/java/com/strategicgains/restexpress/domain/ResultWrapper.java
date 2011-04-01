@@ -71,7 +71,6 @@ public class ResultWrapper
 	
 	// SECTION: FACTORY
 	
-
 	public static ResultWrapper fromResponse(Response response)
 	{
 		if (!response.hasException())
@@ -83,9 +82,11 @@ public class ResultWrapper
 
 		if (ServiceException.isAssignableFrom(exception))
 		{
-			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_ERROR, exception.getMessage(), null);
+			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_ERROR,
+				exception.getMessage(), exception.getClass().getSimpleName());
 		}
 		
-		return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_FAIL, exception.getMessage(), null);
+		return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_FAIL,
+			exception.getMessage(), exception.getClass().getSimpleName());
 	}
 }

@@ -94,7 +94,7 @@ extends SimpleChannelUpstreamHandler
 		}
 	}
 
-	public <T extends Exception, U extends ServiceException> DefaultRequestHandler mapException(Class<T> from, Class<U> to)
+	public <T extends Throwable, U extends ServiceException> DefaultRequestHandler mapException(Class<T> from, Class<U> to)
 	{
 		exceptionMap.map(from, to);
 		return this;
@@ -339,7 +339,7 @@ extends SimpleChannelUpstreamHandler
 	 */
 	private Throwable mapServiceException(Throwable cause)
     {
-		if (ServiceException.class.isAssignableFrom(cause.getClass()))
+		if (ServiceException.isAssignableFrom(cause))
 		{
 			return cause;
 		}

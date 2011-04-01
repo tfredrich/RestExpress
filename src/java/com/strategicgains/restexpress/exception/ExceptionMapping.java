@@ -20,32 +20,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Implements a user-defined mapping from Throwables to ServiceExceptions so clients can utilize Libraries that
+ * throw checked exceptions and map those into a ServiceException that will return an HTTP status code.
+ * 
  * @author toddf
  * @since Oct 13, 2010
  */
 public class ExceptionMapping
 {
-	private Map<Class<?>, Class<?>> exceptions = new HashMap<Class<?>, Class<?>>();
+	private Map<Class<? extends Throwable>, Class<? extends ServiceException>> exceptions =
+		new HashMap<Class<? extends Throwable>, Class<? extends ServiceException>>();
 	
-	public <T extends Exception, U extends ServiceException> void map(Class<T> inExceptionClass, Class<U> outExceptionClass)
+	public <T extends Throwable, U extends ServiceException> void map(Class<T> inExceptionClass, Class<U> outExceptionClass)
 	{
 		exceptions.put(inExceptionClass, outExceptionClass);
 	}
 
-	public ServiceException getExceptionFor(Throwable e)
+	public ServiceException getExceptionFor(Throwable throwable)
 	{
-		Class<?> mapped = exceptions.get(e.getClass());
+		Class<?> mapped = exceptions.get(throwable.getClass());
 		
 		if (mapped != null)
 		{
 			try
             {
 	            Constructor<?> constructor = mapped.getConstructor(Throwable.class);
-	            return (ServiceException) constructor.newInstance(e);
+	            return (ServiceException) constructor.newInstance(throwable);
             }
-            catch (Exception e1)
+            catch (Exception e)
             {
-	            e1.printStackTrace();
+	            e.printStackTrace();
             }
 		}
 		
