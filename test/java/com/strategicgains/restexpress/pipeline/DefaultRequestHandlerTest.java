@@ -106,7 +106,7 @@ public class DefaultRequestHandlerTest
 		assertEquals(1, observer.getExceptionCount());
 		assertEquals(0, observer.getSuccessCount());
 //		System.out.println(httpResponse.toString());
-		assertEquals("{\"code\":400,\"status\":\"error\",\"message\":\"foobar'd\"}", httpResponse.toString());
+		assertEquals("{\"code\":400,\"status\":\"error\",\"message\":\"foobar'd\",\"data\":\"BadRequestException\"}", httpResponse.toString());
 	}
 
 	@Test
@@ -119,7 +119,7 @@ public class DefaultRequestHandlerTest
 		assertEquals(1, observer.getExceptionCount());
 		assertEquals(0, observer.getSuccessCount());
 //		System.out.println(httpResponse.toString());
-		assertEquals("{\"code\":400,\"status\":\"error\",\"message\":\"foobar'd\"}", httpResponse.toString());
+		assertEquals("{\"code\":400,\"status\":\"error\",\"message\":\"foobar'd\",\"data\":\"BadRequestException\"}", httpResponse.toString());
 	}
 
 	@Test
@@ -132,7 +132,7 @@ public class DefaultRequestHandlerTest
 		assertEquals(1, observer.getExceptionCount());
 		assertEquals(0, observer.getSuccessCount());
 //		System.out.println(httpResponse.toString());
-		assertEquals("{\"code\":400,\"status\":\"error\",\"message\":\"foobar'd\"}", httpResponse.toString());
+		assertEquals("{\"code\":400,\"status\":\"error\",\"message\":\"foobar'd\",\"data\":\"BadRequestException\"}", httpResponse.toString());
 	}
 
 	@Test
@@ -145,7 +145,7 @@ public class DefaultRequestHandlerTest
 		assertEquals(1, observer.getExceptionCount());
 		assertEquals(0, observer.getSuccessCount());
 //		System.out.println(httpResponse.toString());
-		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Unresolvable URL: http://null/%bar\"}", httpResponse.toString());
+		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Unresolvable URL: http://null/%bar\",\"data\":\"NotFoundException\"}", httpResponse.toString());
 	}
 
 	@Test

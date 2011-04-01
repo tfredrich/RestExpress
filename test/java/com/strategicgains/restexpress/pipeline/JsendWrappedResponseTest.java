@@ -311,7 +311,7 @@ public class JsendWrappedResponseTest
 		assertEquals(0, observer.getSuccessCount());
 		assertEquals(1, observer.getExceptionCount());
 //		System.out.println(httpResponse.toString());
-		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Item not found\"}", httpResponse.toString());
+		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Item not found\",\"data\":\"NotFoundException\"}", httpResponse.toString());
 	}
 
 	@Test
@@ -323,7 +323,7 @@ public class JsendWrappedResponseTest
 		assertEquals(0, observer.getSuccessCount());
 		assertEquals(1, observer.getExceptionCount());
 //		System.out.println(httpResponse.toString());
-		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Item not found\"}", httpResponse.toString());
+		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Item not found\",\"data\":\"NotFoundException\"}", httpResponse.toString());
 	}
 
 	@Test
@@ -339,6 +339,7 @@ public class JsendWrappedResponseTest
 		assertTrue(httpResponse.toString().contains("<code>404</code>"));
 		assertTrue(httpResponse.toString().contains("<status>error</status>"));
 		assertTrue(httpResponse.toString().contains("<message>Item not found</message>"));
+		assertTrue(httpResponse.toString().contains("<data class=\"string\">NotFoundException</data>"));
 		assertTrue(httpResponse.toString().endsWith("</response>"));
 	}
 
@@ -367,7 +368,7 @@ public class JsendWrappedResponseTest
 		assertEquals(0, observer.getSuccessCount());
 		assertEquals(1, observer.getExceptionCount());
 //		System.out.println(httpResponse.toString());
-		assertEquals("{\"code\":500,\"status\":\"fail\",\"message\":\"Null and void\"}", httpResponse.toString());
+		assertEquals("{\"code\":500,\"status\":\"fail\",\"message\":\"Null and void\",\"data\":\"NullPointerException\"}", httpResponse.toString());
 	}
 
 	@Test
@@ -379,7 +380,7 @@ public class JsendWrappedResponseTest
 		assertEquals(0, observer.getSuccessCount());
 		assertEquals(1, observer.getExceptionCount());
 //		System.out.println(httpResponse.toString());
-		assertEquals("{\"code\":500,\"status\":\"fail\",\"message\":\"Null and void\"}", httpResponse.toString());
+		assertEquals("{\"code\":500,\"status\":\"fail\",\"message\":\"Null and void\",\"data\":\"NullPointerException\"}", httpResponse.toString());
 	}
 
 	@Test
@@ -395,6 +396,7 @@ public class JsendWrappedResponseTest
 		assertTrue(httpResponse.toString().contains("<code>500</code>"));
 		assertTrue(httpResponse.toString().contains("<status>fail</status>"));
 		assertTrue(httpResponse.toString().contains("<message>Null and void</message>"));
+		assertTrue(httpResponse.toString().contains("<data class=\"string\">NullPointerException</data>"));
 		assertTrue(httpResponse.toString().endsWith("</response>"));
 	}
 
@@ -411,6 +413,7 @@ public class JsendWrappedResponseTest
 		assertTrue(httpResponse.toString().contains("<code>500</code>"));
 		assertTrue(httpResponse.toString().contains("<status>fail</status>"));
 		assertTrue(httpResponse.toString().contains("<message>Null and void</message>"));
+		assertTrue(httpResponse.toString().contains("<data class=\"string\">NullPointerException</data>"));
 		assertTrue(httpResponse.toString().endsWith("</response>"));
 	}
 
@@ -423,7 +426,7 @@ public class JsendWrappedResponseTest
 		assertEquals(0, observer.getSuccessCount());
 		assertEquals(1, observer.getExceptionCount());
 //		System.out.println(httpResponse.toString());
-		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Unresolvable URL: http://null/xyzt.json\"}", httpResponse.toString());
+		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Unresolvable URL: http://null/xyzt.json\",\"data\":\"NotFoundException\"}", httpResponse.toString());
 	}
 
 	@Test
@@ -435,7 +438,7 @@ public class JsendWrappedResponseTest
 		assertEquals(0, observer.getSuccessCount());
 		assertEquals(1, observer.getExceptionCount());
 //		System.out.println(httpResponse.toString());
-		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Unresolvable URL: http://null/xyzt?format=json\"}", httpResponse.toString());
+		assertEquals("{\"code\":404,\"status\":\"error\",\"message\":\"Unresolvable URL: http://null/xyzt?format=json\",\"data\":\"NotFoundException\"}", httpResponse.toString());
 	}
 
 	@Test
