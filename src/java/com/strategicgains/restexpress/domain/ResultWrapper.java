@@ -81,14 +81,14 @@ public class ResultWrapper
 		
 		Throwable exception = response.getException();
 		Throwable rootCause = ExceptionUtils.findRootCause(exception);
+		String message = (exception != null ? exception.getMessage() : null);
+		String causeName = (rootCause != null ? rootCause.getClass().getSimpleName() : null);
 
 		if (ServiceException.isAssignableFrom(exception))
 		{
-			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_ERROR,
-				exception.getMessage(), rootCause.getClass().getSimpleName());
+			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_ERROR, message, causeName);
 		}
 		
-		return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_FAIL,
-			exception.getMessage(), rootCause.getClass().getSimpleName());
+		return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_FAIL, message, causeName);
 	}
 }
