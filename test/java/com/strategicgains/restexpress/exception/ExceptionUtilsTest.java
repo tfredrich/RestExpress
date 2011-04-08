@@ -15,32 +15,36 @@
 */
 package com.strategicgains.restexpress.exception;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import org.junit.Test;
+
+
 /**
  * @author toddf
  * @since Apr 8, 2011
  */
-public class ExceptionUtils
+public class ExceptionUtilsTest
 {
-	// Prevents instantiation.
-	private ExceptionUtils() {}
-	
-	/**
-	 * Traverses throwable.getCause() up the chain until the root cause is found.
-	 * 
-	 * @param throwable
-	 * @return the root cause.  Never null, unless throwable is null.
-	 */
-	public static Throwable findRootCause(Throwable throwable)
+	@Test
+	public void shouldHandleNull()
 	{
-		Throwable cause = throwable;
-		Throwable rootCause = null;
-		
-		while (cause != null)
-		{
-			rootCause = cause;
-			cause = cause.getCause();
-		}
-		
-		return rootCause;
+		assertNull(ExceptionUtils.findRootCause(null));
+	}
+	
+	@Test
+	public void shouldReturnSame()
+	{
+		Throwable t = new NullPointerException();
+		assertEquals(t, ExceptionUtils.findRootCause(t));
+	}
+	
+	@Test
+	public void shouldReturnRoot()
+	{
+		Throwable npe = new NullPointerException("Manually-thrown NullPointerException");
+		Throwable t = new ServiceException(new Exception(npe));
+		assertEquals(npe, ExceptionUtils.findRootCause(t));
 	}
 }
