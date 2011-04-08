@@ -34,6 +34,7 @@ import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.exception.BadRequestException;
 import com.strategicgains.restexpress.exception.ExceptionMapping;
+import com.strategicgains.restexpress.exception.ExceptionUtils;
 import com.strategicgains.restexpress.exception.ServiceException;
 import com.strategicgains.restexpress.response.DefaultHttpResponseWriter;
 import com.strategicgains.restexpress.response.HttpResponseWriter;
@@ -179,7 +180,7 @@ extends SimpleChannelUpstreamHandler
 		}
 		else
 		{
-			rootCause = findRootCause(cause);
+			rootCause = ExceptionUtils.findRootCause(cause);
 			context.setHttpStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 		}
 
@@ -346,30 +347,6 @@ extends SimpleChannelUpstreamHandler
 			
 		return exceptionMap.getExceptionFor(cause);
     }
-
-	/**
-	 * Traverses throwable.getCause() up the chain until the root cause is found.
-	 * 
-	 * @param throwable
-	 * @return the root cause.  Never null.
-	 */
-	private Throwable findRootCause(Throwable throwable)
-	{
-		Throwable cause = throwable;
-		Throwable rootCause = cause;
-		
-		while (cause != null)
-		{
-			cause = cause.getCause();
-			
-			if (cause != null)
-			{
-				rootCause = cause;
-			}
-		}
-		
-		return rootCause;
-	}
 
 	/**
      * @param request

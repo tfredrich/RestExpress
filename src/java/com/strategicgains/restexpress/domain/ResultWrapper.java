@@ -16,6 +16,7 @@
 package com.strategicgains.restexpress.domain;
 
 import com.strategicgains.restexpress.Response;
+import com.strategicgains.restexpress.exception.ExceptionUtils;
 import com.strategicgains.restexpress.exception.ServiceException;
 
 /**
@@ -79,14 +80,15 @@ public class ResultWrapper
 		}
 		
 		Throwable exception = response.getException();
+		Throwable rootCause = ExceptionUtils.findRootCause(exception);
 
 		if (ServiceException.isAssignableFrom(exception))
 		{
 			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_ERROR,
-				exception.getMessage(), exception.getClass().getSimpleName());
+				exception.getMessage(), rootCause.getClass().getSimpleName());
 		}
 		
 		return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_FAIL,
-			exception.getMessage(), exception.getClass().getSimpleName());
+			exception.getMessage(), rootCause.getClass().getSimpleName());
 	}
 }
