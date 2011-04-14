@@ -16,6 +16,7 @@
 package com.strategicgains.restexpress.util;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author Todd Fredrich
@@ -64,6 +65,20 @@ public class MapStringFormat
 		startDelimiter = delimiter;
 	}
 
+	public String format(String string, String... parameters)
+	{
+		if (parameters.length % 2 != 0) throw new IllegalArgumentException("Parameters must be in name/value pairs");
+		
+		String result = string;
+		
+		for (int i = 0; i < parameters.length; i += 2)
+		{
+			result = result.replaceAll(constructParameterName(parameters[i]), parameters[i + 1]);
+		}
+
+		return result;
+	}
+
 	/**
 	 * 
 	 * @param string The string containing named tokens to replace with parameters.
@@ -73,10 +88,10 @@ public class MapStringFormat
 	public String format(String string, Map<String, String> parameters)
 	{
 		String result = string;
-		for (String key : parameters.keySet())
+
+		for (Entry<String, String> entry : parameters.entrySet())
 		{
-			 String value = parameters.get(key);
-			 result = result.replaceAll(constructParameterName(key), value);
+			 result = result.replaceAll(constructParameterName(entry.getKey()), entry.getValue());
 		}
 		
 		
