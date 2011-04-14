@@ -301,10 +301,28 @@ public class Request
 	{
 		return getProtocol() + "://" + getHost() + getPath();
 	}
-	
+
+	/**
+	 * Get the named URL for the current HTTP method.
+	 * 
+	 * @param resourceName the name of the route
+	 * @return the URL pattern, or null if the name/method does not exist.
+	 */
 	public String getNamedUrl(String resourceName)
 	{
-		Route route = urlRouter.getNamedRoute(resourceName, getHttpMethod());
+		return getNamedUrl(getHttpMethod(), resourceName);
+	}
+
+	/**
+	 * Get the named URL for the given HTTP method
+	 * 
+	 * @param method the HTTP method
+	 * @param resourceName the name of the route
+	 * @return the URL pattern, or null if the name/method does not exist.
+	 */
+	public String getNamedUrl(HttpMethod method, String resourceName)
+	{
+		Route route = urlRouter.getNamedRoute(resourceName, method);
 		
 		if (route != null)
 		{
