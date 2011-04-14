@@ -303,14 +303,14 @@ public class Request
 	}
 
 	/**
-	 * Get the named URL for the current HTTP method.
+	 * Get the named URL for the current effective HTTP method.
 	 * 
 	 * @param resourceName the name of the route
 	 * @return the URL pattern, or null if the name/method does not exist.
 	 */
 	public String getNamedUrl(String resourceName)
 	{
-		return getNamedUrl(getHttpMethod(), resourceName);
+		return getNamedUrl(getEffectiveHttpMethod(), resourceName);
 	}
 
 	/**
