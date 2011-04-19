@@ -15,6 +15,7 @@
 */
 package com.strategicgains.restexpress.util;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -114,4 +115,36 @@ public class MapStringFormat
 		sb.append(getEndDelimiter());
 		return sb.toString();
 	}
+	
+	
+	// SECTION: UTILITY - STATIC
+
+	/**
+	 * Converts a sequence of strings into name/value pairs in a map.
+	 * Pairs must be matched or IllegalArgumentException is thrown.  If nameValuePairs is null
+	 * an empty Map is returned.
+	 * 
+	 * @param nameValuePairs a sequence of strings as matched name/value pairs.
+	 * @return a Map of name/value pairs.  Never null. Empty, if nameValuePairs is null.
+	 * @throws IllegalArgumentException if name/value pairs not matched.
+	 */
+	public static Map<String, String> toMap(String... nameValuePairs)
+	{
+		Map<String, String> result = new HashMap<String, String>();
+
+		if (nameValuePairs == null) return result;
+
+		if ((nameValuePairs.length % 2) != 0)
+		{
+			throw new IllegalArgumentException("Name/value pairs unbalanced: " + nameValuePairs.toString());
+		}
+
+		for (int i = 0; i < nameValuePairs.length; i += 2)
+		{
+			result.put(nameValuePairs[i], nameValuePairs[i + 1]);
+		}
+
+		return result;
+	}
+
 }

@@ -4,6 +4,8 @@
 package com.strategicgains.restexpress.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -72,5 +74,30 @@ public class MapStringFormatTest
 		parameters.put("last_name", "Fredrich");
 		String result = formatter.format(template, parameters);
 		assertEquals("Fredrich, Todd A.", result);
+	}
+	
+	@Test
+	public void shouldConvertNameValuePairsToMap()
+	{
+		Map<String, String> pairs = MapStringFormat.toMap("firstName", "Todd", "lastName", "Fredrich");
+		assertNotNull(pairs);
+		assertEquals(2, pairs.size());
+		assertEquals("Todd", pairs.get("firstName"));
+		assertEquals("Fredrich", pairs.get("lastName"));
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void shouldThrowOnUnmatchedPairs()
+	{
+		MapStringFormat.toMap("firstName", "Todd", "lastName");
+		fail("Should throw IllegalArgumentException for unmatched pair");
+	}
+	
+	@Test
+	public void shouldHandleNull()
+	{
+		Map<String, String> pairs = MapStringFormat.toMap((String[]) null);
+		assertNotNull(pairs);
+		assertTrue(pairs.isEmpty());
 	}
 }
