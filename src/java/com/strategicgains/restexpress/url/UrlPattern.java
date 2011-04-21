@@ -54,8 +54,10 @@ implements UrlMatcher
 	private static final String URL_PARAM_REGEX = "\\{(\\w*?)\\}";
 	
 	// Replaces parameter names in the URL pattern string before compilation to match URLs.
-	// Notice: valid URL characters are alphanumerics plus $-_.+!*'(),%
-	private static final String URL_MATCH_REGEX = "\\([\\\\w-:%!',\\\\(\\\\)\\\\~\\\\+\\\\*\\$]+?\\)";
+	// Notice: In RestExpress, valid URL characters are alphanumerics (word characters) plus :$~-_+!*'(),%[]
+	// which is different than the W3C.org states in its, alpha, digit, safe, extra, and escape BNF types.
+	// In particular, doesn't include '.' but includes colon (':'), '[' and ']'
+	private static final String URL_MATCH_REGEX = "\\([\\\\w-:%!',@\"&\\\\(\\\\)\\\\[\\\\]\\\\~\\\\+\\\\*\\$]+?\\)";
 	
 	// Pattern to match URL pattern parameter names.
 	private static final Pattern URL_PARAM_PATTERN = Pattern.compile(URL_PARAM_REGEX);
