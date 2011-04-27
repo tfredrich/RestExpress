@@ -249,7 +249,7 @@ public class Request
 	 */
 	public String getUrlDecodedHeader(String name, String message)
 	{
-		String value = getRawHeader(name);
+		String value = getUrlDecodedHeader(name);
 		
 		if (value == null)
 		{

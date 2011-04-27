@@ -54,7 +54,7 @@ public class RequestTest
 		request.addHeader(key, value);
 		assertEquals(value, request.getRawHeader(key));
 	}
-	
+
 	@Test
 	public void shouldUrlDecodeHeader()
 	{
@@ -62,6 +62,15 @@ public class RequestTest
 		String value = "%20this%20that";
 		request.addHeader(key, value);
 		assertEquals(" this that", request.getUrlDecodedHeader(key));
+	}
+
+	@Test
+	public void shouldUrlDecodeHeaderWithMessage()
+	{
+		String key = "validUrlDecode";
+		String value = "%20this%20that";
+		request.addHeader(key, value);
+		assertEquals(" this that", request.getUrlDecodedHeader(key, "This should not display"));
 	}
 
 	@Test(expected=BadRequestException.class)
@@ -74,9 +83,15 @@ public class RequestTest
 	}
 
 	@Test(expected=BadRequestException.class)
-	public void shouldThrowBadRequestExceptionOnMissingHeader()
+	public void shouldThrowBadRequestExceptionOnMissingRawHeader()
 	{
 		request.getRawHeader("missing", "missing header");
+	}
+
+	@Test(expected=BadRequestException.class)
+	public void shouldThrowBadRequestExceptionOnMissingUrlDecodedHeader()
+	{
+		request.getUrlDecodedHeader("missing", "missing header");
 	}
 	
 	@Test
