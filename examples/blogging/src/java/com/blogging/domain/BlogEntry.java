@@ -25,14 +25,14 @@ extends BaseDomainObject
 	private String author;
 //	private List<Comment> comments = new ArrayList<Comment>();
 
-	public ObjectId getBlogId()
+	public String getBlogId()
     {
-    	return blogId;
+    	return (blogId == null ? null : blogId.toString());
     }
 
-	public void setBlogId(ObjectId blogId)
+	public void setBlogId(String blogId)
     {
-    	this.blogId = blogId;
+    	this.blogId = (blogId == null ? null: new ObjectId(blogId));
     }
 
 	public String getTitle()

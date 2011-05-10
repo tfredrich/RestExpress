@@ -29,7 +29,7 @@ implements TimestampedIdentifiable
 	@Override
 	public void setId(String id)
 	{
-		this.id = new ObjectId(id);
+		this.id = (id == null ? null : new ObjectId(id));
 	}
 
 	@Override

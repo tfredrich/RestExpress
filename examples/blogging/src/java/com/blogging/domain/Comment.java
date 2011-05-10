@@ -20,14 +20,14 @@ extends BaseDomainObject
 	@StringValidation(name="Comment Content", required=true)
 	private String content;
 
-	public ObjectId getBlogEntryId()
+	public String getBlogEntryId()
     {
-    	return blogEntryId;
+    	return (blogEntryId == null ? null : blogEntryId.toString());
     }
 
-	public void setBlogEntryId(ObjectId blogEntryId)
+	public void setBlogEntryId(String blogEntryId)
     {
-    	this.blogEntryId = blogEntryId;
+    	this.blogEntryId = (blogEntryId == null ? null : new ObjectId(blogEntryId));
     }
 
 	public String getAuthor()

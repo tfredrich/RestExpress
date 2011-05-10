@@ -2,8 +2,6 @@ package com.blogging.controller;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
-
 import com.blogging.Constants;
 import com.blogging.domain.Comment;
 import com.blogging.persistence.CommentRepository;
@@ -28,7 +26,7 @@ public class CommentController
 	{
 		Comment comment = request.getBodyAs(Comment.class, "Comment data not provided.");
 		String entryId = request.getUrlDecodedHeader(Constants.ENTRY_ID_HEADER, "Blog Entry ID not provided.");
-		comment.setBlogEntryId(new ObjectId(entryId));
+		comment.setBlogEntryId(entryId);
 		comment.validate();
 		Comment result = repo.create(comment);
 		response.setResponseCreated();
