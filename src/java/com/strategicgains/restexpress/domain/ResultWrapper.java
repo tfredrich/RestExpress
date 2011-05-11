@@ -74,21 +74,35 @@ public class ResultWrapper
 	
 	public static ResultWrapper fromResponse(Response response)
 	{
-		if (!response.hasException())
+		if (response.hasException())
 		{
-			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_SUCCESS, null, response.getBody());
+			Throwable exception = response.getException();
+			Throwable rootCause = ExceptionUtils.findRootCause(exception);
+			String message = (rootCause != null ? rootCause.getMessage() : null);
+			String causeName = (rootCause != null ? rootCause.getClass().getSimpleName() : null);
+
+			if (ServiceException.isAssignableFrom(exception))
+			{
+				return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_ERROR, message, causeName);
+			}
+
+			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_FAIL, message, causeName);
+		}
+		else
+		{
+			int code = response.getResponseStatus().getCode();
+
+			if (code >= 400 && code < 500)
+			{
+				return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_ERROR, null, response.getBody());
+			}
+
+			if (code >= 500 && code < 600)
+			{
+				return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_FAIL, null, response.getBody());
+			}
 		}
 
-		Throwable exception = response.getException();
-		Throwable rootCause = ExceptionUtils.findRootCause(exception);
-		String message = (rootCause != null ? rootCause.getMessage() : null);
-		String causeName = (rootCause != null ? rootCause.getClass().getSimpleName() : null);
-
-		if (ServiceException.isAssignableFrom(exception))
-		{
-			return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_ERROR, message, causeName);
-		}
-		
-		return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_FAIL, message, causeName);
+		return new ResultWrapper(response.getResponseStatus().getCode(), STATUS_SUCCESS, null, response.getBody());
 	}
 }
