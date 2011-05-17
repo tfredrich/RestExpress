@@ -15,7 +15,11 @@
 */
 package com.strategicgains.restexpress;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.util.Map;
 
 import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
 import org.jboss.netty.handler.codec.http.HttpMethod;
@@ -36,7 +40,7 @@ public class RequestTest
 	@Before
 	public void initialize()
 	{
-		request = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/foo?param1=bar&param2=blah"), null);
+		request = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/foo?param1=bar&param2=blah&yada"), null);
 	}
 	
 	@Test
@@ -44,6 +48,41 @@ public class RequestTest
 	{
 		assertEquals("bar", request.getRawHeader("param1"));
 		assertEquals("blah", request.getRawHeader("param2"));
+		assertEquals("", request.getRawHeader("yada"));
+	}
+	
+	@Test
+	public void shouldParseQueryStringIntoMap()
+	{
+		Map<String, String> m = request.getQueryStringMap();
+		assertEquals("bar", m.get("param1"));
+		assertEquals("blah", m.get("param2"));
+		assertEquals("", m.get("yada"));
+	}
+
+	@Test
+	public void shouldHandleNoQueryString()
+	{
+		Request r = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/foo"), null);
+		Map<String, String> m = r.getQueryStringMap();
+		assertNull(m);
+	}
+
+	@Test
+	public void shouldHandleNullQueryString()
+	{
+		Request r = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/foo?"), null);
+		Map<String, String> m = r.getQueryStringMap();
+		assertNull(m);
+	}
+
+	@Test
+	public void shouldHandleGoofyQueryString()
+	{
+		Request r = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/foo??&"), null);
+		Map<String, String> m = r.getQueryStringMap();
+		assertNotNull(m);
+		assertEquals("", m.get("?"));
 	}
 
 	@Test

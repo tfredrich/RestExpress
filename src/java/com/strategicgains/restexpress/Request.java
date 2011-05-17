@@ -60,6 +60,7 @@ public class Request
 	private Route resolvedRoute;
 	private String correlationId;
 	private Map<String, Object> attachments;
+	private Map<String, String> queryStringMap;
 
 	
 	// SECTION: CONSTRUCTOR
@@ -71,7 +72,7 @@ public class Request
 		this.effectiveHttpMethod = request.getMethod();
 		this.urlRouter = routes;
 		parseRequestedFormatToHeader(request);
-		addQueryStringParametersAsHeaders(request);
+		parseQueryString(request);
 		determineEffectiveHttpMethod(request);
 		createCorrelationId();
 	}
@@ -331,6 +332,11 @@ public class Request
 		
 		return null;
 	}
+	
+	public Map<String, String> getQueryStringMap()
+	{
+		return queryStringMap;
+	}
 
 	public boolean isKeepAlive()
 	{
@@ -515,16 +521,18 @@ public class Request
 	
 	/**
 	 * Add the query string parameters to the request as headers.
+	 * Also parses the query string into the queryStringMap, if applicable.
 	 */
-	private void addQueryStringParametersAsHeaders(HttpRequest request)
+	private void parseQueryString(HttpRequest request)
 	{
 		String uri = request.getUri();
 		int x = uri.indexOf('?');
 		String queryString = (x >= 0 ? uri.substring(x + 1) : null);
 		
-		if (queryString != null)
+		if (queryString != null && !queryString.trim().isEmpty())
 		{
 			String[] params = queryString.split("&");
+			queryStringMap = new HashMap<String, String>(params.length);
 			
 			for (String pair : params)
 			{
@@ -534,10 +542,12 @@ public class Request
 				if (keyValue.length == 1)
 				{
 					request.addHeader(key, "");
+					queryStringMap.put(key, "");
 				}
 				else
 				{
 					request.addHeader(key, keyValue[1]);
+					queryStringMap.put(key, keyValue[1]);
 				}
 			}
 		}
