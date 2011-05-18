@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
 import org.jboss.netty.handler.codec.http.HttpMethod;
+import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpVersion;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,9 +41,29 @@ public class RequestTest
 	@Before
 	public void initialize()
 	{
-		request = new Request(new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/foo?param1=bar&param2=blah&yada"), null);
+		HttpRequest httpRequest = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/foo?param1=bar&param2=blah&yada");
+		httpRequest.addHeader("Host", "testing-host");
+		request = new Request(httpRequest, null);
 	}
-	
+
+	@Test
+	public void shouldRetrieveEntireUrl()
+	{
+		assertEquals("http://testing-host/foo?param1=bar&param2=blah&yada", request.getUrl());
+	}
+
+	@Test
+	public void shouldRetrieveBaseUrl()
+	{
+		assertEquals("http://testing-host", request.getBaseUrl());
+	}
+
+	@Test
+	public void shouldRetrievePath()
+	{
+		assertEquals("/foo?param1=bar&param2=blah&yada", request.getPath());
+	}
+
 	@Test
 	public void shouldApplyQueryStringParamsAsHeaders()
 	{

@@ -292,15 +292,26 @@ public class Request
 	{
 		return httpRequest.getUri();
 	}
+	
+	/**
+	 * Returns the protocol and host (without the path) portion of the URL.
+	 * 
+	 * @return
+	 */
+	public String getBaseUrl()
+	{
+		return getProtocol() + "://" + getHost();
+	}
 
 	/**
 	 * Returns the full URL for the request, containing protocol, host and path.
+	 * Note that this call also returns the query string as part of the path.
 	 * 
 	 * @return the full URL for the request.
 	 */
 	public String getUrl()
 	{
-		return getProtocol() + "://" + getHost() + getPath();
+		return getBaseUrl() + getPath();
 	}
 
 	/**
