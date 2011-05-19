@@ -44,8 +44,8 @@ public class ExceptionMapping
 		{
 			try
             {
-	            Constructor<?> constructor = mapped.getConstructor(Throwable.class);
-	            return (ServiceException) constructor.newInstance(throwable);
+	            Constructor<?> constructor = mapped.getConstructor(String.class, Throwable.class);
+	            return (ServiceException) constructor.newInstance(throwable.getMessage(), throwable);
             }
             catch (Exception e)
             {
