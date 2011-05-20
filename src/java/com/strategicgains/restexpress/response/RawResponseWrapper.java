@@ -36,7 +36,6 @@ implements ResponseWrapperFactory
 			return response.getBody();
 		}
 		
-//		return new ErrorMessage(response.getException().getMessage());
 		return response.getException().getMessage();
 	}
 }
