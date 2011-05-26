@@ -17,6 +17,9 @@
 package com.strategicgains.restexpress.query;
 
 /**
+ * Called by QueryOrder.iterate() at query construction time to modify the persistence query
+ * (or other query) to impose a sort order on the results returned.
+ * 
  * @author toddf
  * @since May 25, 2011
  */

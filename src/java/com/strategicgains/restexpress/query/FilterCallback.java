@@ -17,6 +17,9 @@
 package com.strategicgains.restexpress.query;
 
 /**
+ * Called by QueryFilter.iterate() at query construction time to modify the persistence query
+ * (or other query) to reduce the number of results returned.
+ * 
  * @author toddf
  * @since May 25, 2011
  */

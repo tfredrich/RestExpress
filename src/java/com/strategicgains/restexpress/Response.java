@@ -124,6 +124,9 @@ public class Response
 	}
 
 	/**
+	 * Add a "Content-Range" header to the response, setting it to the range and count.
+	 * This enables datagrid-style pagination support.
+	 * 
 	 * @param response
 	 * @param range
 	 * @param count

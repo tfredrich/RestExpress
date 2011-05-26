@@ -23,6 +23,23 @@ import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.exception.BadRequestException;
 
 /**
+ * Supports the concept of 'pagination' via request 'Range' parameters.
+ * <p/>
+ * Paging is accomplished using the Range and Content-Range HTTP headers.  The client can request a range of
+ * results by including the "Range" header with the request.  For example, to get the first 25 results:
+ * <p/>
+ * GET /many_things.json<br/>
+ * HTTP/1.1<br/>
+ * Host: example.com<br/>
+ * Range: items=0-24<br/>
+ * 
+ * The server will respond with a "Content-Range" header that includes the start and end of the range, as well
+ * as a total count of all results.  For example, the response for the first 25 of 67 total results:
+ * <p/>
+ * HTTP/1.1 200 OK<br/>
+ * Content-Type: application/json<br/>
+ * Content-Range: items 0-24/67<br/>
+ * 
  * @author toddf
  * @since Apr 11, 2011
  */
@@ -114,11 +131,21 @@ public class QueryRange
 		setStop(getStart() + value - 1);
 	}
 	
+	/**
+	 * Return true if the range has start and stop values.
+	 * 
+	 * @return true if the range is initialized (has start and stop values)
+	 */
 	public boolean isInitialized()
 	{
 		return hasStart() && hasStop();
 	}
 
+	/**
+	 * Validates the range.
+	 * 
+	 * @return true if the range is valid
+	 */
 	public boolean isValid()
 	{
 		return (getStart() <= getStop());
@@ -128,6 +155,14 @@ public class QueryRange
 	// SECTION: FACTORY
 
 
+	/**
+	 * Create a QueryRange instance from the current RestExpress request, providing a
+	 * default maximum offset if the request contains no range criteria.
+	 * 
+	 * @param request the current request
+	 * @param maxResults the default maximum offset, used if the request contains no range criteria
+	 * @return a QueryRange instance
+	 */
 	public static QueryRange parseFrom(Request request, int maxResults)
 	{
 		QueryRange range = new QueryRange(0, maxResults);
@@ -135,6 +170,12 @@ public class QueryRange
 		return range;
 	}
 
+	/**
+	 * Create a QueryRange instance from the current RestExpress request.
+	 * 
+	 * @param request the current request
+	 * @return a QueryRange instance
+	 */
 	public static QueryRange parseFrom(Request request)
 	{
 		QueryRange range = new QueryRange();

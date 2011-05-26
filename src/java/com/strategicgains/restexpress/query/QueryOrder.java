@@ -22,6 +22,16 @@ import java.util.List;
 import com.strategicgains.restexpress.Request;
 
 /**
+ * Supports the concept of sorting a result based on the 'sort' query parameter.
+ * The value of the sort parameter will be the name of the field to sort on, prefixed with a dash ('-')
+ * for descending order.  Sort on multiple fields by separating field names with a vertical bar ('|').
+ * <p/>
+ * To sort on name (ascending): ?sort=name
+ * <p/>
+ * To sort on name (descending): ?sort=-name
+ * <p/>
+ * To sort on name (descending), description (ascending), creation date (descsending): ?sort=-name|description|-createdAt
+ * 
  * @author toddf
  * @since Apr 12, 2011
  */
@@ -53,6 +63,11 @@ public class QueryOrder
 		}
 	}
 
+	/**
+	 * Returns true if this QueryOrder contains sort criteria.
+	 * 
+	 * @return
+	 */
 	public boolean isSorted()
 	{
 		return (sorts != null && !sorts.isEmpty());
@@ -68,6 +83,12 @@ public class QueryOrder
 		}
 	}
 	
+	/**
+	 * Create a QueryOrder instance from the RestExpress request.
+	 * 
+	 * @param request the current request
+	 * @return a QueryOrder instance
+	 */
 	public static QueryOrder parseFrom(Request request)
 	{
 		String sortString = request.getUrlDecodedHeader(SORT_HEADER_NAME);
