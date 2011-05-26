@@ -132,7 +132,7 @@ public class Response
 	 * @param count
 	 * @param size
 	 */
-	protected void addRangeHeader(QueryRange range, long count)
+	public void addRangeHeader(QueryRange range, long count)
 	{
     	addHeader(CONTENT_RANGE_HEADER_NAME, range.toString() + "/" + count);
 	}
