@@ -23,6 +23,14 @@ import java.util.Map.Entry;
 import com.strategicgains.restexpress.Request;
 
 /**
+ * Supports the concept of filtering a result based on the 'filter' query parameter.
+ * a list of field name/value pairs separated by a vertical bar ('|') and the field name
+ * separated from the value with two colons ('::').
+ * <p/>
+ * To filter on name: ?sort=name::todd
+ * <p/>
+ * To filter on name and description: ?sort=name::todd|description::amazing
+ * 
  * @author toddf
  * @since Apr 12, 2011
  */
@@ -45,11 +53,22 @@ public class QueryFilter
 		this.filters = new HashMap<String, String>(filters);
 	}
 
+	/**
+	 * Returns true if this QueryFilter instance would affect the query (has effective filters).
+	 * 
+	 * @return true if filters exist within this QueryFilter instance
+	 */
 	public boolean hasFilters()
 	{
 		return (filters != null && !filters.isEmpty());
 	}
 	
+	/**
+	 * Iterate the filter criteria within this QueryFilter, invoking the FilterCallback
+	 * to presumably construct a query.
+	 * 
+	 * @param callback a FilterCallback instance
+	 */
 	public void iterate(FilterCallback callback)
 	{
 		if (callback == null || !hasFilters()) return;
@@ -63,6 +82,11 @@ public class QueryFilter
 	
 	// SECTION: FACTORY
 
+	/**
+	 * Create an instance of QueryFilter from the RestExpress request.
+	 * 
+	 * @param request the current request
+	 */
 	public static QueryFilter parseFrom(Request request)
 	{
 		String filterString = request.getUrlDecodedHeader(FILTER_HEADER_NAME);
