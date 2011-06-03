@@ -383,8 +383,7 @@ extends SimpleChannelUpstreamHandler
 		{
 			SerializationProcessor sp = context.getSerializationProcessor();
 			Request request = context.getRequest();
-			response.setBody(responseWrapperFactory.wrap(response));
-			response.setBody(serializeResult(response.getBody(), sp, request));
+			response.setBody(serializeResult(responseWrapperFactory.wrap(response), sp, request));
 		}
 
 		if (HttpSpecification.isContentTypeAllowed(response))
@@ -405,7 +404,6 @@ extends SimpleChannelUpstreamHandler
 
     /**
      * Depending on the result, the return value is serialized and, optionally, wrapped in a jsonp callback.
-     * Note that a null result is not serialized unless it should be wrapped in jsonp.
      * 
      * @param result object to serialize.
      * @param processor the serialization processor that will do the serializing.
@@ -414,8 +412,8 @@ extends SimpleChannelUpstreamHandler
      */
 	private String serializeResult(Object result, SerializationProcessor processor, Request request)
 	{
-		String callback = getJsonpCallback(request, processor);
 		String content = processor.serialize(result);
+		String callback = getJsonpCallback(request, processor);
 
 		if (callback != null) // must wrap in jsonp callback--serialization necessary.
 		{
