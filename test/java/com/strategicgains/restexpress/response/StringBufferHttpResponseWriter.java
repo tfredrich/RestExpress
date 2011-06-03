@@ -15,6 +15,8 @@
 */
 package com.strategicgains.restexpress.response;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -29,7 +31,7 @@ import com.strategicgains.restexpress.Response;
 public class StringBufferHttpResponseWriter
 implements HttpResponseWriter
 {
-	private Map<String, String> headers;
+	private Map<String, List<String>> headers;
 	private StringBuffer body;
 
 	public StringBufferHttpResponseWriter(StringBuffer buffer)
@@ -37,7 +39,7 @@ implements HttpResponseWriter
 		this(null, buffer);
 	}
 
-	public StringBufferHttpResponseWriter(Map<String, String> headers, StringBuffer buffer)
+	public StringBufferHttpResponseWriter(Map<String, List<String>> headers, StringBuffer buffer)
 	{
 		super();
 		this.body = buffer;
@@ -51,7 +53,8 @@ implements HttpResponseWriter
 		{
 			for (String headerName : response.getHeaderNames())
 			{
-				headers.put(headerName, response.getHeader(headerName));
+				List<String> headerValues = new ArrayList<String>(response.getHeaders(headerName));
+				headers.put(headerName, headerValues);
 			}
 		}
 

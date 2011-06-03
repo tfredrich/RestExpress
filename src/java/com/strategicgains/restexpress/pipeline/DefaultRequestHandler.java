@@ -389,8 +389,11 @@ extends SimpleChannelUpstreamHandler
 
 		if (HttpSpecification.isContentTypeAllowed(response))
 		{
-			String contentType = (context.getContentType() == null ? TEXT_PLAIN : context.getContentType());
-			context.getResponse().addHeader(CONTENT_TYPE, contentType);
+			if (!response.hasHeader(CONTENT_TYPE))
+			{
+				String contentType = (context.getContentType() == null ? TEXT_PLAIN : context.getContentType());
+				context.getResponse().addHeader(CONTENT_TYPE, contentType);
+			}
 		}
 	}
 

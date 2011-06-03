@@ -93,6 +93,11 @@ public class Response
 	{
 		return headers.get(name);
 	}
+	
+	public boolean hasHeader(String name)
+	{
+		return (getHeader(name) != null);
+	}
 
 	public boolean hasHeaders()
 	{
