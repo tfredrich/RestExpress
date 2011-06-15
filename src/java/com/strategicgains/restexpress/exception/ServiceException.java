@@ -36,7 +36,7 @@ extends RuntimeException
 		this(STATUS);
 	}
 	
-	protected ServiceException(HttpResponseStatus status)
+	public ServiceException(HttpResponseStatus status)
 	{
 		setHttpStatus(status);
 	}
@@ -49,7 +49,7 @@ extends RuntimeException
 		this(STATUS, message);
 	}
 	
-	protected ServiceException(HttpResponseStatus status, String message)
+	public ServiceException(HttpResponseStatus status, String message)
 	{
 		super(message);
 		setHttpStatus(status);
@@ -63,7 +63,7 @@ extends RuntimeException
 		this(STATUS, cause);
 	}
 	
-	protected ServiceException(HttpResponseStatus status, Throwable cause)
+	public ServiceException(HttpResponseStatus status, Throwable cause)
 	{
 		super(cause);
 		setHttpStatus(status);
@@ -83,7 +83,7 @@ extends RuntimeException
      * @param message
      * @param cause
      */
-    protected ServiceException(HttpResponseStatus status, String message, Throwable cause)
+    public ServiceException(HttpResponseStatus status, String message, Throwable cause)
     {
     	super(message, cause);
     	setHttpStatus(status);
