@@ -16,7 +16,6 @@
 package com.strategicgains.restexpress.plugin;
 
 import com.strategicgains.restexpress.RestExpress;
-import com.strategicgains.restexpress.route.RouteBuilder;
 
 /**
  * @author toddf
@@ -26,9 +25,9 @@ public abstract class AbstractPlugin
 implements Plugin
 {
 	@Override
-	public RouteBuilder register(RestExpress server)
+	public AbstractPlugin register(RestExpress server)
 	{
 		server.registerPlugin(this);
-		return null;
+		return this;
 	}
 }

@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import com.strategicgains.restexpress.RestExpress;
 import com.strategicgains.restexpress.pipeline.SimpleMessageObserver;
-import com.strategicgains.restexpress.plugin.RouteMetadataPlugin;
+import com.strategicgains.restexpress.plugin.RoutesMetadataPlugin;
 import com.strategicgains.restexpress.util.Environment;
 
 /**
@@ -29,7 +29,7 @@ public class Main
 		    .addMessageObserver(new SimpleMessageObserver());
 		configureXmlAliases(server);
 		
-		new RouteMetadataPlugin().register(server);
+		new RoutesMetadataPlugin().register(server);
 
 		server.bind();
 		server.awaitShutdown();

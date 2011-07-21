@@ -13,7 +13,7 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
  */
-package com.strategicgains.restexpress.domain.console;
+package com.strategicgains.restexpress.domain.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,14 +23,23 @@ import java.util.List;
  * @author toddf
  * @since Jan 31, 2011
  */
-public class RouteMetadata
+public class ServerMetadata
 {
-	private String name;
-	private UriMetadata uri;
-	private List<String> supportedFormats;
-	private String defaultFormat;
-	private List<String> methods = new ArrayList<String>();
-	private boolean isSerialized;
+	private String name = null;
+	private int port;
+	private List<String> supportedFormats = null;
+	private String defaultFormat = null;
+	private List<RouteMetadata> routes = new ArrayList<RouteMetadata>();
+
+	public ServerMetadata copyRootData()
+	{
+		ServerMetadata copy = new ServerMetadata();
+		copy.setName(getName());
+		copy.setPort(getPort());
+		copy.setDefaultFormat(getDefaultFormat());
+		copy.addAllSupportedFormats(getSupportedFormats());
+		return copy;
+	}
 
 	public String getName()
 	{
@@ -42,29 +51,29 @@ public class RouteMetadata
 		this.name = name;
 	}
 
-	public UriMetadata getUri()
+	public int getPort()
 	{
-		return uri;
+		return port;
 	}
 
-	public void setUri(UriMetadata uri)
+	public void setPort(int port)
 	{
-		this.uri = uri;
+		this.port = port;
 	}
 
 	public List<String> getSupportedFormats()
 	{
 		return supportedFormats;
 	}
-	
+
 	public void addSupportedFormat(String format)
 	{
-		if (getSupportedFormats() == null)
+		if (supportedFormats == null)
 		{
 			supportedFormats = new ArrayList<String>();
 		}
-		
-		if (!getSupportedFormats().contains(format))
+
+		if (!supportedFormats.contains(format))
 		{
 			supportedFormats.add(format);
 		}
@@ -87,35 +96,22 @@ public class RouteMetadata
 	{
 		this.defaultFormat = defaultFormat;
 	}
-	
-	public List<String> getMethods()
+
+	public List<RouteMetadata> getRoutes()
 	{
-		return methods;
-	}
-	
-	public void addMethod(String method)
-	{
-		if (!methods.contains(method))
-		{
-			methods.add(method);
-		}
-	}
-	
-	public void addAllMethods(Collection<String> methods)
-	{
-		for (String method : methods)
-		{
-			addMethod(method);
-		}
+		return routes;
 	}
 
-	public boolean isSerialized()
+	public void addRoute(RouteMetadata route)
 	{
-		return isSerialized;
+		routes.add(route);
 	}
 
-	public void setSerialized(boolean isSerialized)
+	public void addAllRoutes(Collection<RouteMetadata> routes)
 	{
-		this.isSerialized = isSerialized;
+		for (RouteMetadata route : routes)
+		{
+			addRoute(route);
+		}
 	}
 }

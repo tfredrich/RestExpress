@@ -30,7 +30,7 @@ import org.jboss.netty.channel.group.ChannelGroupFuture;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.handler.logging.LoggingHandler;
 
-import com.strategicgains.restexpress.domain.console.ServerMetadata;
+import com.strategicgains.restexpress.domain.metadata.ServerMetadata;
 import com.strategicgains.restexpress.exception.ExceptionMapping;
 import com.strategicgains.restexpress.exception.ServiceException;
 import com.strategicgains.restexpress.pipeline.DefaultRequestHandler;

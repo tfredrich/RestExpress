@@ -16,7 +16,6 @@
 package com.strategicgains.restexpress.plugin;
 
 import com.strategicgains.restexpress.RestExpress;
-import com.strategicgains.restexpress.route.RouteBuilder;
 
 /**
  * @author toddf
@@ -28,9 +27,9 @@ public interface Plugin
 	 * Called to register this plugin with the RestExpress server.
 	 * 
 	 * @param server
-	 * @return a RouteBuilder that can be augmented, if this plugin creates a route.
+	 * @return a Plugin reference so plugin commands can be chained.
 	 */
-	public RouteBuilder register(RestExpress server);
+	public Plugin register(RestExpress server);
 	
 	/**
 	 * Called during RestExpress.bind(), after all resources have been allocated

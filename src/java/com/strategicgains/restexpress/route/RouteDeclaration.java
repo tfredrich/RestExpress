@@ -18,7 +18,7 @@ package com.strategicgains.restexpress.route;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.strategicgains.restexpress.domain.console.RouteMetadata;
+import com.strategicgains.restexpress.domain.metadata.RouteMetadata;
 import com.strategicgains.restexpress.route.parameterized.ParameterizedRouteBuilder;
 import com.strategicgains.restexpress.route.regex.RegexRouteBuilder;
 
