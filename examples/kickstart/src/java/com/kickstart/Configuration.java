@@ -24,7 +24,7 @@ import com.strategicgains.restexpress.util.Environment;
  * @author toddf
  * @since Feb 10, 2011
  */
-public class KickstartEnvironment
+public class Configuration
 extends Environment
 {
 	private static final String NAME_PROPERTY = "name";
