@@ -37,6 +37,8 @@ public class MessageObserver
     }
 
 	/**
+	 * Sent when an exception occurs in a route, but before the response is written.
+	 * 
      * @param exception
      * @param request
      * @param response
@@ -47,6 +49,8 @@ public class MessageObserver
     }
 
 	/**
+	 * Sent after a response is successfully written.
+	 * 
      * @param request
      * @param response
      */
@@ -56,6 +60,8 @@ public class MessageObserver
     }
 
 	/**
+	 * Sent after either an exception or successful response is written from a route.
+	 * 
      * @param request
      * @param response
      */
