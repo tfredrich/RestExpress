@@ -25,21 +25,20 @@ import com.strategicgains.restexpress.domain.console.ServerMetadata;
  */
 public class ConsoleController
 {
-	private ServerMetadata metadata;
+	private ServerMetadata metadata = null;
 
-	public ConsoleController(ServerMetadata data)
+	public ConsoleController()
 	{
 		super();
-		this.metadata = data;
 	}
 
 	public ServerMetadata getRoutes(Request request, Response response)
 	{
 		return metadata;
 	}
-
-	public Object getConsole(Request request, Response response)
+	
+	public void setMetadata(ServerMetadata data)
 	{
-		return null;
+		this.metadata = data;
 	}
 }

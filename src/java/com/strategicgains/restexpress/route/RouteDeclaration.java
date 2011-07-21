@@ -31,6 +31,7 @@ public abstract class RouteDeclaration
 	// SECTION: INSTANCE VARIABLES
 
 	private List<RouteBuilder> routeBuilders;
+	List<RouteMetadata> routeMetadata = new ArrayList<RouteMetadata>();
 	
 	
 	public RouteDeclaration()
@@ -81,7 +82,9 @@ public abstract class RouteDeclaration
 
 		for (RouteBuilder builder : routeBuilders)
 		{
-			for (Route route : builder.build())
+    		routeMetadata.add(builder.asMetadata());
+
+    		for (Route route : builder.build())
 			{
 				results.addRoute(route);
 			}
@@ -102,18 +105,9 @@ public abstract class RouteDeclaration
 	/**
      * @return
      */
-    public List<RouteMetadata> asMetadata()
+    public List<RouteMetadata> getMetadata()
     {
-    	defineRoutes();
-    	List<RouteMetadata> metadata = new ArrayList<RouteMetadata>();
-    	
-    	for (RouteBuilder builder : routeBuilders)
-    	{
-    		metadata.add(builder.asMetadata());
-    	}
-
-    	unDefineRoutes();
-    	return metadata;
+    	return routeMetadata;
     }
 
 	private void unDefineRoutes()

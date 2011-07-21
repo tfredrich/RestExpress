@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import com.strategicgains.restexpress.RestExpress;
 import com.strategicgains.restexpress.pipeline.SimpleMessageObserver;
+import com.strategicgains.restexpress.plugin.RouteMetadataPlugin;
 import com.strategicgains.restexpress.util.Environment;
 
 /**
@@ -20,14 +21,16 @@ public class Main
 	 */
 	public static void main(String[] args) throws Exception
 	{
-		KickstartEnvironment env = loadEnvironment(args);
+		Configuration env = loadEnvironment(args);
 		RestExpress server = new RestExpress(new Routes())
 		    .setName(env.getName())
 		    .setPort(env.getPort())
-		    .supportConsoleRoutes()
 		    // .useRawResponses()
 		    .addMessageObserver(new SimpleMessageObserver());
 		configureXmlAliases(server);
+		
+		new RouteMetadataPlugin().register(server);
+
 		server.bind();
 		server.awaitShutdown();
 	}
@@ -41,14 +44,14 @@ public class Main
 		// .alias("element_name", Element.class)
 	}
 
-	private static KickstartEnvironment loadEnvironment(String[] args)
+	private static Configuration loadEnvironment(String[] args)
     throws FileNotFoundException, IOException
     {
 	    if (args.length > 0)
 		{
-			return Environment.from(args[0], KickstartEnvironment.class);
+			return Environment.from(args[0], Configuration.class);
 		}
 
-	    return Environment.fromDefault(KickstartEnvironment.class);
+	    return Environment.fromDefault(Configuration.class);
     }
 }
