@@ -22,6 +22,7 @@ import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.domain.metadata.RouteMetadata;
 import com.strategicgains.restexpress.domain.metadata.ServerMetadata;
+import com.strategicgains.restexpress.exception.NotFoundException;
 
 /**
  * @author toddf
@@ -48,7 +49,7 @@ public class RouteMetadataController
 			if (routeInfo.getName() != null
 			    && !routeInfo.getName().trim().isEmpty())
 			{
-				routeMetadata.put(routeInfo.getName(), routeInfo);
+				routeMetadata.put(routeInfo.getName().toLowerCase(), routeInfo);
 			}
 		}
 	}
@@ -61,14 +62,15 @@ public class RouteMetadataController
 	public ServerMetadata getSingleRoute(Request request, Response response)
 	{
 		String routeName = request.getUrlDecodedHeader("routeName", "Route name must be provided");
-		ServerMetadata results = metadata.copyRootData();
-		RouteMetadata routeInfo = routeMetadata.get(routeName);
-
-		if (routeInfo != null)
+		RouteMetadata routeInfo = routeMetadata.get(routeName.toLowerCase());
+		
+		if (routeInfo == null)
 		{
-			results.addRoute(routeMetadata.get(routeName));
+			throw new NotFoundException("Route name not found: " + routeName);
 		}
 
+		ServerMetadata results = metadata.copyRootData();
+		results.addRoute(routeInfo);
 		return results;
 	}
 
