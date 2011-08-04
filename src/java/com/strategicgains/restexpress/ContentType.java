@@ -15,6 +15,8 @@
 */
 package com.strategicgains.restexpress;
 
+import java.nio.charset.Charset;
+
 /**
  * @author toddf
  * @since Jan 19, 2011
@@ -22,6 +24,7 @@ package com.strategicgains.restexpress;
 public abstract class ContentType
 {
 	public static final String ENCODING = "UTF-8";
+	public static final Charset CHARSET = Charset.forName(ENCODING);
 
 	public static final String HTML = "text/html; charset=" + ENCODING;
 	public static final String JAVASCRIPT = "application/javascript; charset=" + ENCODING;
