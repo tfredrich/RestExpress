@@ -32,6 +32,9 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
 
 /**
+ * The operation of these SerializationProcessor methods MUST match the behavior
+ * of those in the DefaultJsonProcessor (and any other serialization processors).
+ * 
  * @author toddf
  * @since Mar 16, 2010
  */
@@ -83,6 +86,8 @@ implements AliasingSerializationProcessor
 	@Override
 	public String serialize(Object object)
 	{
+		if (object == null) return "";
+
 		return xstream.toXML(object);
 	}
 
@@ -90,6 +95,8 @@ implements AliasingSerializationProcessor
 	@SuppressWarnings("unchecked")
 	public <T> T deserialize(String xml, Class<T> type)
 	{
+		if (xml == null || xml.trim().isEmpty()) return null;
+
 		if (shouldAutoAlias)
 		{
 			addAliasIfNecessary(type);
@@ -102,6 +109,8 @@ implements AliasingSerializationProcessor
 	@SuppressWarnings("unchecked")
 	public <T> T deserialize(ChannelBuffer xml, Class<T> type)
 	{
+		if (!xml.readable()) return null;
+
 		return (T) xstream.fromXML(new ChannelBufferInputStream(xml));
 	}
 
