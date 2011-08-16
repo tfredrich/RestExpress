@@ -87,6 +87,7 @@ public class RestExpress
 	private boolean shouldHandleChunking = true;
 	private boolean shouldUseCompression = true;
 	private Integer maxChunkSize = null;
+	private int workerThreadCount = 0;
 
 	Map<String, SerializationProcessor> serializationProcessors = new HashMap<String, SerializationProcessor>();
 	private List<MessageObserver> messageObservers = new ArrayList<MessageObserver>();
@@ -592,6 +593,17 @@ public class RestExpress
 		this.exceptionMap = mapping;
 		return this;
 	}
+	
+	public int getWorkerThreadCount()
+	{
+		return workerThreadCount;
+	}
+
+	public RestExpress setWorkerThreadCount(int value)
+	{
+		this.workerThreadCount = value;
+		return this;
+	}
 
 	/**
 	 * The last call in the building of a RestExpress server, bind() causes
@@ -602,7 +614,14 @@ public class RestExpress
 	public Channel bind()
 	{
 		// Configure the server.
-		bootstrap = Bootstraps.createServerNioBootstrap();
+		if (workerThreadCount == 0)
+		{
+			bootstrap = Bootstraps.createServerNioBootstrap();
+		}
+		else
+		{
+			bootstrap = Bootstraps.createServerNioBootstrap(workerThreadCount);
+		}
 
 		// Set up the event pipeline factory.
 		DefaultRequestHandler requestHandler = new DefaultRequestHandler(

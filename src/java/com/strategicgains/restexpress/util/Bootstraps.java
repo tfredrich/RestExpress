@@ -29,7 +29,7 @@ public final class Bootstraps
 {
 	// no instances, just static methods
 	private Bootstraps(){}
-	
+
 	/**
 	 * Build up a server with NIO channels and default cached thread pools.
 	 * 
@@ -41,8 +41,28 @@ public final class Bootstraps
 	public final static ServerBootstrap createServerNioBootstrap()
 	{
 		return new ServerBootstrap(
-			    new NioServerSocketChannelFactory(
-				    	Executors.newCachedThreadPool(),
-				        Executors.newCachedThreadPool()));
+			new NioServerSocketChannelFactory(
+				Executors.newCachedThreadPool(),
+				Executors.newCachedThreadPool()));
+	}
+
+
+	/**
+	 * Build up a server with NIO channels and default cached thread pools, specifying
+	 * the number of worker threads.
+	 * 
+	 * @param workerCount the number of worker threads desired.
+	 * @see ServerBootstrap
+	 * @see NioServerSocketChannelFactory
+	 * @see Executors
+	 * @return An {@link ServerBootstrap} instance.
+	 */
+	public final static ServerBootstrap createServerNioBootstrap(int workerCount)
+	{
+		return new ServerBootstrap(
+			new NioServerSocketChannelFactory(
+				Executors.newCachedThreadPool(),
+				Executors.newCachedThreadPool(),
+				workerCount));
 	}
 }
