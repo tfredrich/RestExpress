@@ -18,6 +18,7 @@ package com.strategicgains.restexpress.plugin;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.strategicgains.restexpress.ContentType;
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.domain.metadata.RouteMetadata;
@@ -76,6 +77,7 @@ public class RouteMetadataController
 
 	public String getConsole(Request request, Response response)
 	{
+		response.setContentType(ContentType.HTML);
 		return "<html><head></head><body><h1>Coming soon...</h1><p>Watch <a href=\"http://github.com/RestExpress/RestExpress\">RestExpress on GitHub.com</a> for more.</p></body></html>";
 	}
 }
