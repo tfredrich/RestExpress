@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.strategicgains.restexpress.exception.ConfigurationException;
+
 /**
  * @author kevwil
  * @author toddf
@@ -52,14 +54,15 @@ public abstract class Environment
 	}
 
 	protected void load(String filename)
-	throws FileNotFoundException, IOException
+	throws ConfigurationException, FileNotFoundException, IOException
 	{
 //		log.debug("loading environment properties from " + environmentFile);
 		Properties p = readProperties(filename);
 		fillValues(p);
 	}
 	
-	protected abstract void fillValues(Properties p);
+	protected abstract void fillValues(Properties p)
+	throws ConfigurationException;
 
 	protected Properties readProperties(String environmentFile)
 	throws FileNotFoundException,
