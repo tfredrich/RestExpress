@@ -42,6 +42,24 @@ On successful creation, call response.setResponseCreated() to set the returning 
 
 Change History/Release Notes:
 ===================================================================================================
+Release 0.7.1
+* Added rootCause to ResultWrapper data area.
+* Exposed the XStream object from DefaultXmlProcessor.
+* Renamed Link to XLink.
+* Renamed LinkUtils to XLinkUtils, adding asXLinks() method that utilizes XLinkFactory callback
+  to create the XLink instances.
+* Changed URL Matching to support additional characters: '[', ']', '&' which more closely follows
+  W3C the specification.
+* Added ability to return query string parameters as a Map from the Request.
+* Introduced Request.getBaseUrl() which returns protocol and host, without URL path information.
+* Introduced query criteria capability: filter, order, range (for pagination).
+* Introduced the concept of Plugins.
+* Refactored the console routes to use the new plugin concept.
+* Updated Netty jars (to 3.2.5).
+* Added ability to set the number of worker threads via call to RestExpress.setWorkerThreadCount()
+  before calling bind().
+
+===================================================================================================
 Release 0.7.0
 * Added gzip request/response handling. On by default. Disable it via call to
   RestExpress.noCompression() and supportCompression().
