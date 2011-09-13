@@ -2,7 +2,7 @@ package com.kickstart;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
-import com.kickstart.service.KickStartController;
+import com.kickstart.controller.KickStartController;
 import com.strategicgains.restexpress.route.RouteDeclaration;
 
 /**

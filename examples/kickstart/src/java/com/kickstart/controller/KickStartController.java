@@ -1,4 +1,4 @@
-package com.kickstart.service;
+package com.kickstart.controller;
 
 import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;

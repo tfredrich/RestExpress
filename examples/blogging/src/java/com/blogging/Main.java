@@ -37,7 +37,7 @@ public class Main
 		    .putSerializationProcessor(Format.JSON, new BlogJsonProcessor())
 		    .putSerializationProcessor(Format.XML, new BlogXmlProcessor())
 		    .setDefaultFormat(env.getDefaultFormat())
-		    .supportConsoleRoutes()
+//		    .supportConsoleRoutes()
 		    .addMessageObserver(new SimpleMessageObserver());
 		mapExceptions(server);
 		server.bind();
