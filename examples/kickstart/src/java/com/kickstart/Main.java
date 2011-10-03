@@ -4,8 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import com.strategicgains.restexpress.RestExpress;
-import com.strategicgains.restexpress.pipeline.SimpleMessageObserver;
+import com.strategicgains.restexpress.pipeline.SimpleConsoleLogMessageObserver;
 import com.strategicgains.restexpress.plugin.RoutesMetadataPlugin;
+import com.strategicgains.restexpress.postprocessor.DateHeaderPostprocessor;
 import com.strategicgains.restexpress.util.Environment;
 
 /**
@@ -25,10 +26,10 @@ public class Main
 		RestExpress server = new RestExpress(new Routes())
 		    .setName(env.getName())
 		    .setPort(env.getPort())
-		    // .useRawResponses()
-		    .addMessageObserver(new SimpleMessageObserver());
-		configureXmlAliases(server);
-		
+		    .addMessageObserver(new SimpleConsoleLogMessageObserver())
+		    .addPostprocessor(new DateHeaderPostprocessor());
+
+		configureXmlAliases(server);		
 		new RoutesMetadataPlugin().register(server);
 
 		server.bind();
