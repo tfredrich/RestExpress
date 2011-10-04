@@ -23,18 +23,18 @@ import com.strategicgains.restexpress.Request;
 import com.strategicgains.restexpress.Response;
 import com.strategicgains.restexpress.pipeline.Postprocessor;
 import com.strategicgains.util.date.DateAdapter;
-import com.strategicgains.util.date.Iso8601TimestampAdapter;
+import com.strategicgains.util.date.HttpHeaderTimestampAdapter;
 
 /**
  * For GET requests, adds a Date: <timestamp> header, if not already present.
  * This enables clients to determine age of a representation for caching purposes.
- * <timestamp> is in ISO8601 time point format.
+ * <timestamp> is in RFC1123 full date format.
  * <p/>
  * To use: simply add server.addPostprocessor(new DateHeaderPostprocessor()); in your main() method.
  * <p/>
- * Note that HEAD requests are not provided with a Date header.  This is due to the fact
- * that most external caches forward HEAD requests to the origin server as a GET request
- * and cache that.
+ * Note that HEAD requests are not provided with a Date header via this postprocessor.
+ * This is due to the fact that most external caches forward HEAD requests to the origin
+ * server as a GET request and cache the result.
  * 
  * @author toddf
  * @since Oct 3, 2011
@@ -42,7 +42,7 @@ import com.strategicgains.util.date.Iso8601TimestampAdapter;
 public class DateHeaderPostprocessor
 implements Postprocessor
 {
-	DateAdapter fmt = new Iso8601TimestampAdapter();
+	DateAdapter fmt = new HttpHeaderTimestampAdapter();
 
 	@Override
 	public void process(Request request, Response response)
