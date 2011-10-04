@@ -3,6 +3,7 @@ package com.kickstart;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import com.kickstart.controller.KickStartController;
+import com.strategicgains.restexpress.Parameters;
 import com.strategicgains.restexpress.route.RouteDeclaration;
 
 /**
@@ -34,6 +35,8 @@ extends RouteDeclaration
 		// KickStartService methods via call to LinkUtils.asLinks().
 		uri("/kickstart/{orderId}.{format}", controller)
 			.method(HttpMethod.GET, HttpMethod.PUT, HttpMethod.DELETE)
-			.name("KickstartOrderUri");
+			.name("KickstartOrderUri")
+			.parameter(Parameters.Cache.MAX_AGE, 3600);		// Cache for 3600 seconds (1 hour).
+//			.flag(Flags.Cache.DONT_CACHE);					// Expressly deny cache-ability.
 	}
 }

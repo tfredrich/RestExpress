@@ -6,6 +6,7 @@ import java.io.IOException;
 import com.strategicgains.restexpress.RestExpress;
 import com.strategicgains.restexpress.pipeline.SimpleConsoleLogMessageObserver;
 import com.strategicgains.restexpress.plugin.RoutesMetadataPlugin;
+import com.strategicgains.restexpress.postprocessor.CacheHeaderPostprocessor;
 import com.strategicgains.restexpress.postprocessor.DateHeaderPostprocessor;
 import com.strategicgains.restexpress.util.Environment;
 
@@ -27,7 +28,8 @@ public class Main
 		    .setName(env.getName())
 		    .setPort(env.getPort())
 		    .addMessageObserver(new SimpleConsoleLogMessageObserver())
-		    .addPostprocessor(new DateHeaderPostprocessor());
+		    .addPostprocessor(new DateHeaderPostprocessor())
+		    .addPostprocessor(new CacheHeaderPostprocessor());
 
 		configureXmlAliases(server);		
 		new RoutesMetadataPlugin().register(server);
