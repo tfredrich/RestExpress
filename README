@@ -43,7 +43,10 @@ On successful creation, call response.setResponseCreated() to set the returning 
 Change History/Release Notes:
 ===================================================================================================
 Release 0.7.2 - in development (build 'master')
-* Introduced DateHeaderPostprocessor which adds a Date header to outbound GET requests.
+* Introduced DateHeaderPostprocessor which adds a Date header to responses to GET requests.
+* Introduced CacheHeaderPostprocessor which support Cache-Control and other caching-related
+  response header best-practices by setting Parameters.Cache.MAX_AGE or Flags.Cache.DONT_CACHE on
+  a route.
 
 ===================================================================================================
 Release 0.7.1
