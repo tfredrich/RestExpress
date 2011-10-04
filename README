@@ -42,6 +42,10 @@ On successful creation, call response.setResponseCreated() to set the returning 
 
 Change History/Release Notes:
 ===================================================================================================
+Release 0.7.2 - in development (build 'master')
+* Introduced DateHeaderPostprocessor which adds a Date header to outbound GET requests.
+
+===================================================================================================
 Release 0.7.1
 * Added rootCause to ResultWrapper data area.
 * Exposed the XStream object from DefaultXmlProcessor.
