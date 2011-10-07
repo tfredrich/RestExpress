@@ -5,7 +5,7 @@
 	<property file="build.properties"/>
 	<property name="dir.src" value="${basedir}/src"/>
 	<property name="dir.src.java" value="${dir.src}/java"/>
-	<property name="dir.src.test" value="${dir.src}/java"/>
+	<property name="dir.src.test" value="${basedir}/test/java"/>
 	<property name="dir.src.kickstart" value="${basedir}/examples/kickstart"/>
 	<property name="dir.build" value="${basedir}/build"/>
 	<property name="dir.compile" value="${dir.build}/classes/main"/>
