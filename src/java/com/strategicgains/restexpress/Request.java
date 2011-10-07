@@ -34,6 +34,8 @@ import com.strategicgains.restexpress.exception.ServiceException;
 import com.strategicgains.restexpress.route.Route;
 import com.strategicgains.restexpress.route.RouteResolver;
 import com.strategicgains.restexpress.serialization.SerializationProcessor;
+import com.strategicgains.restexpress.util.StringUtils;
+import com.strategicgains.restexpress.util.StringUtils.QueryStringCallback;
 
 /**
  * @author toddf
@@ -534,34 +536,28 @@ public class Request
 	 * Add the query string parameters to the request as headers.
 	 * Also parses the query string into the queryStringMap, if applicable.
 	 */
-	private void parseQueryString(HttpRequest request)
+	private void parseQueryString(final HttpRequest request)
 	{
 		String uri = request.getUri();
 		int x = uri.indexOf('?');
 		String queryString = (x >= 0 ? uri.substring(x + 1) : null);
-		
-		if (queryString != null && !queryString.trim().isEmpty())
-		{
-			String[] params = queryString.split("&");
-			queryStringMap = new HashMap<String, String>(params.length);
-			
-			for (String pair : params)
+
+		StringUtils.iterateQueryString(queryString,
+			new QueryStringCallback()
 			{
-				String[] keyValue = pair.split("=");
-				String key = keyValue[0];
-				
-				if (keyValue.length == 1)
-				{
-					request.addHeader(key, "");
-					queryStringMap.put(key, "");
-				}
-				else
-				{
-					request.addHeader(key, keyValue[1]);
-					queryStringMap.put(key, keyValue[1]);
-				}
+				@Override
+	            public void assign(String key, String value)
+	            {
+					if (queryStringMap == null)
+					{
+						queryStringMap = new HashMap<String, String>();
+					}
+
+					request.addHeader(key, value);
+					queryStringMap.put(key, value);
+	            }
 			}
-		}
+		);
 	}
 
 	/**
